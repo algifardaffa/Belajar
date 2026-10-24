@@ -115,6 +115,43 @@ body{font-size:12px}input{font-size:14px}.hv{font-size:20px}.clock{font-size:20p
 @keyframes tin{from{opacity:0;transform:translateY(8px)}}
 @media(prefers-reduced-motion:reduce){.tn{animation:none}.bar>i{transition:none}}
 .pa{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 0}
+
+/* compare (reference style) */
+.cmp-chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px}
+.cmp-chip{padding:8px 16px;min-height:40px;border-radius:999px;border:1px solid var(--bd);background:var(--inset);color:var(--tx2);font-size:12px;font-weight:600}
+.cmp-chip:hover{background:var(--sec);color:var(--tx)}.cmp-chip.on{border-color:var(--c,var(--ach));color:var(--tx)}
+.cmp-dot{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;margin-right:8px;background:var(--c,var(--mu))}
+.rg{display:flex;background:var(--inset);border:1px solid var(--bd);border-radius:12px;padding:4px}
+.rg button{min-height:32px;padding:6px 12px;border:0;border-radius:8px;font-size:12px;font-weight:600;color:var(--mu)}
+.rg button:hover{background:none;color:var(--tx)}.rg button.on{background:var(--sec);color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.cmp-box{position:relative;width:100%;height:300px;margin-top:8px}@media(min-width:640px){.cmp-box{height:480px}}
+/* achievements (reference style) */
+:root{--t5:#a5b4fc}[data-theme=light]{--t5:#4f46e5}
+.ag{grid-template-columns:1fr;grid-auto-flow:dense}
+@media(min-width:640px){.ag{grid-template-columns:1fr 1fr}.ac2.open{grid-column:span 2}}
+@media(min-width:1024px){.ag{grid-template-columns:repeat(3,1fr)}}
+.a-hero{margin:8px 0 24px}.hero-n{font-size:clamp(2.6rem,10vw,3.6rem);font-weight:800;line-height:1;letter-spacing:-.03em}
+.hero-d{font-size:16px;font-weight:600;color:var(--mu);margin-left:8px}
+.hero-bar{height:6px;border-radius:999px;background:var(--sec);overflow:hidden;margin:16px 0 8px}.hero-bar>span{display:block;height:100%;border-radius:999px;background:var(--ach)}
+.ac2{border:1px solid var(--bd);border-radius:16px;background:var(--panel);overflow:hidden;min-width:0}
+.ac2-t{display:block;width:100%;text-align:left;border:0;border-radius:0;padding:16px;min-height:0;background:transparent;font-weight:400}
+.ac2-t:hover{background:rgba(255,255,255,.04)}[data-theme=light] .ac2-t:hover{background:rgba(15,23,42,.04)}
+.ac2-top{display:flex;align-items:flex-start;gap:8px}.ac2-h{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.ac2-h h3{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-b{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;flex:none}
+.chev{display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;margin:-4px -6px 0 0;color:var(--mu);transition:transform .2s}.chev.o{transform:rotate(180deg)}
+.ac2-sum{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font-size:12px;color:var(--tx2)}.ac2-sum .pct{font-weight:700;color:var(--mu);font-variant-numeric:tabular-nums}
+.flux{position:relative;height:16px;margin-top:4px}.flux::before,.flux i{content:"";position:absolute;left:0;top:50%;height:5px;transform:translateY(-50%);border-radius:999px}
+.flux::before{right:0;background:var(--sec)}.flux i{width:calc(100% * var(--p));background:var(--tier);transition:width .25s}
+.ac2-b{padding:0 16px 16px;border-top:1px solid var(--bd)}.ac2-b p{margin:12px 0 0;font-size:14px;color:var(--tx2)}.ac2-b p.sub{margin-top:8px;font-size:12px;color:var(--mu)}
+.ast{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));list-style:none;margin:16px 0 4px;padding:0}
+.as{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0}
+.as::before{content:"";position:absolute;top:15px;right:50%;width:100%;height:2px;background:var(--bd);z-index:0}.as:first-child::before{display:none}
+.as.done::before{background:var(--tc)}.as.next::before{background:linear-gradient(to right,var(--tc) calc(var(--p,0)*100%),var(--bd) calc(var(--p,0)*100%))}
+.as-d{position:relative;z-index:1;width:30px;height:30px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:var(--inset);border:2px solid var(--bd)}
+.as.done .as-d{background:color-mix(in srgb,var(--tc) 22%,var(--inset));border-color:var(--tc)}.as.next .as-d{border-style:dashed;border-color:var(--tc)}
+.as-n{font-size:12px;font-weight:600;color:var(--mu)}.as.done .as-n,.as.next .as-n{color:var(--tc)}.as-r{font-size:11px;line-height:1.2;color:var(--mu);font-variant-numeric:tabular-nums}
+@media(max-width:380px){.as-n,.as-r{font-size:10px}.as-d{width:26px;height:26px}.as::before{top:13px}}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -154,10 +191,10 @@ body{font-size:12px}input{font-size:14px}.hv{font-size:20px}.clock{font-size:20p
 <section id="lb" class="hide"><div class="panel"><div class="head"><h2 class="h2">Leaderboard</h2><div class="sub">Ranked by study time</div></div>
 <div class="tw"><table><thead><tr><th>#</th><th>Member</th><th data-s="today">Today</th><th data-s="week">Week</th><th data-s="month">Month</th><th data-s="all">All-time</th><th data-s="n">Sessions</th></tr></thead><tbody id="lbb"></tbody></table></div>
 <div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></section>
-<section id="an" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Analytics</h2><div class="sub">How the room studied over time</div></div>
-<div class="seg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div>
-<div id="ins" class="ins"></div><div class="chart"><h3>Member comparison</h3><div class="sub">Total hours in the selected range</div><div id="cmpBars" class="dist"></div></div>
-<div class="chart"><h3>Daily study time</h3><div class="sub">Hours per member, per day</div><canvas id="ch1" height="110"></canvas></div></div></section>
+<section id="an" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick a profile, then add up to 4 other players</p></div>
+<div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div>
+<div class="lb">Profile</div><div class="cmp-chips" id="cpRow"></div><div class="lb">Compare with</div><div class="cmp-chips" id="ccRow"></div>
+<div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div></div></section>
 <section id="ach" class="hide"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg>
 <div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></section>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -352,18 +389,26 @@ function lbRender(){
  $('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
 }
 function anRender(){
- const dark=document.documentElement.dataset.theme==='dark',tc=dark?'#9fadc2':'#56657c',gc=dark?'rgba(71,85,105,.35)':'#e2e8f0';
+ if(!members.length||!$('#cmpBox'))return;
+ if(!cmpP||!members.some(m=>m.id===cmpP))cmpP=meId;cmpC.delete(cmpP);
+ const others=members.filter(m=>m.id!==cmpP),col=m=>m.id===cmpP?'#818cf8':CMPC[others.indexOf(m)%4];
+ $('#cpRow').innerHTML=members.map(m=>`<button type="button" class="cmp-chip${m.id===cmpP?' on':''}" style="--c:#818cf8" data-cp="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`).join('');
+ $('#ccRow').innerHTML=others.map(m=>`<button type="button" class="cmp-chip${cmpC.has(m.id)?' on':''}" style="--c:${col(m)}" data-cc="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`).join('')+'<button type="button" class="cmp-chip" data-cq="all">All players</button><button type="button" class="cmp-chip" data-cq="none">Clear</button>';
  const to=today(),from=addD(to,-(days-1)),labels=[];for(let d=from;d<=to;d=addD(d,1))labels.push(d);
- const per=members.map(m=>stats.filter(r=>r.member_id===m.id&&r.day>=from).reduce((a,r)=>a+r.seconds,0));
- const total=per.reduce((a,b)=>a+b,0),topI=per.indexOf(Math.max(...per));
- Object.values(charts).forEach(c=>c.destroy());charts={};
- document.querySelectorAll('#an .chart').forEach(c=>c.classList.toggle('hide',!total));
- $('#ins').innerHTML=total?[['Total studied',fmt(total),IC.clock],['Top member',esc(members[topI]?.display_name||'–')+' · '+fmt(per[topI]),IC.trophy],['Daily average',fmt(total/days),IC.chart]].map(([l,v,i])=>`<div class="ic-card"><div class="lb">${i}${l}</div><div class="iv">${v}</div></div>`).join(''):`<div class="empty" style="grid-column:1/-1">${IC.chart}<b>No study sessions in this range</b><span>Try a longer range, or start a session from the Dashboard.</span></div>`;
- if(!total)return;
- const tp=members.map((m,i)=>({m,s:per[i]})).sort((a,b)=>b.s-a.s),mx=Math.max(1,tp[0].s);
- $('#cmpBars').innerHTML=tp.map((r,n)=>`<div class="dist-row${n?'':' top'}"><span class="dist-label">${esc(r.m.display_name)}</span><div class="dist-track"><i style="width:${r.s/mx*100}%"></i></div><b class="dist-val">${fmt(r.s)}</b></div>`).join('');
-
+ const sel=[members.find(m=>m.id===cmpP),...others.filter(m=>cmpC.has(m.id))],dark=document.documentElement.dataset.theme==='dark',tc=dark?'#8a99af':'#56657c',gc=dark?'rgba(51,65,85,.4)':'#e2e8f0';
+ const hm=s=>{const m=Math.round(s/60);return m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+'m'};
+ const ds=sel.map((m,i)=>{const mp={};stats.filter(r=>r.member_id===m.id&&r.day>=from).forEach(r=>mp[r.day]=(mp[r.day]||0)+r.seconds);
+  const c=col(m),tot=Object.values(mp).reduce((a,b)=>a+b,0);
+  return{label:m.display_name+' · '+hm(tot),data:labels.map(d=>Math.round((mp[d]||0)/36)/100),borderColor:c,backgroundColor:c+'26',borderWidth:i?2.5:3,fill:i===0,tension:.25,pointRadius:days>50?2:4,pointHoverRadius:6,pointBackgroundColor:c}});
+ if(cmpChart)cmpChart.destroy();
+ cmpChart=new Chart($('#cmpChart').getContext('2d'),{type:'line',data:{labels:labels.map(d=>d.slice(5)),datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+  plugins:{legend:{display:true,position:'top',labels:{color:dark?'#94a3b8':'#475569',font:{family:'Inter',size:12}}},
+   tooltip:{backgroundColor:dark?'#1e293b':'#fff',titleColor:dark?'#f8fafc':'#0f172a',bodyColor:dark?'#cbd5e1':'#334155',borderColor:dark?'#334155':'#cbd5e1',borderWidth:1,padding:12,boxPadding:6,usePointStyle:true,
+    callbacks:{label:c=>` ${c.dataset.label.split(' · ')[0]}: ${hm(c.parsed.y*3600)}`}}},
+  scales:{x:{grid:{color:gc,drawBorder:false},ticks:{color:tc,font:{family:'Inter',size:12},maxRotation:45,autoSkip:true,maxTicksLimit:15}},
+   y:{beginAtZero:true,grid:{color:gc,drawBorder:false},ticks:{color:tc,font:{family:'Inter',size:12},callback:v=>v+' h'}}}}});
 }
+let cmpP=null,cmpC=new Set(),cmpChart;const CMPC=['#34d399','#f59e0b','#f472b6','#38bdf8'];
 let ch;function subscribe(){
  if(ch)return;let t;const re=()=>{clearTimeout(t);t=setTimeout(load,250)};
  ch=sb.channel('room').on('postgres_changes',{event:'*',schema:'public',table:'study_sessions'},re)
@@ -556,16 +601,19 @@ const bdg=(t,s=22,lk)=>{const c=t===5?'url(#eg)':`var(--t${t})`;return`<svg view
 const fv=(u,v)=>u==='seconds'?(v>=3600?(Math.round(v/360)/10)+' h':Math.round(v/60)+' min'):u==='percent'?(Math.round(v*10)/10)+'%':Math.round(v)+' '+(Math.round(v)===1?u.replace(/s$/,''):u);
 const aSt=(d,o)=>{const hi=Math.max(0,...A.u.filter(x=>x.ach_key===d.key&&x.owner_id===o).map(x=>x.tier)),p=A.p.find(x=>x.ach_key===d.key&&x.owner_id===o),V=+(p?.best_value||0),cur=+(p?.current_value||0),th=[d.t1,d.t2,d.t3,d.t4,d.t5].map(Number),L=hi?th[hi-1]:0,N=th[hi],pct=hi===5?100:Math.max(0,Math.min(100,(V-L)/(N-L)*100));return{hi,V,cur,th,N,pct}};
 const dt=s=>new Date(s).toLocaleDateString('en-GB',{timeZone:TZ,day:'numeric',month:'short',year:'numeric'});
-function aCard(d,o){const s=aSt(d,o),ups=A.u.filter(x=>x.ach_key===d.key&&x.owner_id===o);
- const rows=s.th.map((t,i)=>{const u=ups.find(x=>x.tier===i+1);return`<div class="tr${u?'':' lk'}">${bdg(i+1,22,!u)}<div><b>${TN[i]}</b> <span class="sub">${fv(d.unit,t)}</span></div><span class="sp"></span><span class="sub">${u?dt(u.unlocked_at):'Locked'}</span></div>`}).join('');
- const diff=Math.abs(s.cur-s.V)>1e-9?`<div class="sub" style="margin-top:8px">Current ${fv(d.unit,s.cur)} · Historical best ${fv(d.unit,s.V)}</div>`:'';
- return`<details class="ac" data-k="${d.key}"${openK.has(d.key)?' open':''}><summary><div class="row"><span class="lb">${esc(d.category)}</span><span class="sp"></span>${bdg(s.hi||1,22,!s.hi)}<b>${s.hi?TN[s.hi-1]:'Locked'}</b></div><div><b style="font-size:16px">${esc(d.name)}</b><div class="sub">${esc(d.description)}</div></div><div class="row"><span>${fv(d.unit,s.V)}${s.hi<5?' / '+fv(d.unit,s.N):''}</span><span class="sp"></span><span class="sub">${s.hi===5?'Max Tier Unlocked':'Progress to '+TN[s.hi]+': '+Math.round(s.pct)+'%'}</span></div><div class="bar th"><i style="width:${s.pct}%"></i></div></summary><div class="bd">${rows}${diff}</div></details>`}
+function aCard(d,o){const s=aSt(d,o),ups=A.u.filter(x=>x.ach_key===d.key&&x.owner_id===o),open=openK.has(d.key),tc=i=>i===5?'var(--t5)':`var(--t${i})`,tier=s.hi?tc(s.hi):'var(--mu)';
+ const short=x=>new Date(x).toLocaleDateString('en-GB',{timeZone:TZ,day:'2-digit',month:'2-digit',year:'2-digit'});
+ const steps=s.th.map((t,i)=>{const u=ups.find(x=>x.tier===i+1),st=u?'done':(i===s.hi?'next':'locked');return`<li class="as ${st}" style="--tc:${tc(i+1)}${st==='next'?';--p:'+(s.pct/100).toFixed(3):''}"><span class="as-d">${bdg(i+1,16,!u)}</span><span class="as-n">${TN[i]}</span><span class="as-r">${fv(d.unit,t)}</span><span class="as-r">${u?short(u.unlocked_at):'Locked'}</span></li>`}).join('');
+ const next=s.hi<5?`${fv(d.unit,Math.max(0,s.N-s.V))} to <b style="color:${tc(s.hi+1)}">${TN[s.hi]}</b>`:`<b style="color:${tier}">Eternal</b> · Max Tier Unlocked`;
+ const cur=Math.abs(s.cur-s.V)>1e-9?`Current ${fv(d.unit,s.cur)} · Historical best ${fv(d.unit,s.V)}`:`Current ${fv(d.unit,s.V)}`;
+ return`<article class="ac2${open?' open':''}"><button type="button" class="ac2-t" data-ak="${d.key}" aria-expanded="${open}"><div class="ac2-top"><div class="ac2-h"><h3>${esc(d.name)}</h3>${s.hi?`<span class="a-b" style="color:${tier}">${bdg(s.hi,16)}${TN[s.hi-1]}</span>`:''}</div><span class="chev${open?' o':''}" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div><div class="ac2-sum"><span>${s.hi<5?fv(d.unit,s.V)+' / '+fv(d.unit,s.N):fv(d.unit,s.V)}</span><span class="pct">${s.hi===5?'Max':Math.round(s.pct)+'%'}</span></div><div class="flux" style="--tier:${tier};--p:${(s.pct/100).toFixed(4)}"><i></i></div></button>${open?`<div class="ac2-b"><p>${esc(d.description)}</p><p class="sub">${esc(d.category)} · ${cur}</p><p class="sub">${next}</p><ol class="ast">${steps}</ol></div>`:''}</article>`}
 const aCount=m=>A.u.filter(u=>u.owner_id===m&&u.owner_id!==ROOM).length;
 function renderAch(){
  const mid=achView||meId,m=members.find(x=>x.id===mid);if(!m||!A.d.length)return;
- const P=A.d.filter(d=>d.scope==='individual'),T=A.d.find(d=>d.scope==='room'),n=aCount(mid);
- $('#achBox').innerHTML=`<h2 class="h2">Achievement Profile</h2><div class="sub" style="margin-top:4px">${esc(m.display_name)} · ${n}/50 personal tiers unlocked · Overall Progress ${Math.round(n/50*100)}%</div><div class="bar th" style="margin-top:12px"><i style="width:${n/50*100}%"></i></div>
- <div class="chips">${members.map(x=>`<button data-am="${x.id}" class="${x.id===mid?'on':''}">${esc(x.display_name)}</button>`).join('')}</div>
+ const P=A.d.filter(d=>d.scope==='individual'),T=A.d.find(d=>d.scope==='room'),n=aCount(mid),pc=n/50*100;
+ $('#achBox').innerHTML=`<h2 class="h2">Achievement Profile <span class="sub" style="font-size:20px;font-weight:400">• ${esc(m.display_name)}</span></h2>
+ <div class="cmp-chips">${members.map(x=>`<button type="button" class="cmp-chip${x.id===mid?' on':''}" data-am="${x.id}">${esc(x.display_name)}</button>`).join('')}</div>
+ <div class="a-hero"><div class="lb">Overall progress</div><div style="margin-top:8px"><span class="hero-n">${n}</span><span class="hero-d">/ 50 tiers unlocked</span></div><div class="hero-bar"><span style="width:${pc.toFixed(1)}%"></span></div><div class="sub">${pc.toFixed(1)}% complete</div></div>
  <div class="ag">${P.map(d=>aCard(d,mid)).join('')}</div>${T?`<h2 class="h2 sec-title">Team Achievement</h2><div class="ag">${aCard(T,ROOM)}</div>`:''}`;
  renderProfileAch();
 }
@@ -591,5 +639,10 @@ document.addEventListener('toggle',e=>{const k=e.target.dataset?.k;if(k)e.target
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
  if(b.dataset.am){achView=b.dataset.am;renderAch()}
  if(b.dataset.v==='ach')loadAch()});
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.cp){cmpP=b.dataset.cp;cmpC.delete(cmpP);anRender()}
+ if(b.dataset.cc){cmpC.has(b.dataset.cc)?cmpC.delete(b.dataset.cc):cmpC.add(b.dataset.cc);anRender()}
+ if(b.dataset.cq){cmpC=new Set(b.dataset.cq==='all'?members.filter(m=>m.id!==cmpP).map(m=>m.id):[]);anRender()}
+ if(b.dataset.ak){openK.has(b.dataset.ak)?openK.delete(b.dataset.ak):openK.add(b.dataset.ak);renderAch()}});
 </script>
 </body></html>
