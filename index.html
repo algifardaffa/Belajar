@@ -2,125 +2,119 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>STUDY ROOM</title>
+<title>STUDY ROOM</title><meta name="theme-color" content="#0f172a"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='16' cy='17' r='8'/%3E%3Cpath d='M16 13v4l2.5 1.5M13 6h6'/%3E%3C/g%3E%3C/svg%3E">
 <script>document.documentElement.dataset.theme=localStorage.getItem('sr-theme')||'dark'</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.js"></script>
 <style>
-:root{--bg:#0f172a;--card:#1e293b;--sec:#334155;--tx:#f8fafc;--mu:#94a3b8;--bd:rgba(71,85,105,.6);--ac:#6366f1;--ach:#818cf8}
-[data-theme=light]{--bg:#f1f5f9;--card:#fff;--sec:#f8fafc;--tx:#0f172a;--mu:#475569;--bd:#cbd5e1;--ac:#4f46e5;--ach:#4338ca}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px Inter,system-ui,sans-serif}
-.w{max-width:1100px;margin:0 auto;padding:20px 16px}
-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-h1{margin:0;font-size:20px;letter-spacing:.04em}.sub{color:var(--mu);font-size:12px}
-.sp{flex:1}nav{display:flex;gap:4px}
-button,input,select{font:inherit;color:var(--tx)}
-button{background:var(--sec);border:1px solid var(--bd);border-radius:10px;padding:7px 12px;cursor:pointer}
-button:hover{border-color:var(--ac)}button.on,button.p{background:var(--ac);border-color:var(--ac);color:#fff}button.p:hover{background:var(--ach)}
-input,select{background:var(--sec);border:1px solid var(--bd);border-radius:10px;padding:8px 10px;width:100%}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));margin-top:14px}
-@media(min-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
-.stats{display:flex;flex-wrap:wrap}.stats>div{flex:1 1 150px;padding:4px 14px;border-left:1px solid var(--bd)}.stats>div:first-child{border:0;padding-left:0}
-.lb{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}.v{font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
-.clock{font-size:40px;font-weight:700;font-variant-numeric:tabular-nums;margin:10px 0}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.dot{width:8px;height:8px;border-radius:50%;background:var(--mu)}.dot.active{background:#22c55e}.dot.paused{background:#f59e0b}
-.av{width:34px;height:34px;border-radius:50%;background:var(--ac);display:grid;place-items:center;color:#fff;font-weight:600}
-.bar{height:5px;background:var(--sec);border-radius:9px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--ac)}
-table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--bd)}th{color:var(--mu);font-size:11px;text-transform:uppercase;cursor:pointer}
-.hide{display:none!important}#login,#forgotPanel,#resetPanel{max-width:360px;margin:12vh auto;display:grid;gap:12px}.err{color:#f87171;font-size:12px}
-.auth-link{border:0;background:none;color:var(--ac);padding:2px 0;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer}
-.auth-link:hover{color:var(--ach);text-decoration:underline}.auth-link:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
-.auth-right{text-align:right;margin-top:-5px}.auth-actions{display:flex;justify-content:flex-start;gap:8px;align-items:center}
-.auth-note{color:var(--mu);font-size:12px;line-height:1.55}.auth-msg{font-size:12px;line-height:1.55;white-space:pre-wrap}
-.auth-success{color:#22c55e}.auth-error{color:#f87171}
-button:disabled{opacity:.6;cursor:not-allowed}
-@media(max-width:420px){#login,#forgotPanel,#resetPanel{margin:8vh auto}}
-/* Profile editor: same compact Slate / Indigo visual system as the dashboard. */
-.av{position:relative;overflow:hidden;flex-shrink:0}
-.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.av.av-lg{width:68px;height:68px;font-size:24px}
-.profile-trigger{display:flex;align-items:center;gap:8px;border:0;background:transparent;padding:3px 5px}
-.profile-trigger:hover{background:var(--sec)}.profile-trigger:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-.profile-name{font-size:12px;font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.member-identity{display:flex;align-items:center;gap:8px;min-width:0}.member-identity b{overflow-wrap:anywhere}
-.profile-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(2,6,23,.72);display:flex;justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(5px)}
-.profile-modal{width:min(100%,420px);max-height:calc(100vh - 40px);overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.22)}
-.profile-avatar-edit{display:flex;align-items:center;gap:14px;margin:6px 0 12px}
-.profile-helps{line-height:1.5;font-size:12px;color:var(--mu)}
-.profile-controls{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
-.profile-modal label.lb{display:block;margin:10px 0 5px}
-.profile-file{font-size:12px}.profile-file::file-selector-button{background:var(--sec);border:1px solid var(--bd);border-radius:8px;padding:6px 8px;color:var(--tx);margin-right:10px;cursor:pointer}
-@media(max-width:620px){.profile-name{display:none}.profile-modal{padding:16px}}
-
+:root{--bg:#0f172a;--panel:rgba(30,41,59,.6);--inset:#0f172a;--sec:#334155;--tx:#f8fafc;--tx2:#b7c3d6;--mu:#9fadc2;--bd:rgba(71,85,105,.6);--ac:#6366f1;--ach:#818cf8;--acs:rgba(99,102,241,.16);--ok:#22c55e;--warn:#f59e0b;--bad:#f87171}
+[data-theme=light]{--bg:#f1f5f9;--panel:#fff;--inset:#f8fafc;--sec:#e2e8f0;--tx:#0f172a;--tx2:#475569;--mu:#56657c;--bd:#cbd5e1;--ac:#4f46e5;--ach:#4338ca;--acs:rgba(79,70,229,.1);--ok:#15803d;--warn:#b45309;--bad:#b91c1c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;line-height:1.2}h1{font-size:20px;font-weight:700;letter-spacing:.04em}.h2{font-size:20px;font-weight:700}.sec-title{margin:32px 0 16px}
+.w{max-width:1100px;margin:0 auto;padding:24px 16px 48px}.hide{display:none!important}.sp{flex:1}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sub{color:var(--mu);font-size:12px}.lb{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}
+/* buttons: primary (solid) > secondary (outline) > tertiary (ghost) */
+button{font:inherit;color:var(--tx);display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:8px 16px;border-radius:12px;border:1px solid var(--bd);background:transparent;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{background:var(--sec)}button.p{background:var(--ac);border-color:var(--ac);color:#fff}button.p:hover{background:var(--ach);border-color:var(--ach)}
+button.ghost{border-color:transparent;padding:8px 12px;color:var(--tx2)}button.danger{color:var(--bad)}button.pill{padding:8px 12px;font-size:12px}button:disabled{opacity:.6;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--ach);outline-offset:2px}
+input,select{font:inherit;color:var(--tx);width:100%;min-height:44px;padding:8px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--inset)}input::placeholder{color:var(--mu)}input:focus{outline:2px solid var(--ach);outline-offset:0;border-color:transparent}
+/* header + navigation */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--bd)}.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.logo{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--ac);color:#fff}.logo svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.top-actions{display:flex;align-items:center;gap:8px}.profile-trigger{border-color:transparent;padding:4px 8px}.profile-trigger .av{width:32px;height:32px}
+.profile-name{font-size:14px;font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seg{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--bd);border-radius:12px;background:var(--inset)}
+.seg button{min-height:32px;padding:4px 12px;border:0;border-radius:8px;font-size:14px;font-weight:500;color:var(--mu)}.seg button:hover{background:none;color:var(--tx)}.seg button.on{background:var(--acs);color:var(--ach)}
+.tabs{display:flex;margin:16px 0}.tabs button{flex:1;min-height:40px}
+.status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mu);margin-bottom:16px}
+.alert{margin-bottom:16px;padding:12px 16px;border-radius:12px;background:rgba(248,113,113,.12);color:var(--bad)}.alert:empty,.err:empty,.auth-msg:empty{display:none}
+/* panels */
+.panel{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:24px}.head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.hero-main{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center}.hero-main .lb{justify-content:center}
+.hv{margin-top:4px;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}.hero-main>div:first-child .hv{color:var(--ach)}
+.hero-sub{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-top:24px}.hero-sub div{display:flex;gap:8px;align-items:baseline}.hero-sub b{font-size:16px}
+.goal{margin-top:24px;padding-top:24px;border-top:1px solid var(--bd)}.bar{height:8px;background:var(--sec);border-radius:999px;overflow:hidden}.goal .bar{margin-top:8px}
+.bar>i{display:block;height:100%;background:var(--ac);border-radius:inherit;transition:width .4s}
+/* member cards: you = featured, others = grid; status via top accent */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.mc{display:grid;gap:16px;padding:24px;background:var(--panel);border:1px solid var(--bd);border-top:3px solid transparent;border-radius:16px}.mc.active{border-top-color:var(--ok)}.mc.paused{border-top-color:var(--warn)}.mc.me{border-color:var(--ac)}
+.mc-main{display:grid;gap:12px}.clock{font-size:36px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}.mc.idle .clock{color:var(--mu)}
+.subj{display:flex;align-items:center;gap:8px;color:var(--tx2)}.subj span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini{display:flex;gap:24px}.mini div{display:grid}.mini b{font-weight:600}.ctl{display:flex;gap:8px;flex-wrap:wrap}.ctl input{flex:1 1 100%}.ctl button{flex:1}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--mu)}.st.active{color:var(--ok)}.st.paused{color:var(--warn)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mu)}.dot.active{background:var(--ok);box-shadow:0 0 0 4px rgba(34,197,94,.18)}.dot.paused{background:var(--warn)}
+.you{font-style:normal;font-size:12px;font-weight:600;padding:0 8px;border-radius:999px;color:var(--ach);background:var(--acs)}
+.member-identity{display:flex;align-items:center;gap:8px;min-width:0}.member-identity b,.member-identity span{overflow-wrap:anywhere}
+.av{position:relative;overflow:hidden;flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ac);color:#fff;font-weight:600}.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.av.av-lg{width:68px;height:68px;font-size:24px}
+/* leaderboard */
+.callout{margin-bottom:16px;padding:12px 16px;border:1px solid var(--ac);border-radius:12px;background:var(--acs)}.callout:empty{display:none}
+.tw{overflow-x:auto}table{width:100%;min-width:620px;border-collapse:collapse}
+th{padding:8px 12px;text-align:right;font-size:12px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;cursor:pointer}th:nth-child(-n+2){text-align:left;cursor:default}th.sorted{color:var(--ach)}th.sorted::after{content:" \25BC";font-size:12px}
+td{padding:12px;vertical-align:middle}tbody tr:nth-child(odd){background:rgba(30,41,59,.22)}tbody tr:nth-child(even){background:rgba(51,65,85,.28)}
+[data-theme=light] tbody tr:nth-child(odd){background:#fff}[data-theme=light] tbody tr:nth-child(even){background:#f8fafc}tbody tr.me{background:var(--acs)}
+td.num{text-align:right;color:var(--mu);font-variant-numeric:tabular-nums}td.num.act{color:var(--tx);font-weight:600}td.rk{width:48px;font-weight:600;color:var(--mu)}
+tr.top1 td.rk{box-shadow:inset 3px 0 0 #eab308;color:#eab308}tr.top2 td.rk{box-shadow:inset 3px 0 0 #94a3b8;color:#94a3b8}tr.top3 td.rk{box-shadow:inset 3px 0 0 #d97706;color:#d97706}
+td .bar{height:4px;max-width:240px;margin-top:8px}
+.empty{display:grid;justify-items:center;gap:8px;padding:32px 16px;text-align:center;color:var(--mu)}.empty .ic{width:32px;height:32px}.empty b{font-size:16px;color:var(--tx)}
+/* analytics */
+.ins{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}.ic-card{padding:16px;border:1px solid var(--bd);border-radius:12px;background:var(--inset)}.iv{margin-top:8px;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.chart{margin-top:32px}.chart h3{font-size:16px;font-weight:600}.chart canvas{margin-top:16px}
+/* auth + profile */
+.auth{max-width:400px;margin:12vh auto 0}.authcard{display:grid;gap:12px;padding:32px}.authcard .brand{margin-bottom:8px}.auth-right{text-align:right}
+.auth-link{border:0;background:none;min-height:0;padding:4px 0;font-size:12px;font-weight:600;color:var(--ach)}.auth-link:hover{background:none;text-decoration:underline}.auth-actions{display:flex;gap:16px}
+.auth-note,.profile-helps{margin:0;font-size:12px;line-height:1.5;color:var(--mu)}.auth-msg{font-size:14px;white-space:pre-wrap}.auth-success{color:var(--ok)}.auth-error,.err{color:var(--bad);font-size:14px}.authcard .wide{width:100%;min-height:44px}
+.profile-backdrop{position:fixed;inset:0;z-index:1000;display:flex;justify-content:center;align-items:center;padding:16px;background:rgba(2,6,23,.72);backdrop-filter:blur(4px)}
+.profile-modal{display:grid;gap:12px;width:min(100%,440px);max-height:calc(100vh - 32px);overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.5)}.profile-avatar-edit{display:flex;align-items:center;gap:16px}.profile-controls{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.profile-file{font-size:12px}
+@media(min-width:640px){.hv{font-size:36px}}@media(min-width:720px){#mine .mc{grid-template-columns:1fr minmax(240px,320px);align-items:center;gap:32px}#mine .clock{font-size:48px}}@media(min-width:900px){.hv{font-size:48px}}
+@media(max-width:620px){.profile-name{display:none}.panel{padding:16px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head>
 <body><div class="w">
-<div id="login" class="card hide"><h1>STUDY ROOM</h1><div class="sub">Sign in with your member account</div>
-<input id="em" type="email" placeholder="Email" autocomplete="username"><input id="pw" type="password" placeholder="Password" autocomplete="current-password">
-<div class="auth-right"><button type="button" class="auth-link" id="forgotLink">Forgot Password?</button></div>
-<button class="p" id="go">Sign in</button><div id="le" class="err" role="status" aria-live="polite"></div></div>
-
-<div id="forgotPanel" class="card hide" aria-labelledby="forgotTitle">
-<h1 id="forgotTitle">Reset Password</h1>
+<div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
+<label class="lb" for="em">Email</label><input id="em" type="email" placeholder="you@example.com" autocomplete="username">
+<label class="lb" for="pw">Password</label><input id="pw" type="password" placeholder="Your password" autocomplete="current-password">
+<div class="auth-right"><button type="button" class="auth-link" id="forgotLink">Forgot password?</button></div>
+<button class="p wide" id="go">Sign in</button><div id="le" class="err" role="status" aria-live="polite"></div></div></div>
+<div id="forgotPanel" class="auth hide"><div class="panel authcard" aria-labelledby="forgotTitle"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2" id="forgotTitle">Reset password</h2>
 <div class="auth-note">Enter your account email. We'll send a link to set a new password.</div>
-<label class="lb" for="forgotEmail">Email address</label>
-<input id="forgotEmail" type="email" placeholder="Email" autocomplete="email" required>
-<button type="button" class="p" id="sendResetLink">Send Reset Link</button>
-<div id="forgotMsg" class="auth-msg" role="status" aria-live="polite"></div>
-<div class="auth-actions"><button type="button" class="auth-link" id="forgotBack">Back to Login</button></div>
-</div>
-
-<div id="resetPanel" class="card hide" aria-labelledby="resetTitle">
-<h1 id="resetTitle">Set New Password</h1>
+<label class="lb" for="forgotEmail">Email address</label><input id="forgotEmail" type="email" placeholder="you@example.com" autocomplete="email" required>
+<button type="button" class="p wide" id="sendResetLink">Send reset link</button><div id="forgotMsg" class="auth-msg" role="status" aria-live="polite"></div>
+<div class="auth-actions"><button type="button" class="auth-link" id="forgotBack">&larr; Back to sign in</button></div></div></div>
+<div id="resetPanel" class="auth hide"><div class="panel authcard" aria-labelledby="resetTitle"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2" id="resetTitle">Set new password</h2>
 <div class="auth-note" id="resetDescription">Checking your password recovery link...</div>
-<div id="resetFields" class="hide" style="display:grid;gap:10px">
-<label class="lb" for="newPassword">New password</label>
-<input id="newPassword" type="password" autocomplete="new-password" placeholder="New password (8+ characters)">
-<label class="lb" for="confirmPassword">Confirm password</label>
-<input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Confirm new password">
-<label class="auth-note"><input id="showResetPasswords" type="checkbox" style="width:auto;vertical-align:middle;margin-right:6px">Show passwords</label>
-<button type="button" class="p" id="saveNewPassword">Save New Password</button>
-</div>
+<div id="resetFields" class="hide" style="display:grid;gap:12px"><label class="lb" for="newPassword">New password</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters">
+<label class="lb" for="confirmPassword">Confirm password</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat the new password">
+<label class="auth-note"><input id="showResetPasswords" type="checkbox" style="width:auto;min-height:0;vertical-align:middle;margin-right:8px">Show passwords</label>
+<button type="button" class="p wide" id="saveNewPassword">Save new password</button></div>
 <div id="resetMsg" class="auth-msg" role="status" aria-live="polite"></div>
-<div class="auth-actions"><button type="button" class="auth-link" id="resetBack">Back to Login</button><button type="button" class="auth-link hide" id="resetTryAgain">Request another link</button></div>
-</div>
-
+<div class="auth-actions"><button type="button" class="auth-link" id="resetBack">&larr; Back to sign in</button><button type="button" class="auth-link hide" id="resetTryAgain">Request another link</button></div></div></div>
 <div id="app" class="hide">
-<header><div><h1>STUDY ROOM</h1><div class="sub">Study Time Visualizer</div></div><div class="sp"></div>
-<nav id="nav"><button data-v="dash" class="on">Dashboard</button><button data-v="lb">Leaderboard</button><button data-v="an">Analytics</button></nav>
-<button id="th" type="button" aria-label="Toggle dark and light mode">◐</button>
+<header class="top"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><div><h1>STUDY ROOM</h1><div class="sub">Study Time Visualizer</div></div></div>
+<div class="top-actions"><button id="th" type="button" class="pill" aria-label="Toggle dark and light mode"></button>
 <button type="button" id="profileButton" class="profile-trigger" title="Edit your profile" aria-label="Edit your nickname and photo"><span class="av" id="me"></span><span class="profile-name" id="myName"></span></button>
-<button id="out">Sign out</button></header>
-<div id="err" class="err"></div>
-<div id="profileBackdrop" class="profile-backdrop hide" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
- <div class="card profile-modal">
-  <h1 id="profileTitle">Edit Profile</h1>
-  <p class="profile-helps">Your nickname and photo are visible to the other four Study Room members.</p>
-  <div class="profile-avatar-edit"><div class="av av-lg" id="profilePreview"></div><div><b id="profileCurrentName"></b><div class="profile-helps">Your personal avatar</div></div></div>
-  <label class="lb" for="profileNickname">Nickname</label>
-  <input id="profileNickname" type="text" minlength="1" maxlength="40" placeholder="Your nickname" autocomplete="nickname">
-  <label class="lb" for="profileImage">Profile photo</label>
-  <input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
-  <p class="profile-helps">JPG, PNG, or WebP. Maximum 2 MB. Only the five members can request avatar images.</p>
-  <button type="button" id="profileRemovePhoto" class="auth-link">Remove current photo</button>
-  <div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
-  <div class="profile-controls"><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div>
- </div>
-</div>
-
-
-<section id="dash"><div class="card stats" id="ov"></div>
-<div class="card" style="margin-top:14px"><div class="row"><span class="lb">Collective daily progress</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar" style="margin-top:8px"><i id="cb" style="width:0"></i></div></div>
-<div class="grid" id="cards"></div></section>
-
-<section id="lb" class="hide"><div class="card"><div class="row" id="modes" style="margin-bottom:10px">
-<button data-m="today" class="on">Daily</button><button data-m="week">Weekly</button><button data-m="month">Monthly</button><button data-m="all">All-Time</button></div>
-<table><thead><tr><th>#</th><th>Member</th><th data-s="today">Today</th><th data-s="week">Week</th><th data-s="month">Month</th><th data-s="all">All-Time</th><th data-s="n">Sessions</th></tr></thead><tbody id="lbb"></tbody></table></div></section>
-
-<section id="an" class="hide"><div class="row" style="margin-bottom:10px"><button data-d="7" class="on">7 Days</button><button data-d="30">30 Days</button><button data-d="90">90 Days</button></div>
-<div class="card"><div class="lb">Daily study duration by member (hours)</div><canvas id="ch1" height="110"></canvas></div>
-<div class="card" style="margin-top:14px"><div class="lb">Member comparison — selected range (hours)</div><canvas id="ch2" height="90"></canvas></div></section>
+<button id="out" class="pill"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button></div></header>
+<nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</button><button data-v="lb"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Leaderboard</button><button data-v="an"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Analytics</button></nav>
+<div id="live" class="status"></div><div id="err" class="alert" role="alert"></div>
+<div id="profileBackdrop" class="profile-backdrop hide" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><div class="panel profile-modal">
+<h2 class="h2" id="profileTitle">Edit profile</h2><p class="profile-helps">Your nickname and photo are visible to the other four Study Room members.</p>
+<div class="profile-avatar-edit"><div class="av av-lg" id="profilePreview"></div><div><b id="profileCurrentName"></b><div class="profile-helps">Your personal avatar</div></div></div>
+<label class="lb" for="profileNickname">Nickname</label><input id="profileNickname" type="text" minlength="1" maxlength="40" placeholder="Your nickname" autocomplete="nickname">
+<label class="lb" for="profileImage">Profile photo</label><input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
+<p class="profile-helps">JPG, PNG, or WebP. Maximum 2 MB. Only the five members can request avatar images.</p>
+<button type="button" id="profileRemovePhoto" class="auth-link">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
+<div class="profile-controls"><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
+<section id="dash"><div class="panel"><div id="ov"></div><div class="goal"><div class="row"><span class="lb">Daily goal</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar"><i id="cb" style="width:0"></i></div></div></div>
+<h2 class="h2 sec-title">Your session</h2><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div></section>
+<section id="lb" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Leaderboard</h2><div class="sub">Ranked by study time</div></div>
+<div class="seg" id="modes"><button data-m="today" class="on">Daily</button><button data-m="week">Weekly</button><button data-m="month">Monthly</button><button data-m="all">All-time</button></div></div>
+<div id="meRank" class="callout"></div><div class="tw"><table><thead><tr><th>#</th><th>Member</th><th data-s="today">Today</th><th data-s="week">Week</th><th data-s="month">Month</th><th data-s="all">All-time</th><th data-s="n">Sessions</th></tr></thead><tbody id="lbb"></tbody></table></div>
+<div id="lbEmpty" class="empty hide"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></section>
+<section id="an" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Analytics</h2><div class="sub">How the room studied over time</div></div>
+<div class="seg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div>
+<div id="ins" class="ins"></div><div class="chart"><h3>Daily study time</h3><div class="sub">Hours per member, per day</div><canvas id="ch1" height="110"></canvas></div>
+<div class="chart"><h3>Member comparison</h3><div class="sub">Total hours in the selected range</div><canvas id="ch2" height="90"></canvas></div></div></section>
 </div></div>
 
 <script>
@@ -128,6 +122,13 @@ button:disabled{opacity:.6;cursor:not-allowed}
 const SUPABASE_URL="https://qcxumxrpeonerizeklgv.supabase.co", SUPABASE_PUBLISHABLE_KEY="sb_publishable_uOt_Agh3t8WvMbO5nqqXUw_u1tgQdB2";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=s=>document.querySelector(s), TZ='Asia/Jakarta';
+const ic=d=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const IC={clock:ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),cal:ic('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>'),
+ trophy:ic('<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>'),users:ic('<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M17 11a3 3 0 0 0 0-6M21 20c0-2.6-1.4-4.6-3.5-5.5"/>'),
+ book:ic('<path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/>'),chart:ic('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+ sun:ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),moon:ic('<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>')};
+const SL={active:'Studying',paused:'Paused',idle:'Idle'};
+const themeBtn=()=>{const d=document.documentElement.dataset.theme==='dark';$('#th').innerHTML=(d?IC.sun:IC.moon)+`<span>${d?'Light':'Dark'}</span>`};
 // Password recovery is a separate state from a normal authenticated dashboard.
 const recoveryParams=new URLSearchParams(location.search);
 const recoveryHash=new URLSearchParams(location.hash.replace(/^#/,''));
@@ -276,37 +277,49 @@ function render(){
  const T=members.map(m=>totals(m.id)),sum=k=>T.reduce((a,t)=>a+t[k],0);
  const live=Object.values(sessions).filter(s=>s.status==='active').length;
  const done=0;
- $('#ov').innerHTML=[['Today',fmt(sum('today'))],['This week',fmt(sum('week'))],['All-time',fmt(sum('all'))],['Studying now',live],['Sessions (all-time)',sum('n')]]
-  .map(([l,v])=>`<div><div class="lb">${l}</div><div class="v">${v}</div></div>`).join('');
- const goal=members.reduce((a,m)=>a+(goals[m.id]?.daily_goal_seconds||0),0),td=sum('today');
- $('#cp').textContent=goal?`${fmt(td)} / ${fmt(goal)}`:'No goals set';$('#cb').style.width=goal?Math.min(100,td/goal*100)+'%':'0';
- $('#cards').innerHTML=members.map((m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId;
-  return`<div class="card"><div class="row"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b></div><span class="sp"></span><span class="dot ${st}"></span><span class="sub">${st}</span></div>
-  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${s?.subject?`<div class="sub">${esc(s.subject)}</div>`:''}
-  <div class="row sub"><span>Today ${fmt(T[i].today)}</span><span>Week ${fmt(T[i].week)}</span></div>
-  ${mine?`<div class="row" style="margin-top:12px">${st==='idle'?`<input id="subj" placeholder="Subject (optional)" style="flex:1"><button class="p" data-a="start_study_session">Start</button>`:
+ const keep=$('#subj')?.value||'';
+ $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying right now'} · updates live`;
+ $('#ov').innerHTML=`<div class="hero-main">${[['Today',fmt(sum('today')),IC.clock],['This week',fmt(sum('week')),IC.cal],['All-time',fmt(sum('all')),IC.trophy]].map(([l,v,i])=>`<div><div class="lb">${i}${l}</div><div class="hv">${v}</div></div>`).join('')}</div><div class="hero-sub">${[['Studying now',live,IC.users],['Sessions (all-time)',sum('n'),IC.book]].map(([l,v,i])=>`<div><span class="lb">${i}${l}</span><b>${v}</b></div>`).join('')}</div>`;
+ const goal=members.reduce((a,m)=>a+(goals[m.id]?.daily_goal_seconds||0),0),td=sum('today'),pct=goal?Math.min(100,td/goal*100):0;
+ $('#cp').textContent=goal?`${Math.round(pct)}% · ${fmt(td)} of ${fmt(goal)}`:'No goals set yet';$('#cb').style.width=pct+'%';
+ const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId;
+  const ctl=!mine?'':st==='idle'?`<input id="subj" placeholder="What are you studying? (optional)" aria-label="Subject"><button class="p" data-a="start_study_session">Start studying</button>`:
    st==='active'?`<button data-a="pause_study_session">Pause</button><button class="p" data-a="finish_study_session">Finish</button>`:
-   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button data-a="cancel_study_session">Cancel</button>`}</div>`:''}</div>`}).join('');
+   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
+  return`<article class="mc ${st}${mine?' me':''}"><div class="mc-main"><div class="row"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${mine?'<em class="you">You</em>':''}</div><span class="sp"></span><span class="st ${st}"><i class="dot ${st}"></i>${SL[st]}</span></div>
+  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${s?.subject?`<div class="subj">${IC.book}<span>${esc(s.subject)}</span></div>`:''}
+  <div class="mini"><div><span class="lb">Today</span><b>${fmt(T[i].today)}</b></div><div><span class="lb">This week</span><b>${fmt(T[i].week)}</b></div></div></div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
+ $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
+ if(keep&&$('#subj'))$('#subj').value=keep;
  lbRender();anRender();
 }
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function tick(){document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)))}
 function lbRender(){
  const k=sortK||mode;let rows=members.map(m=>({m,...totals(m.id)})).sort((a,b)=>b[k]-a[k]);
- const max=Math.max(1,...rows.map(r=>r[mode]));let rank=0,prev=null;
- $('#lbb').innerHTML=rows.map((r,i)=>{if(r[k]!==prev)rank=i+1;prev=r[k];
-  return`<tr><td>${r[k]>0?rank:'–'}</td><td><div class="member-identity">${avatarMarkup(r.m)}<span>${esc(r.m.display_name)}</span></div><div class="bar" style="margin-top:5px"><i style="width:${r[mode]/max*100}%"></i></div></td><td>${fmt(r.today)}</td><td>${fmt(r.week)}</td><td>${fmt(r.month)}</td><td>${fmt(r.all)}</td><td>${r.n}</td></tr>`}).join('');
+ const max=Math.max(1,...rows.map(r=>r[mode]));let rank=0,prev=null,mine='';
+ document.querySelectorAll('#lb th[data-s]').forEach(t=>t.classList.toggle('sorted',t.dataset.s===k));
+ $('#lbb').innerHTML=rows.map((r,i)=>{if(r[k]!==prev)rank=i+1;prev=r[k];const me=r.m.id===meId;
+  if(me)mine=r[k]>0?`Your rank: <b>#${rank}</b> · ${k==='n'?r.n+' sessions':fmt(r[k])}`:'You have no study time in this view yet. Start a session on the Dashboard.';
+  return`<tr class="${me?'me':''}${r[k]>0&&rank<=3?' top'+rank:''}"><td class="rk">${r[k]>0?rank:'–'}</td><td><div class="member-identity">${avatarMarkup(r.m)}<span>${esc(r.m.display_name)}${me?' <em class="you">You</em>':''}</span></div><div class="bar"><i style="width:${r[mode]/max*100}%"></i></div></td>${['today','week','month','all','n'].map(c=>`<td class="num${c===k?' act':''}">${c==='n'?r.n:fmt(r[c])}</td>`).join('')}</tr>`}).join('');
+ $('#meRank').innerHTML=mine;$('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
 }
 function anRender(){
- const dark=document.documentElement.dataset.theme==='dark',tc=dark?'#94a3b8':'#475569',gc=dark?'rgba(71,85,105,.35)':'#e2e8f0';
+ const dark=document.documentElement.dataset.theme==='dark',tc=dark?'#9fadc2':'#56657c',gc=dark?'rgba(71,85,105,.35)':'#e2e8f0';
  const to=today(),from=addD(to,-(days-1)),labels=[];for(let d=from;d<=to;d=addD(d,1))labels.push(d);
+ const per=members.map(m=>stats.filter(r=>r.member_id===m.id&&r.day>=from).reduce((a,r)=>a+r.seconds,0));
+ const total=per.reduce((a,b)=>a+b,0),topI=per.indexOf(Math.max(...per));
+ Object.values(charts).forEach(c=>c.destroy());charts={};
+ document.querySelectorAll('#an .chart').forEach(c=>c.classList.toggle('hide',!total));
+ $('#ins').innerHTML=total?[['Total studied',fmt(total),IC.clock],['Top member',esc(members[topI]?.display_name||'–')+' · '+fmt(per[topI]),IC.trophy],['Daily average',fmt(total/days),IC.chart]].map(([l,v,i])=>`<div class="ic-card"><div class="lb">${i}${l}</div><div class="iv">${v}</div></div>`).join(''):`<div class="empty" style="grid-column:1/-1">${IC.chart}<b>No study sessions in this range</b><span>Try a longer range, or start a session from the Dashboard.</span></div>`;
+ if(!total)return;
+ Chart.defaults.font.family='Inter, system-ui, sans-serif';Chart.defaults.font.size=12;
  const pal=['#6366f1','#22c55e','#f59e0b','#ec4899','#06b6d4'];
- const opt={responsive:true,scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc},grid:{color:gc},beginAtZero:true}},plugins:{legend:{labels:{color:tc}}}};
- Object.values(charts).forEach(c=>c.destroy());
- charts.a=new Chart($('#ch1'),{type:'bar',data:{labels:labels.map(l=>l.slice(5)),datasets:members.map((m,i)=>({label:m.display_name,backgroundColor:pal[i],
+ const tip={backgroundColor:dark?'#0f172a':'#fff',titleColor:dark?'#f8fafc':'#0f172a',bodyColor:tc,borderColor:gc,borderWidth:1,padding:12,cornerRadius:12};
+ const opt={responsive:true,scales:{x:{ticks:{color:tc},grid:{display:false}},y:{ticks:{color:tc},grid:{color:gc},beginAtZero:true,border:{display:false}}},plugins:{legend:{labels:{color:tc,usePointStyle:true,boxWidth:8}},tooltip:tip}};
+ charts.a=new Chart($('#ch1'),{type:'bar',data:{labels:labels.map(l=>l.slice(5)),datasets:members.map((m,i)=>({label:m.display_name,backgroundColor:pal[i],borderRadius:6,maxBarThickness:28,
   data:labels.map(l=>+((stats.find(r=>r.member_id===m.id&&r.day===l)?.seconds||0)/3600).toFixed(2))}))},options:opt});
- charts.b=new Chart($('#ch2'),{type:'bar',data:{labels:members.map(m=>m.display_name),datasets:[{label:'Hours',backgroundColor:pal,
-  data:members.map(m=>+(stats.filter(r=>r.member_id===m.id&&r.day>=from).reduce((a,r)=>a+r.seconds,0)/3600).toFixed(2))}]},options:{...opt,plugins:{legend:{display:false}}}});
+ charts.b=new Chart($('#ch2'),{type:'bar',data:{labels:members.map(m=>m.display_name),datasets:[{label:'Hours',backgroundColor:pal,borderRadius:6,maxBarThickness:48,data:per.map(x=>+(x/3600).toFixed(2))}]},options:{...opt,plugins:{...opt.plugins,legend:{display:false}}}});
 }
 let ch;function subscribe(){
  if(ch)return;let t;const re=()=>{clearTimeout(t);t=setTimeout(load,250)};
@@ -400,7 +413,7 @@ $('#profileSave').onclick=async()=>{
  }finally{button.disabled=false;$('#profileCancel').disabled=false;button.textContent='Save changes'}
 };
 
-$('#th').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem('sr-theme',n);anRender()};
+$('#th').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem('sr-theme',n);themeBtn();anRender()};
 $('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
 $('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('#em').value,password:$('#pw').value});
   if(error)$('#le').textContent=error.message;else{$('#le').textContent='';boot()}};
@@ -471,5 +484,9 @@ $('#resetTryAgain').onclick=()=>{
  authView('forgotPanel');
 };
 $('#confirmPassword').onkeydown=e=>{if(e.key==='Enter')$('#saveNewPassword').click()};
+themeBtn();
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#profileBackdrop').classList.contains('hide')&&!$('#profileCancel').disabled)closeProfileEditor()});
+$('#profileBackdrop').addEventListener('mousedown',e=>{if(e.target.id==='profileBackdrop'&&!$('#profileCancel').disabled)closeProfileEditor()});
+$('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click()});
 boot();
 </script></body></html>
