@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="id" data-theme="dark">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>STUDY ROOM</title><meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='16' cy='17' r='8'/%3E%3Cpath d='M16 13v4l2.5 1.5M13 6h6'/%3E%3C/g%3E%3C/svg%3E">
@@ -98,49 +98,53 @@ body{font-size:12px}input{font-size:14px}.hv{font-size:20px}.clock{font-size:20p
 @media(max-width:620px){.tabs{order:0;width:auto}.tabs button{flex:none;padding:4px 8px}}
 @media(max-width:520px){.profile-name,#th span{display:none}.tabs button{padding:4px 6px}}
 #dash>.h2:first-child{margin-bottom:16px}
+
+/* v5: Home, Stat and Rank have no bubbles at all */
+#dash .mc,#dash .panel,#lb .panel,#an .panel{background:none;border:0;border-radius:0;padding:0;box-shadow:none}
+#dash .grid{gap:24px 16px}
 </style></head>
 <body><div class="w">
-<div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
-<label class="lb" for="em">Email</label><input id="em" type="email" placeholder="you@example.com" autocomplete="username">
-<label class="lb" for="pw">Password</label><input id="pw" type="password" placeholder="Your password" autocomplete="current-password">
-<div class="auth-right"><button type="button" class="auth-link" id="forgotLink">Forgot password?</button></div>
-<button class="p wide" id="go">Sign in</button><div id="le" class="err" role="status" aria-live="polite"></div></div></div>
-<div id="forgotPanel" class="auth hide"><div class="panel authcard" aria-labelledby="forgotTitle"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2" id="forgotTitle">Reset password</h2>
-<div class="auth-note">Enter your account email. We'll send a link to set a new password.</div>
-<label class="lb" for="forgotEmail">Email address</label><input id="forgotEmail" type="email" placeholder="you@example.com" autocomplete="email" required>
-<button type="button" class="p wide" id="sendResetLink">Send reset link</button><div id="forgotMsg" class="auth-msg" role="status" aria-live="polite"></div>
-<div class="auth-actions"><button type="button" class="auth-link" id="forgotBack">&larr; Back to sign in</button></div></div></div>
-<div id="resetPanel" class="auth hide"><div class="panel authcard" aria-labelledby="resetTitle"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2" id="resetTitle">Set new password</h2>
-<div class="auth-note" id="resetDescription">Checking your password recovery link...</div>
-<div id="resetFields" class="hide" style="display:grid;gap:12px"><label class="lb" for="newPassword">New password</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters">
-<label class="lb" for="confirmPassword">Confirm password</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat the new password">
-<label class="auth-note"><input id="showResetPasswords" type="checkbox" style="width:auto;min-height:0;vertical-align:middle;margin-right:8px">Show passwords</label>
-<button type="button" class="p wide" id="saveNewPassword">Save new password</button></div>
+<div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Selamat datang kembali</h2><div class="sub">Masuk dengan akun anggota kamu</div>
+<label class="lb" for="em">Email</label><input id="em" type="email" placeholder="kamu@contoh.com" autocomplete="username">
+<label class="lb" for="pw">Kata sandi</label><input id="pw" type="password" placeholder="Kata sandi kamu" autocomplete="current-password">
+<div class="auth-right"><button type="button" class="auth-link" id="forgotLink">Lupa kata sandi?</button></div>
+<button class="p wide" id="go">Masuk</button><div id="le" class="err" role="status" aria-live="polite"></div></div></div>
+<div id="forgotPanel" class="auth hide"><div class="panel authcard" aria-labelledby="forgotTitle"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2" id="forgotTitle">Atur ulang kata sandi</h2>
+<div class="auth-note">Masukkan email akunmu. Kami akan mengirim tautan untuk membuat kata sandi baru.</div>
+<label class="lb" for="forgotEmail">Alamat email</label><input id="forgotEmail" type="email" placeholder="kamu@contoh.com" autocomplete="email" required>
+<button type="button" class="p wide" id="sendResetLink">Kirim tautan reset</button><div id="forgotMsg" class="auth-msg" role="status" aria-live="polite"></div>
+<div class="auth-actions"><button type="button" class="auth-link" id="forgotBack">&larr; Kembali ke halaman masuk</button></div></div></div>
+<div id="resetPanel" class="auth hide"><div class="panel authcard" aria-labelledby="resetTitle"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2" id="resetTitle">Buat kata sandi baru</h2>
+<div class="auth-note" id="resetDescription">Memeriksa tautan pemulihan kata sandi...</div>
+<div id="resetFields" class="hide" style="display:grid;gap:12px"><label class="lb" for="newPassword">Kata sandi baru</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="Minimal 8 karakter">
+<label class="lb" for="confirmPassword">Konfirmasi kata sandi</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Ulangi kata sandi baru">
+<label class="auth-note"><input id="showResetPasswords" type="checkbox" style="width:auto;min-height:0;vertical-align:middle;margin-right:8px">Tampilkan kata sandi</label>
+<button type="button" class="p wide" id="saveNewPassword">Simpan kata sandi baru</button></div>
 <div id="resetMsg" class="auth-msg" role="status" aria-live="polite"></div>
-<div class="auth-actions"><button type="button" class="auth-link" id="resetBack">&larr; Back to sign in</button><button type="button" class="auth-link hide" id="resetTryAgain">Request another link</button></div></div></div>
+<div class="auth-actions"><button type="button" class="auth-link" id="resetBack">&larr; Kembali ke halaman masuk</button><button type="button" class="auth-link hide" id="resetTryAgain">Minta tautan lain</button></div></div></div>
 <div id="app" class="hide">
-<header class="top"><button type="button" id="profileButton" class="profile-trigger" title="Edit your profile" aria-label="Edit your nickname and photo"><span class="av" id="me"></span><span class="profile-name" id="myName"></span></button>
+<header class="top"><button type="button" id="profileButton" class="profile-trigger" title="Ubah profil kamu" aria-label="Ubah nama panggilan dan fotomu"><span class="av" id="me"></span><span class="profile-name" id="myName"></span></button>
 <nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button><button data-v="an"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stat</button><button data-v="lb"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Rank</button></nav>
-<button id="th" type="button" class="pill" aria-label="Toggle dark and light mode"></button></header>
+<button id="th" type="button" class="pill" aria-label="Ganti mode gelap dan terang"></button></header>
 <div id="live" class="status"></div><div id="err" class="alert" role="alert"></div>
 <div id="profileBackdrop" class="profile-backdrop hide" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><div class="panel profile-modal">
-<h2 class="h2" id="profileTitle">Edit profile</h2><p class="profile-helps">Your nickname and photo are visible to the other four Study Room members.</p>
-<div class="profile-avatar-edit"><div class="av av-lg" id="profilePreview"></div><div><b id="profileCurrentName"></b><div class="profile-helps">Your personal avatar</div></div></div>
-<label class="lb" for="profileNickname">Nickname</label><input id="profileNickname" type="text" minlength="1" maxlength="40" placeholder="Your nickname" autocomplete="nickname">
-<label class="lb" for="profileImage">Profile photo</label><input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
-<p class="profile-helps">JPG, PNG, or WebP. Maximum 2 MB. Only the five members can request avatar images.</p>
-<button type="button" id="profileRemovePhoto" class="auth-link">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
-<button id="installAppBtn" type="button" class="ghost" style="justify-content:flex-start"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="installAppLabel">Download app</span></button><p id="installHint" class="profile-helps" hidden></p>
-<div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
-<section id="dash"><h2 class="h2">Your session</h2><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
-<h2 class="h2 sec-title">Conclusion</h2><div class="panel"><div id="ov"></div><div class="goal"><div class="row"><span class="lb">Daily goal</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar"><i id="cb" style="width:0"></i></div></div></div></section>
-<section id="lb" class="hide"><div class="panel"><div class="head"><h2 class="h2">Leaderboard</h2><div class="sub">Ranked by study time</div></div>
-<div class="tw"><table><thead><tr><th>#</th><th>Member</th><th data-s="today">Today</th><th data-s="week">Week</th><th data-s="month">Month</th><th data-s="all">All-time</th><th data-s="n">Sessions</th></tr></thead><tbody id="lbb"></tbody></table></div>
-<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></section>
-<section id="an" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Analytics</h2><div class="sub">How the room studied over time</div></div>
-<div class="seg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div>
-<div id="ins" class="ins"></div><div class="chart"><h3>Member comparison</h3><div class="sub">Total hours in the selected range</div><div id="cmpBars" class="dist"></div></div>
-<div class="chart"><h3>Daily study time</h3><div class="sub">Hours per member, per day</div><canvas id="ch1" height="110"></canvas></div></div></section>
+<h2 class="h2" id="profileTitle">Ubah profil</h2><p class="profile-helps">Nama panggilan dan fotomu terlihat oleh keempat anggota Study Room lainnya.</p>
+<div class="profile-avatar-edit"><div class="av av-lg" id="profilePreview"></div><div><b id="profileCurrentName"></b><div class="profile-helps">Avatar pribadimu</div></div></div>
+<label class="lb" for="profileNickname">Nama panggilan</label><input id="profileNickname" type="text" minlength="1" maxlength="40" placeholder="Nama panggilanmu" autocomplete="nickname">
+<label class="lb" for="profileImage">Foto profil</label><input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
+<p class="profile-helps">JPG, PNG, atau WebP. Maksimal 2 MB. Hanya kelima anggota yang dapat memuat foto avatar.</p>
+<button type="button" id="profileRemovePhoto" class="auth-link">Hapus foto saat ini</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
+<button id="installAppBtn" type="button" class="ghost" style="justify-content:flex-start"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="installAppLabel">Unduh aplikasi</span></button><p id="installHint" class="profile-helps" hidden></p>
+<div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Keluar</button><button type="button" id="profileCancel">Batal</button><button type="button" id="profileSave" class="p">Simpan perubahan</button></div></div></div>
+<section id="dash"><h2 class="h2">Sesi kamu</h2><div id="mine"></div><h2 class="h2 sec-title">Ruang belajar</h2><div class="grid" id="cards"></div>
+<h2 class="h2 sec-title">Kesimpulan</h2><div class="panel"><div id="ov"></div><div class="goal"><div class="row"><span class="lb">Target harian</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar"><i id="cb" style="width:0"></i></div></div></div></section>
+<section id="lb" class="hide"><div class="panel"><div class="head"><h2 class="h2">Peringkat</h2><div class="sub">Diurutkan berdasarkan waktu belajar</div></div>
+<div class="tw"><table><thead><tr><th>#</th><th>Anggota</th><th data-s="today">Hari ini</th><th data-s="week">Minggu</th><th data-s="month">Bulan</th><th data-s="all">Semua</th><th data-s="n">Sesi</th></tr></thead><tbody id="lbb"></tbody></table></div>
+<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>Belum ada waktu belajar tercatat</b><span>Mulai sesi di Beranda dan kamu akan muncul di sini.</span></div></div></section>
+<section id="an" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Statistik</h2><div class="sub">Bagaimana ruangan belajar dari waktu ke waktu</div></div>
+<div class="seg"><button data-d="7" class="on">7 hari</button><button data-d="30">30 hari</button><button data-d="90">90 hari</button></div></div>
+<div id="ins" class="ins"></div><div class="chart"><h3>Perbandingan anggota</h3><div class="sub">Total jam pada rentang yang dipilih</div><div id="cmpBars" class="dist"></div></div>
+<div class="chart"><h3>Waktu belajar harian</h3><div class="sub">Jam per anggota, per hari</div><canvas id="ch1" height="110"></canvas></div></div></section>
 </div></div>
 
 <script>
@@ -154,8 +158,8 @@ const IC={clock:ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),cal
  book:ic('<path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/>'),chart:ic('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
  sun:ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),moon:ic('<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>')};
 Object.entries({clock:'blue',cal:'green',trophy:'yellow',users:'purple',book:'cyan',chart:'green',sun:'yellow',moon:'purple'}).forEach(([k,c])=>IC[k]=IC[k].replace('class="ic"','class="ic '+c+'"'));
-const SL={active:'Studying',paused:'Paused',idle:'Idle'};
-const themeBtn=()=>{const d=document.documentElement.dataset.theme==='dark';$('#th').innerHTML=(d?IC.sun:IC.moon)+`<span>${d?'Light':'Dark'}</span>`};
+const SL={active:'Belajar',paused:'Jeda',idle:'Diam'};
+const themeBtn=()=>{const d=document.documentElement.dataset.theme==='dark';$('#th').innerHTML=(d?IC.sun:IC.moon)+`<span>${d?'Terang':'Gelap'}</span>`};
 // Password recovery is a separate state from a normal authenticated dashboard.
 const recoveryParams=new URLSearchParams(location.search);
 const recoveryHash=new URLSearchParams(location.hash.replace(/^#/,''));
@@ -184,8 +188,8 @@ function showResetView(){
  $('#resetFields').classList.toggle('hide',!recoveryVerified);
  $('#resetTryAgain').classList.toggle('hide',recoveryVerified);
  $('#resetDescription').textContent=recoveryVerified
-  ? 'Your recovery link is verified. Choose a new password for your Study Room account.'
-  : 'Your recovery link has not been verified. Open the latest password reset email, or request a new link.';
+  ? 'Tautan pemulihanmu terverifikasi. Pilih kata sandi baru untuk akun Study Room kamu.'
+  : 'Tautan pemulihanmu belum terverifikasi. Buka email reset kata sandi terbaru, atau minta tautan baru.';
  if(!recoveryVerified){authMessage('resetMsg',recoveryLinkError?recoveryLinkError.replace(/\+/g,' '):'',true)}
 }
 // Register before the initial session check so that PASSWORD_RECOVERY isn't lost.
@@ -207,13 +211,13 @@ let members=[],sessions={},goals={},stats=[],counts={},meId=null,mode='today',so
 // Revalidate identity against Supabase Auth before any personal mutation.
 async function checkCurrentMember(){
  const {data:{user},error:userError}=await sb.auth.getUser();
- if(userError||!user)throw new Error('Your login expired. Sign in again before saving.');
+ if(userError||!user)throw new Error('Sesi login kamu berakhir. Masuk lagi sebelum menyimpan.');
  const {data:owner,error:ownerError}=await sb.from('members')
   .select('id,auth_user_id,avatar_url').eq('auth_user_id',user.id).maybeSingle();
- if(ownerError)throw new Error('Could not verify the member account: '+ownerError.message);
- if(!owner)throw new Error('This login is not linked to a Study Room member.');
+ if(ownerError)throw new Error('Tidak bisa memverifikasi akun anggota: '+ownerError.message);
+ if(!owner)throw new Error('Login ini tidak terhubung ke anggota Study Room.');
  if(owner.id!==meId||user.id!==loadedAuthUserId){
-  throw new Error('The signed-in account changed in another tab. Reload this page, then edit your own profile.');
+  throw new Error('Akun yang masuk berubah di tab lain. Muat ulang halaman ini, lalu ubah profilmu sendiri.');
  }
  return {user,owner};
 }
@@ -258,7 +262,7 @@ function closeProfileEditor(){
  $('#profileImage').value='';disposeProfilePreview();$('#profileButton').focus();
 }
 
-const fmt=s=>{s=Math.max(0,Math.floor(s));return`${Math.floor(s/3600)}h ${String(Math.floor(s%3600/60)).padStart(2,'0')}m`};
+const fmt=s=>{s=Math.max(0,Math.floor(s));return`${Math.floor(s/3600)}j ${String(Math.floor(s%3600/60)).padStart(2,'0')}m`};
 const clock=s=>{s=Math.max(0,Math.floor(s));return[s/3600|0,s%3600/60|0,s%60].map(n=>String(n).padStart(2,'0')).join(':')};
 const ymd=d=>d.toLocaleDateString('sv',{timeZone:TZ});
 const addD=(s,n)=>{const d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
@@ -274,9 +278,9 @@ async function boot(){
  if(recoveryLinkExpected||recoveryVerified){showResetView();return}
  if(!session){authView('login');return}
  const{data:ms,error}=await sb.from('members').select('*').order('slot_number');
- if(error||!ms?.length){await sb.auth.signOut();$('#login').classList.remove('hide');$('#le').textContent='This account is not assigned to a member slot.';return}
+ if(error||!ms?.length){await sb.auth.signOut();$('#login').classList.remove('hide');$('#le').textContent='Akun ini belum dipasangkan ke slot anggota.';return}
  members=ms;meId=ms.find(m=>m.auth_user_id===session.user.id)?.id;
- if(!meId){await sb.auth.signOut();$('#login').classList.remove('hide');$('#le').textContent='This account is not assigned to a member slot.';return}
+ if(!meId){await sb.auth.signOut();$('#login').classList.remove('hide');$('#le').textContent='Akun ini belum dipasangkan ke slot anggota.';return}
  loadedAuthUserId=session.user.id;
  $('#login').classList.add('hide');$('#app').classList.remove('hide');
  await load();subscribe();clearInterval(timer);timer=setInterval(tick,1000);
@@ -287,12 +291,12 @@ async function load(){
   sb.from('study_goals').select('*'),
   sb.rpc('daily_stats',{p_from:'2000-01-01',p_to:today()}),
   sb.from('study_sessions').select('member_id').eq('status','completed')]);
- if(a.error||c.error)return err('Load failed: '+(a.error||c.error).message);
+ if(a.error||c.error)return err('Gagal memuat: '+(a.error||c.error).message);
  err('');sessions={};a.data.forEach(s=>sessions[s.member_id]=s);
  goals={};(b.data||[]).forEach(g=>goals[g.member_id]=g);stats=c.data;
  counts={};(d.data||[]).forEach(r=>counts[r.member_id]=(counts[r.member_id]||0)+1);
  const{data:ms,error:membersError}=await sb.from('members').select('*').order('slot_number');
- if(membersError)err('Could not refresh member profiles: '+membersError.message);
+ if(membersError)err('Tidak bisa memperbarui profil anggota: '+membersError.message);
  if(ms)members=ms;
  await hydrateAvatars(members);
  render();
@@ -305,15 +309,15 @@ function render(){
  const live=Object.values(sessions).filter(s=>s.status==='active').length;
  const done=0;
  const keep=$('#subj')?.value||'';
- $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying right now'} · updates live`;
- $('#ov').innerHTML=`<div class="hero-main">${[['Today',fmt(sum('today')),IC.clock],['This week',fmt(sum('week')),IC.cal],['All-time',fmt(sum('all')),IC.trophy]].map(([l,v,i])=>`<div><div class="lb">${i}${l}</div><div class="hv">${v}</div></div>`).join('')}</div>`;
+ $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} sedang belajar`:'Tidak ada yang sedang belajar'} · diperbarui langsung`;
+ $('#ov').innerHTML=`<div class="hero-main">${[['Hari ini',fmt(sum('today')),IC.clock],['Minggu ini',fmt(sum('week')),IC.cal],['Sepanjang waktu',fmt(sum('all')),IC.trophy]].map(([l,v,i])=>`<div><div class="lb">${i}${l}</div><div class="hv">${v}</div></div>`).join('')}</div>`;
  const goal=members.reduce((a,m)=>a+(goals[m.id]?.daily_goal_seconds||0),0),td=sum('today'),pct=goal?Math.min(100,td/goal*100):0;
- $('#cp').textContent=goal?`${Math.round(pct)}% · ${fmt(td)} of ${fmt(goal)}`:'No goals set yet';$('#cb').style.width=pct+'%';
+ $('#cp').textContent=goal?`${Math.round(pct)}% · ${fmt(td)} dari ${fmt(goal)}`:'Belum ada target';$('#cb').style.width=pct+'%';
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId;
-  const ctl=!mine?'':st==='idle'?`<input id="subj" placeholder="What are you studying? (optional)" aria-label="Subject"><button class="p" data-a="start_study_session">Start studying</button>`:
-   st==='active'?`<button data-a="pause_study_session">Pause</button><button class="p" data-a="finish_study_session">Finish</button>`:
-   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
-  return`<article class="mc ${st}${mine?' me':''}"><div class="mc-main"><div class="row"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${mine?'<em class="you">You</em>':''}</div><span class="sp"></span><span class="st ${st}"><i class="dot ${st}"></i>${SL[st]}</span></div>
+  const ctl=!mine?'':st==='idle'?`<input id="subj" placeholder="Belajar apa? (opsional)" aria-label="Mata pelajaran"><button class="p" data-a="start_study_session">Mulai belajar</button>`:
+   st==='active'?`<button data-a="pause_study_session">Jeda</button><button class="p" data-a="finish_study_session">Selesai</button>`:
+   `<button class="p" data-a="resume_study_session">Lanjutkan</button><button data-a="finish_study_session">Selesai</button><button class="ghost danger" data-a="cancel_study_session">Batalkan</button>`;
+  return`<article class="mc ${st}${mine?' me':''}"><div class="mc-main"><div class="row"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${mine?'<em class="you">Kamu</em>':''}</div><span class="sp"></span><span class="st ${st}"><i class="dot ${st}"></i>${SL[st]}</span></div>
   <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${s?.subject?`<div class="subj">${IC.book}<span>${esc(s.subject)}</span></div>`:''}
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
@@ -327,7 +331,7 @@ function lbRender(){
  const max=Math.max(1,...rows.map(r=>r[mode]));let rank=0,prev=null,mine='';
  document.querySelectorAll('#lb th[data-s]').forEach(t=>t.classList.toggle('sorted',t.dataset.s===k));
  $('#lbb').innerHTML=rows.map((r,i)=>{if(r[k]!==prev)rank=i+1;prev=r[k];const me=r.m.id===meId;
-  if(me)mine=r[k]>0?`Your rank: <b>#${rank}</b> · ${k==='n'?r.n+' sessions':fmt(r[k])}`:'You have no study time in this view yet. Start a session on the Dashboard.';
+  if(me)mine=r[k]>0?`Your rank: <b>#${rank}</b> · ${k==='n'?r.n+' sesi':fmt(r[k])}`:'Belum ada waktu belajar.';
   return`<tr class="${r[k]>0&&rank<=3?'top'+rank:''}"><td class="rk">${r[k]>0?rank:'–'}</td><td><div class="member-identity">${avatarMarkup(r.m)}<span>${esc(r.m.display_name)}</span></div><div class="bar"><i style="width:${r[mode]/max*100}%"></i></div></td>${['today','week','month','all','n'].map(c=>`<td class="num${c===k?' act':''}">${c==='n'?r.n:fmt(r[c])}</td>`).join('')}</tr>`}).join('');
  $('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
 }
@@ -338,11 +342,16 @@ function anRender(){
  const total=per.reduce((a,b)=>a+b,0),topI=per.indexOf(Math.max(...per));
  Object.values(charts).forEach(c=>c.destroy());charts={};
  document.querySelectorAll('#an .chart').forEach(c=>c.classList.toggle('hide',!total));
- $('#ins').innerHTML=total?[['Total studied',fmt(total),IC.clock],['Top member',esc(members[topI]?.display_name||'–')+' · '+fmt(per[topI]),IC.trophy],['Daily average',fmt(total/days),IC.chart]].map(([l,v,i])=>`<div class="ic-card"><div class="lb">${i}${l}</div><div class="iv">${v}</div></div>`).join(''):`<div class="empty" style="grid-column:1/-1">${IC.chart}<b>No study sessions in this range</b><span>Try a longer range, or start a session from the Dashboard.</span></div>`;
+ $('#ins').innerHTML=total?[['Total belajar',fmt(total),IC.clock],['Anggota teratas',esc(members[topI]?.display_name||'–')+' · '+fmt(per[topI]),IC.trophy],['Rata-rata harian',fmt(total/days),IC.chart]].map(([l,v,i])=>`<div class="ic-card"><div class="lb">${i}${l}</div><div class="iv">${v}</div></div>`).join(''):`<div class="empty" style="grid-column:1/-1">${IC.chart}<b>Belum ada sesi belajar pada rentang ini</b><span>Coba rentang lebih panjang, atau mulai sesi dari Beranda.</span></div>`;
  if(!total)return;
  const tp=members.map((m,i)=>({m,s:per[i]})).sort((a,b)=>b.s-a.s),mx=Math.max(1,tp[0].s);
  $('#cmpBars').innerHTML=tp.map((r,n)=>`<div class="dist-row${n?'':' top'}"><span class="dist-label">${esc(r.m.display_name)}</span><div class="dist-track"><i style="width:${r.s/mx*100}%"></i></div><b class="dist-val">${fmt(r.s)}</b></div>`).join('');
-
+ Chart.defaults.font.family='Inter, system-ui, sans-serif';Chart.defaults.font.size=12;
+ const pal=['#ec4899','#a855f7','#3b82f6','#22c55e','#eab308'];
+ const tip={backgroundColor:dark?'#0f172a':'#fff',titleColor:dark?'#f8fafc':'#0f172a',bodyColor:tc,borderColor:gc,borderWidth:1,padding:12,cornerRadius:12};
+ charts.a=new Chart($('#ch1'),{type:'bar',data:{labels:labels.map(l=>l.slice(5)),datasets:members.map((m,i)=>({label:m.display_name,backgroundColor:pal[i%pal.length],borderRadius:6,maxBarThickness:28,
+  data:labels.map(l=>+((stats.find(r=>r.member_id===m.id&&r.day===l)?.seconds||0)/3600).toFixed(2))}))},
+  options:{responsive:true,scales:{x:{ticks:{color:tc},grid:{display:false}},y:{ticks:{color:tc},grid:{color:gc},beginAtZero:true,border:{display:false}}},plugins:{legend:{labels:{color:tc,usePointStyle:true,boxWidth:8}},tooltip:tip}}});
 }
 let ch;function subscribe(){
  if(ch)return;let t;const re=()=>{clearTimeout(t);t=setTimeout(load,250)};
@@ -360,7 +369,7 @@ document.addEventListener('click',async e=>{
    const {error}=await sb.rpc(b.dataset.a,args);
    if(error)throw error;
    err('');
-  }catch(e){err(e?.message||'Stopwatch action failed.');}
+  }catch(e){err(e?.message||'Aksi stopwatch gagal.');}
   finally{await load();b.disabled=false;}
   return;
  }
@@ -378,10 +387,10 @@ $('#profileNickname').oninput=refreshProfilePreview;
 $('#profileImage').onchange=e=>{
  const file=e.target.files?.[0];if(!file)return;
  if(!['image/jpeg','image/png','image/webp'].includes(file.type)){
-  authMessage('profileStatus','Use a JPG, PNG, or WebP image.',true);e.target.value='';return;
+  authMessage('profileStatus','Gunakan gambar JPG, PNG, atau WebP.',true);e.target.value='';return;
  }
  if(file.size>2*1024*1024){
-  authMessage('profileStatus','Photo must be 2 MB or smaller.',true);e.target.value='';return;
+  authMessage('profileStatus','Foto maksimal 2 MB.',true);e.target.value='';return;
  }
  pendingProfileFile=file;removeProfilePhoto=false;disposeProfilePreview();
  profileObjectUrl=URL.createObjectURL(file);authMessage('profileStatus','');refreshProfilePreview();
@@ -393,9 +402,9 @@ $('#profileRemovePhoto').onclick=()=>{
 $('#profileSave').onclick=async()=>{
  const me=members.find(m=>m.id===meId);if(!me)return;
  const name=$('#profileNickname').value.trim();
- if(name.length<1||name.length>40){authMessage('profileStatus','Nickname must have 1–40 characters.',true);return}
+ if(name.length<1||name.length>40){authMessage('profileStatus','Nama panggilan harus 1–40 karakter.',true);return}
  const button=$('#profileSave');button.disabled=true;$('#profileCancel').disabled=true;
- button.textContent='Saving...';authMessage('profileStatus','');
+ button.textContent='Menyimpan...';authMessage('profileStatus','');
  let uploadedPath=null;
  try{
   // Confirm the actual signed-in identity; the page may have been opened
@@ -417,7 +426,7 @@ $('#profileSave').onclick=async()=>{
    p_display_name:name,p_avatar_url:avatarPath
   });
   if(updateError)throw new Error(updateError.message);
-  if(updatedId!==owner.id)throw new Error('Profile update returned an unexpected member.');
+  if(updatedId!==owner.id)throw new Error('Pembaruan profil mengembalikan anggota yang tidak sesuai.');
   avatarCache.delete(meId);
   const previousPath=owner.avatar_url;
   closeProfileEditor();
@@ -430,10 +439,10 @@ $('#profileSave').onclick=async()=>{
  }catch(e){
   if(uploadedPath){sb.storage.from(AVATAR_BUCKET).remove([uploadedPath]).catch(()=>{});}
   const msg=e?.code==='PGRST202'
-   ? 'The profile update function is missing. Run study_room_profile_fix.sql in Supabase SQL Editor first.'
-   : (e?.message||'Could not save your profile.');
+   ? 'Fungsi pembaruan profil belum ada. Jalankan study_room_profile_fix.sql di Supabase SQL Editor terlebih dulu.'
+   : (e?.message||'Tidak bisa menyimpan profilmu.');
   authMessage('profileStatus',msg,true);
- }finally{button.disabled=false;$('#profileCancel').disabled=false;button.textContent='Save changes'}
+ }finally{button.disabled=false;$('#profileCancel').disabled=false;button.textContent='Simpan perubahan'}
 };
 
 $('#th').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem('sr-theme',n);themeBtn();anRender()};
@@ -454,18 +463,18 @@ $('#forgotBack').onclick=()=>{
 $('#sendResetLink').onclick=async()=>{
  const email=$('#forgotEmail').value.trim();
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-  authMessage('forgotMsg','Enter a valid email address.',true);return;
+  authMessage('forgotMsg','Masukkan alamat email yang valid.',true);return;
  }
- const b=$('#sendResetLink');b.disabled=true;b.textContent='Sending...';
+ const b=$('#sendResetLink');b.disabled=true;b.textContent='Mengirim...';
  authMessage('forgotMsg','');
  try{
   const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:recoveryRedirect()});
   if(error)throw error;
-  authMessage('forgotMsg','If an account exists for this email, a password reset link will be sent. Check your inbox and spam folder.');
+  authMessage('forgotMsg','Jika ada akun dengan email ini, tautan reset kata sandi akan dikirim. Periksa kotak masuk dan folder spam.');
  }catch(e){
   const rateLimited=e?.status===429||/rate limit|too many requests/i.test(e?.message||'');
-  authMessage('forgotMsg',rateLimited?'Too many requests. Please try again later.':'Could not send the reset request. Please try again.',true);
- }finally{b.disabled=false;b.textContent='Send Reset Link'}
+  authMessage('forgotMsg',rateLimited?'Terlalu banyak permintaan. Coba lagi nanti.':'Tidak bisa mengirim permintaan reset. Coba lagi.',true);
+ }finally{b.disabled=false;b.textContent='Kirim tautan reset'}
 };
 $('#forgotEmail').onkeydown=e=>{if(e.key==='Enter')$('#sendResetLink').click()};
 
@@ -475,11 +484,11 @@ $('#showResetPasswords').onchange=e=>{
  $('#newPassword').type=type;$('#confirmPassword').type=type;
 };
 $('#saveNewPassword').onclick=async()=>{
- if(!recoveryVerified){authMessage('resetMsg','Open a valid password reset email link first.',true);return}
+ if(!recoveryVerified){authMessage('resetMsg','Buka dulu tautan reset kata sandi yang valid dari email.',true);return}
  const pwd=$('#newPassword').value,confirmation=$('#confirmPassword').value;
- if(pwd.length<8){authMessage('resetMsg','Choose a password with at least 8 characters.',true);return}
- if(pwd!==confirmation){authMessage('resetMsg','The passwords do not match.',true);return}
- const b=$('#saveNewPassword');b.disabled=true;b.textContent='Saving...';
+ if(pwd.length<8){authMessage('resetMsg','Pilih kata sandi minimal 8 karakter.',true);return}
+ if(pwd!==confirmation){authMessage('resetMsg','Kata sandi tidak cocok.',true);return}
+ const b=$('#saveNewPassword');b.disabled=true;b.textContent='Menyimpan...';
  authMessage('resetMsg','');
  try{
   const{error}=await sb.auth.updateUser({password:pwd});
@@ -490,9 +499,9 @@ $('#saveNewPassword').onclick=async()=>{
   await sb.auth.signOut();
   authView('login');
   $('#pw').value='';
-  $('#le').textContent='Password updated successfully. Sign in with your new password.';
- }catch(e){authMessage('resetMsg',e?.message||'Could not update your password. Please try again.',true)}
- finally{b.disabled=false;b.textContent='Save New Password'}
+  $('#le').textContent='Kata sandi berhasil diperbarui. Masuk dengan kata sandi barumu.';
+ }catch(e){authMessage('resetMsg',e?.message||'Tidak bisa memperbarui kata sandi. Coba lagi.',true)}
+ finally{b.disabled=false;b.textContent='Simpan kata sandi baru'}
 };
 $('#resetBack').onclick=async()=>{
  recoveryVerified=false;
@@ -521,8 +530,8 @@ boot();
   window.addEventListener('appinstalled',function(){deferred=null;if(btn)btn.style.display='none';if(hint)hint.hidden=true;});
   var ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   if(btn)btn.addEventListener('click',function(){
-    if(deferred){var p=deferred;deferred=null;p.prompt();p.userChoice.then(function(c){if(label&&c&&c.outcome==='accepted')label.textContent='Installing\u2026';}).catch(function(){});return;}
-    if(hint){hint.textContent=ios?'On iPhone or iPad: tap the Share button in Safari, then \u201cAdd to Home Screen\u201d.':'Open your browser menu and choose \u201cInstall app\u201d or \u201cAdd to Home screen\u201d.';hint.hidden=!hint.hidden;}
+    if(deferred){var p=deferred;deferred=null;p.prompt();p.userChoice.then(function(c){if(label&&c&&c.outcome==='accepted')label.textContent='Memasang\u2026';}).catch(function(){});return;}
+    if(hint){hint.textContent=ios?'Di iPhone atau iPad: ketuk tombol Bagikan di Safari, lalu pilih \u201cTambah ke Layar Utama\u201d.':'Buka menu browser lalu pilih \u201cPasang aplikasi\u201d atau \u201cTambahkan ke layar utama\u201d.';hint.hidden=!hint.hidden;}
   });
   if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
 })();
