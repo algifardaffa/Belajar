@@ -220,13 +220,12 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 <button id="th" type="button" class="pill" aria-label="Toggle dark and light mode"></button></header>
 <div class="status-row"><div id="live" class="status"></div><button id="installAppBtn" type="button" class="pill dl dl-right"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="installAppLabel">Download app</span></button></div><p id="installHint" class="profile-helps dl-hint" hidden></p><div id="err" class="alert" role="alert"></div>
 <div id="profileBackdrop" class="profile-backdrop hide" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><div class="panel profile-modal">
-<h2 class="h2" id="profileTitle">Edit profile</h2><p class="profile-helps">Your nickname and photo are visible to the other four Study Room members.</p>
+<h2 class="h2" id="profileTitle">Edit profile</h2>
 <div class="profile-avatar-edit"><div class="av av-lg" id="profilePreview"></div><div><b id="profileCurrentName"></b><div class="profile-helps">Your personal avatar</div></div></div>
 <label class="lb" for="profileNickname">Nickname</label><input id="profileNickname" type="text" minlength="1" maxlength="40" placeholder="Your nickname" autocomplete="nickname">
 <label class="lb" for="profileImage">Profile photo</label><input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
-<p class="profile-helps">JPG, PNG, or WebP. Maximum 2 MB. Only the five members can request avatar images.</p>
-<button type="button" id="profileRemovePhoto" class="auth-link">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
-<div id="profileAch"></div>
+
+<button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
 <section id="dash"><h2 class="h2">Your session</h2><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
 <h2 class="h2 sec-title">Conclusion</h2><div class="panel"><div id="ov"></div><div class="goal"><div class="row"><span class="lb">Daily goal</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar"><i id="cb" style="width:0"></i></div></div></div></section>
@@ -615,8 +614,6 @@ $('#resetTryAgain').onclick=()=>{
 };
 $('#confirmPassword').onkeydown=e=>{if(e.key==='Enter')$('#saveNewPassword').click()};
 themeBtn();
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#profileBackdrop').classList.contains('hide')&&!$('#profileCancel').disabled)closeProfileEditor()});
-$('#profileBackdrop').addEventListener('mousedown',e=>{if(e.target.id==='profileBackdrop'&&!$('#profileCancel').disabled)closeProfileEditor()});
 $('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click()});
 boot();
 </script><script id="pwa-js">
