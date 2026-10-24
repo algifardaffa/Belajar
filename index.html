@@ -29,12 +29,45 @@ input,select{background:var(--sec);border:1px solid var(--bd);border-radius:10px
 .av{width:34px;height:34px;border-radius:50%;background:var(--ac);display:grid;place-items:center;color:#fff;font-weight:600}
 .bar{height:5px;background:var(--sec);border-radius:9px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--ac)}
 table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--bd)}th{color:var(--mu);font-size:11px;text-transform:uppercase;cursor:pointer}
-.hide{display:none!important}#login{max-width:340px;margin:12vh auto;display:grid;gap:10px}.err{color:#f87171;font-size:12px}
+.hide{display:none!important}#login,#forgotPanel,#resetPanel{max-width:360px;margin:12vh auto;display:grid;gap:12px}.err{color:#f87171;font-size:12px}
+.auth-link{border:0;background:none;color:var(--ac);padding:2px 0;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer}
+.auth-link:hover{color:var(--ach);text-decoration:underline}.auth-link:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+.auth-right{text-align:right;margin-top:-5px}.auth-actions{display:flex;justify-content:flex-start;gap:8px;align-items:center}
+.auth-note{color:var(--mu);font-size:12px;line-height:1.55}.auth-msg{font-size:12px;line-height:1.55;white-space:pre-wrap}
+.auth-success{color:#22c55e}.auth-error{color:#f87171}
+button:disabled{opacity:.6;cursor:not-allowed}
+@media(max-width:420px){#login,#forgotPanel,#resetPanel{margin:8vh auto}}
 </style></head>
 <body><div class="w">
 <div id="login" class="card hide"><h1>STUDY ROOM</h1><div class="sub">Sign in with your member account</div>
 <input id="em" type="email" placeholder="Email" autocomplete="username"><input id="pw" type="password" placeholder="Password" autocomplete="current-password">
-<button class="p" id="go">Sign in</button><div id="le" class="err"></div></div>
+<div class="auth-right"><button type="button" class="auth-link" id="forgotLink">Forgot Password?</button></div>
+<button class="p" id="go">Sign in</button><div id="le" class="err" role="status" aria-live="polite"></div></div>
+
+<div id="forgotPanel" class="card hide" aria-labelledby="forgotTitle">
+<h1 id="forgotTitle">Reset Password</h1>
+<div class="auth-note">Enter your account email. We'll send a link to set a new password.</div>
+<label class="lb" for="forgotEmail">Email address</label>
+<input id="forgotEmail" type="email" placeholder="Email" autocomplete="email" required>
+<button type="button" class="p" id="sendResetLink">Send Reset Link</button>
+<div id="forgotMsg" class="auth-msg" role="status" aria-live="polite"></div>
+<div class="auth-actions"><button type="button" class="auth-link" id="forgotBack">Back to Login</button></div>
+</div>
+
+<div id="resetPanel" class="card hide" aria-labelledby="resetTitle">
+<h1 id="resetTitle">Set New Password</h1>
+<div class="auth-note" id="resetDescription">Checking your password recovery link...</div>
+<div id="resetFields" class="hide" style="display:grid;gap:10px">
+<label class="lb" for="newPassword">New password</label>
+<input id="newPassword" type="password" autocomplete="new-password" placeholder="New password (8+ characters)">
+<label class="lb" for="confirmPassword">Confirm password</label>
+<input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Confirm new password">
+<label class="auth-note"><input id="showResetPasswords" type="checkbox" style="width:auto;vertical-align:middle;margin-right:6px">Show passwords</label>
+<button type="button" class="p" id="saveNewPassword">Save New Password</button>
+</div>
+<div id="resetMsg" class="auth-msg" role="status" aria-live="polite"></div>
+<div class="auth-actions"><button type="button" class="auth-link" id="resetBack">Back to Login</button><button type="button" class="auth-link hide" id="resetTryAgain">Request another link</button></div>
+</div>
 
 <div id="app" class="hide">
 <header><div><h1>STUDY ROOM</h1><div class="sub">Study Time Visualizer</div></div><div class="sp"></div>
@@ -60,6 +93,45 @@ table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;text-align:left
 const SUPABASE_URL="https://qcxumxrpeonerizeklgv.supabase.co", SUPABASE_PUBLISHABLE_KEY="sb_publishable_uOt_Agh3t8WvMbO5nqqXUw_u1tgQdB2";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=s=>document.querySelector(s), TZ='Asia/Jakarta';
+// Password recovery is a separate state from a normal authenticated dashboard.
+const recoveryParams=new URLSearchParams(location.search);
+const recoveryHash=new URLSearchParams(location.hash.replace(/^#/,''));
+const recoveryLinkExpected=recoveryParams.get('reset')==='1'||recoveryHash.get('type')==='recovery';
+const recoveryLinkError=recoveryParams.get('error_description')||recoveryHash.get('error_description');
+let recoveryVerified=false;
+const authView=name=>{
+ ['login','forgotPanel','resetPanel','app'].forEach(id=>$('#'+id).classList.toggle('hide',id!==name));
+};
+const authMessage=(target,message,isError=false)=>{
+ const node=$('#'+target);node.textContent=message;
+ node.classList.toggle('auth-error',isError);node.classList.toggle('auth-success',!!message&&!isError);
+};
+const recoveryRedirect=()=>{
+ // Keeps the current GitHub Pages repository path, including /Belajar/.
+ const url=new URL(location.href);url.search='?reset=1';url.hash='';return url.toString();
+};
+const clearRecoveryUrl=()=>{
+ const url=new URL(location.href);url.searchParams.delete('reset');url.searchParams.delete('code');
+ url.searchParams.delete('error');url.searchParams.delete('error_code');url.searchParams.delete('error_description');url.hash='';
+ history.replaceState(null,'',url.pathname+url.search);
+};
+function showResetView(){
+ authView('resetPanel');
+ $('#resetFields').classList.toggle('hide',!recoveryVerified);
+ $('#resetTryAgain').classList.toggle('hide',recoveryVerified);
+ $('#resetDescription').textContent=recoveryVerified
+  ? 'Your recovery link is verified. Choose a new password for your Study Room account.'
+  : 'Your recovery link has not been verified. Open the latest password reset email, or request a new link.';
+ if(!recoveryVerified){authMessage('resetMsg',recoveryLinkError?recoveryLinkError.replace(/\+/g,' '):'',true)}
+}
+// Register before the initial session check so that PASSWORD_RECOVERY isn't lost.
+sb.auth.onAuthStateChange((event,session)=>{
+ if(event==='PASSWORD_RECOVERY'&&session){
+  recoveryVerified=true;
+  showResetView();
+  authMessage('resetMsg','');
+ }
+});
 let members=[],sessions={},goals={},stats=[],counts={},meId=null,mode='today',sortK=null,days=7,charts={},timer;
 const fmt=s=>{s=Math.max(0,Math.floor(s));return`${Math.floor(s/3600)}h ${String(Math.floor(s%3600/60)).padStart(2,'0')}m`};
 const clock=s=>{s=Math.max(0,Math.floor(s));return[s/3600|0,s%3600/60|0,s%60].map(n=>String(n).padStart(2,'0')).join(':')};
@@ -72,8 +144,10 @@ const sess=id=>sessions[id];
 const err=m=>$('#err').textContent=m||'';
 
 async function boot(){
+ if(recoveryLinkExpected||recoveryVerified){showResetView();return}
  const{data:{session}}=await sb.auth.getSession();
- if(!session){$('#login').classList.remove('hide');$('#app').classList.add('hide');return}
+ if(recoveryLinkExpected||recoveryVerified){showResetView();return}
+ if(!session){authView('login');return}
  const{data:ms,error}=await sb.from('members').select('*').order('slot_number');
  if(error||!ms?.length){await sb.auth.signOut();$('#login').classList.remove('hide');$('#le').textContent='This account is not assigned to a member slot.';return}
  members=ms;meId=ms.find(m=>m.auth_user_id===session.user.id)?.id;
@@ -152,6 +226,73 @@ document.querySelectorAll('th[data-s]').forEach(t=>t.onclick=()=>{sortK=t.datase
 $('#th').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem('sr-theme',n);anRender()};
 $('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
 $('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('#em').value,password:$('#pw').value});
- if(error)$('#le').textContent=error.message;else{$('#le').textContent='';boot()}};
+  if(error)$('#le').textContent=error.message;else{$('#le').textContent='';boot()}};
+
+// --- Password recovery: request email ---
+$('#forgotLink').onclick=()=>{
+ $('#forgotEmail').value=$('#em').value.trim();
+ authMessage('forgotMsg','');
+ authView('forgotPanel');
+ $('#forgotEmail').focus();
+};
+$('#forgotBack').onclick=()=>{
+ authView('login');$('#le').textContent='';
+};
+$('#sendResetLink').onclick=async()=>{
+ const email=$('#forgotEmail').value.trim();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+  authMessage('forgotMsg','Enter a valid email address.',true);return;
+ }
+ const b=$('#sendResetLink');b.disabled=true;b.textContent='Sending...';
+ authMessage('forgotMsg','');
+ try{
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:recoveryRedirect()});
+  if(error)throw error;
+  authMessage('forgotMsg','If an account exists for this email, a password reset link will be sent. Check your inbox and spam folder.');
+ }catch(e){
+  const rateLimited=e?.status===429||/rate limit|too many requests/i.test(e?.message||'');
+  authMessage('forgotMsg',rateLimited?'Too many requests. Please try again later.':'Could not send the reset request. Please try again.',true);
+ }finally{b.disabled=false;b.textContent='Send Reset Link'}
+};
+$('#forgotEmail').onkeydown=e=>{if(e.key==='Enter')$('#sendResetLink').click()};
+
+// --- Password recovery: verified email link opens this view ---
+$('#showResetPasswords').onchange=e=>{
+ const type=e.target.checked?'text':'password';
+ $('#newPassword').type=type;$('#confirmPassword').type=type;
+};
+$('#saveNewPassword').onclick=async()=>{
+ if(!recoveryVerified){authMessage('resetMsg','Open a valid password reset email link first.',true);return}
+ const pwd=$('#newPassword').value,confirmation=$('#confirmPassword').value;
+ if(pwd.length<8){authMessage('resetMsg','Choose a password with at least 8 characters.',true);return}
+ if(pwd!==confirmation){authMessage('resetMsg','The passwords do not match.',true);return}
+ const b=$('#saveNewPassword');b.disabled=true;b.textContent='Saving...';
+ authMessage('resetMsg','');
+ try{
+  const{error}=await sb.auth.updateUser({password:pwd});
+  if(error)throw error;
+  recoveryVerified=false;
+  $('#newPassword').value='';$('#confirmPassword').value='';
+  clearRecoveryUrl();
+  await sb.auth.signOut();
+  authView('login');
+  $('#pw').value='';
+  $('#le').textContent='Password updated successfully. Sign in with your new password.';
+ }catch(e){authMessage('resetMsg',e?.message||'Could not update your password. Please try again.',true)}
+ finally{b.disabled=false;b.textContent='Save New Password'}
+};
+$('#resetBack').onclick=async()=>{
+ recoveryVerified=false;
+ clearRecoveryUrl();
+ await sb.auth.signOut();
+ authView('login');
+};
+$('#resetTryAgain').onclick=()=>{
+ recoveryVerified=false;
+ clearRecoveryUrl();
+ authMessage('forgotMsg','');
+ authView('forgotPanel');
+};
+$('#confirmPassword').onkeydown=e=>{if(e.key==='Enter')$('#saveNewPassword').click()};
 boot();
 </script></body></html>
