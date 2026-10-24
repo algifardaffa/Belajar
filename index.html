@@ -173,6 +173,11 @@ body{font-size:12px}input{font-size:14px}.hv{font-size:20px}.clock{font-size:20p
 .st-nm{display:flex;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;white-space:nowrap}.st-ct{margin-top:4px;font-size:16px;font-weight:600;color:var(--tx)}
 .ach-ctl{margin-bottom:16px}.ach-clear{min-height:32px;padding:4px 12px;border-radius:999px;font-size:12px;border-color:color-mix(in srgb,var(--tc) 60%,transparent)}
 @media(max-width:420px){.st-nm svg{display:none}.ach-st{gap:4px}}
+
+/* v8 */
+.dl-bar{display:flex;justify-content:flex-end;margin-bottom:12px}.dl-bar .dl{min-height:36px}
+.dl-hint{text-align:right;margin:-4px 0 12px}
+#achBox .panel{padding:16px}@media(min-width:640px){#achBox .panel{padding:24px}}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -194,6 +199,7 @@ body{font-size:12px}input{font-size:14px}.hv{font-size:20px}.clock{font-size:20p
 <div id="resetMsg" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="auth-actions"><button type="button" class="auth-link" id="resetBack">&larr; Back to sign in</button><button type="button" class="auth-link hide" id="resetTryAgain">Request another link</button></div></div></div>
 <div id="app" class="hide">
+<div class="dl-bar"><button id="installAppBtn" type="button" class="pill dl"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="installAppLabel">Download app</span></button></div><p id="installHint" class="profile-helps dl-hint" hidden></p>
 <header class="top"><button type="button" id="profileButton" class="profile-trigger" title="Edit your profile" aria-label="Edit your nickname and photo"><span class="av" id="me"></span><span class="profile-name" id="myName"></span></button>
 <nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button><button data-v="an"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>User</button><button data-v="ach"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Awards</button><button data-v="lb"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21V8h6v13M2 21v-8h7M15 21v-5h7M3 21h18"/></svg>Rank</button></nav>
 <button id="th" type="button" class="pill" aria-label="Toggle dark and light mode"></button></header>
@@ -205,7 +211,7 @@ body{font-size:12px}input{font-size:14px}.hv{font-size:20px}.clock{font-size:20p
 <label class="lb" for="profileImage">Profile photo</label><input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
 <p class="profile-helps">JPG, PNG, or WebP. Maximum 2 MB. Only the five members can request avatar images.</p>
 <button type="button" id="profileRemovePhoto" class="auth-link">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
-<div id="profileAch"></div><button id="installAppBtn" type="button" class="ghost" style="justify-content:flex-start"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="installAppLabel">Download app</span></button><p id="installHint" class="profile-helps" hidden></p>
+<div id="profileAch"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
 <section id="dash"><h2 class="h2">Your session</h2><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
 <h2 class="h2 sec-title">Conclusion</h2><div class="panel"><div id="ov"></div><div class="goal"><div class="row"><span class="lb">Daily goal</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar"><i id="cb" style="width:0"></i></div></div></div></section>
@@ -214,7 +220,7 @@ body{font-size:12px}input{font-size:14px}.hv{font-size:20px}.clock{font-size:20p
 <div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></section>
 <section id="an" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Your profile is selected automatically · pick up to 4 opponents</p></div>
 <div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div>
-<div class="lb">You</div><div class="cmp-chips" id="cpRow"></div><div class="lb">Compare with</div><div class="cmp-chips" id="ccRow"></div>
+<div class="lb">Compare with</div><div class="cmp-chips" id="ccRow"></div>
 <div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div></div></section>
 <section id="ach" class="hide"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg>
 <div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></section>
@@ -413,7 +419,7 @@ function anRender(){
  if(!members.length||!$('#cmpBox'))return;
  cmpP=meId;cmpC.delete(cmpP);
  const others=members.filter(m=>m.id!==cmpP),col=m=>m.id===cmpP?'#818cf8':CMPC[others.indexOf(m)%4];
- $('#cpRow').innerHTML=`<span class="cmp-chip on" style="--c:#818cf8"><span class="cmp-dot"></span>${esc(members.find(m=>m.id===cmpP).display_name)} (You)</span>`;
+ 
  $('#ccRow').innerHTML=others.map(m=>`<button type="button" class="cmp-chip${cmpC.has(m.id)?' on':''}" style="--c:${col(m)}" data-cc="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`).join('')+'<button type="button" class="cmp-chip" data-cq="all">All players</button><button type="button" class="cmp-chip" data-cq="none">Clear</button>';
  const to=today(),from=addD(to,-(days-1)),labels=[];for(let d=from;d<=to;d=addD(d,1))labels.push(d);
  const sel=[members.find(m=>m.id===cmpP),...others.filter(m=>cmpC.has(m.id))],dark=document.documentElement.dataset.theme==='dark',tc=dark?'#8a99af':'#56657c',gc=dark?'rgba(51,65,85,.4)':'#e2e8f0';
@@ -640,17 +646,16 @@ function aCard(d,o,pl){const s=aSt(d,o),ups=A.u.filter(x=>x.ach_key===d.key&&x.o
  return`<article class="ac2${open?' open':''}" style="grid-row:${pl.r};grid-column:${pl.c} / span ${pl.w}"><button type="button" class="ac2-t" data-ak="${d.key}" aria-expanded="${open}"><div class="ac2-top"><div class="ac2-h"><h3>${esc(d.name)}</h3>${s.hi?`<span class="a-b" style="color:${tier}">${bdg(s.hi,16)}${TN[s.hi-1]}</span>`:'<span class="a-b" style="color:var(--mu)">Not Unlocked</span>'}</div><span class="chev${open?' o':''}" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div><div class="ac2-sum"><span>${s.hi<5?fv(d.unit,s.V)+' / '+fv(d.unit,s.N):fv(d.unit,s.V)}</span><span class="pct">${s.hi===5?'Max':Math.round(s.pct)+'%'}</span></div><div class="flux" style="--tier:${s.hi?TCOL[s.hi-1]:'#94a3b8'};--p:${(s.pct/100).toFixed(4)}"><i></i></div></button>${open?`<div class="ac2-b"><p>${esc(d.description)}</p><p class="sub">${esc(d.category)} · ${cur}</p><p class="sub">${next}</p><ol class="ast">${steps}</ol></div>`:''}</article>`}
 const aCount=m=>A.u.filter(u=>u.owner_id===m&&u.owner_id!==ROOM).length;
 function renderAch(){
- const mid=achView||meId,m=members.find(x=>x.id===mid);if(!m||!A.d.length)return;
+ const mid=meId,m=members.find(x=>x.id===mid);if(!m||!A.d.length)return;
  const P=A.d.filter(d=>d.scope==='individual'),T=A.d.find(d=>d.scope==='room'),n=aCount(mid),pc=n/50*100;
  const R=P.map(d=>({d,hi:aSt(d,mid).hi})),cnt=[0,1,2,3,4].map(t=>R.filter(x=>x.hi>t).length);
  const shown=R.filter(x=>tierFilter<0||x.hi>tierFilter),pos=achPlace(shown.map(x=>openK.has(x.d.key))),tp=T?achPlace([openK.has(T.key)]):[];
  const stats=TN.map((nm,i)=>`<button type="button" class="ach-stat" data-af="${i}" aria-pressed="${tierFilter===i}" aria-label="Show achievements at ${nm} or higher" style="--tc:var(--t${i+1})"><div class="st-nm" style="color:var(--t${i+1})">${bdg(i+1,14)}<span>${nm}</span></div><div class="st-ct">${cnt[i]}</div></button>`).join('');
  const clr=tierFilter>=0?`<div class="ach-ctl"><button type="button" class="ach-clear" data-af="${tierFilter}" style="--tc:var(--t${tierFilter+1})">${TN[tierFilter]}+ · ${shown.length} shown · Clear ✕</button></div>`:'';
- $('#achBox').innerHTML=`<h2 class="h2">Achievement Profile <span class="sub" style="font-size:20px;font-weight:400">• ${esc(m.display_name)}</span></h2>
- <div class="cmp-chips">${members.map(x=>`<button type="button" class="cmp-chip${x.id===mid?' on':''}" data-am="${x.id}">${esc(x.display_name)}</button>`).join('')}</div>
+ $('#achBox').innerHTML=`<div class="panel"><h2 class="h2">Achievement Profile <span class="sub" style="font-size:20px;font-weight:400">• ${esc(m.display_name)}</span></h2>
  <div class="a-hero"><div class="lb">Overall progress</div><div style="margin-top:8px"><span class="hero-n">${n}</span><span class="hero-d">/ 50 tiers unlocked</span></div><div class="hero-bar"><span style="width:${pc.toFixed(1)}%"></span></div><div class="sub">${pc.toFixed(1)}% complete</div></div>
  <div class="ach-st">${stats}</div>${clr}
- <div class="ag">${shown.length?shown.map((x,i)=>aCard(x.d,mid,pos[i])).join(''):'<div class="sub">No achievements at this tier yet.</div>'}</div>${T?`<h2 class="h2 sec-title">Team Achievement</h2><div class="ag">${aCard(T,ROOM,tp[0])}</div>`:''}`;
+ <div class="ag">${shown.length?shown.map((x,i)=>aCard(x.d,mid,pos[i])).join(''):'<div class="sub">No achievements at this tier yet.</div>'}</div>${T?`<h2 class="h2 sec-title">Team Achievement</h2><div class="ag">${aCard(T,ROOM,tp[0])}</div>`:''}</div>`;
  renderProfileAch();
 }
 function renderProfileAch(){const box=$('#profileAch');if(!box||!A.d.length)return;
