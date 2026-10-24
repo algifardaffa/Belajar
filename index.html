@@ -134,6 +134,7 @@ const recoveryHash=new URLSearchParams(location.hash.replace(/^#/,''));
 const recoveryLinkExpected=recoveryParams.get('reset')==='1'||recoveryHash.get('type')==='recovery';
 const recoveryLinkError=recoveryParams.get('error_description')||recoveryHash.get('error_description');
 let recoveryVerified=false;
+let loadedAuthUserId=null;
 const authView=name=>{
  ['login','forgotPanel','resetPanel','app'].forEach(id=>$('#'+id).classList.toggle('hide',id!==name));
 };
@@ -166,8 +167,28 @@ sb.auth.onAuthStateChange((event,session)=>{
   showResetView();
   authMessage('resetMsg','');
  }
+ // Supabase login state can change in another tab. Never keep displaying or
+ // controlling an old member when the authenticated account has changed.
+ if(!recoveryLinkExpected&&!recoveryVerified&&loadedAuthUserId){
+  if(event==='SIGNED_OUT'||(event==='SIGNED_IN'&&session?.user?.id!==loadedAuthUserId)){
+   setTimeout(()=>location.reload(),0);
+  }
+ }
 });
 let members=[],sessions={},goals={},stats=[],counts={},meId=null,mode='today',sortK=null,days=7,charts={},timer;
+// Revalidate identity against Supabase Auth before any personal mutation.
+async function checkCurrentMember(){
+ const {data:{user},error:userError}=await sb.auth.getUser();
+ if(userError||!user)throw new Error('Your login expired. Sign in again before saving.');
+ const {data:owner,error:ownerError}=await sb.from('members')
+  .select('id,auth_user_id,avatar_url').eq('auth_user_id',user.id).maybeSingle();
+ if(ownerError)throw new Error('Could not verify the member account: '+ownerError.message);
+ if(!owner)throw new Error('This login is not linked to a Study Room member.');
+ if(owner.id!==meId||user.id!==loadedAuthUserId){
+  throw new Error('The signed-in account changed in another tab. Reload this page, then edit your own profile.');
+ }
+ return {user,owner};
+}
 const AVATAR_BUCKET='study-avatars';
 const avatarCache=new Map();
 let pendingProfileFile=null,removeProfilePhoto=false,profileObjectUrl=null;
@@ -228,6 +249,7 @@ async function boot(){
  if(error||!ms?.length){await sb.auth.signOut();$('#login').classList.remove('hide');$('#le').textContent='This account is not assigned to a member slot.';return}
  members=ms;meId=ms.find(m=>m.auth_user_id===session.user.id)?.id;
  if(!meId){await sb.auth.signOut();$('#login').classList.remove('hide');$('#le').textContent='This account is not assigned to a member slot.';return}
+ loadedAuthUserId=session.user.id;
  $('#login').classList.add('hide');$('#app').classList.remove('hide');
  await load();subscribe();clearInterval(timer);timer=setInterval(tick,1000);
 }
@@ -294,8 +316,18 @@ let ch;function subscribe(){
 }
 document.addEventListener('click',async e=>{
  const b=e.target.closest('button');if(!b)return;
- if(b.dataset.a){b.disabled=true;const args=b.dataset.a==='start_study_session'?{p_subject:$('#subj')?.value||null}:{};
-  const{error}=await sb.rpc(b.dataset.a,args);if(error)err(error.message);await load();return}
+ if(b.dataset.a){
+  b.disabled=true;
+  try{
+   await checkCurrentMember();
+   const args=b.dataset.a==='start_study_session'?{p_subject:$('#subj')?.value||null}:{};
+   const {error}=await sb.rpc(b.dataset.a,args);
+   if(error)throw error;
+   err('');
+  }catch(e){err(e?.message||'Stopwatch action failed.');}
+  finally{await load();b.disabled=false;}
+  return;
+ }
  if(b.dataset.v){document.querySelectorAll('section').forEach(s=>s.classList.toggle('hide',s.id!==b.dataset.v));
   document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));if(b.dataset.v==='an')anRender()}
  if(b.dataset.m){mode=b.dataset.m;sortK=null;document.querySelectorAll('#modes button').forEach(x=>x.classList.toggle('on',x===b));lbRender()}
@@ -330,33 +362,41 @@ $('#profileSave').onclick=async()=>{
  button.textContent='Saving...';authMessage('profileStatus','');
  let uploadedPath=null;
  try{
-  const changes={display_name:name};
+  // Confirm the actual signed-in identity; the page may have been opened
+  // before a different account signed in on another browser tab.
+  const {user,owner}=await checkCurrentMember();
+  let avatarPath=owner.avatar_url;
   if(pendingProfileFile){
-   const {data:{user},error:userError}=await sb.auth.getUser();
-   if(userError||!user)throw userError||new Error('You must sign in first.');
    const ext={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[pendingProfileFile.type];
    uploadedPath=`${user.id}/${crypto.randomUUID()}.${ext}`;
    const {error:uploadError}=await sb.storage.from(AVATAR_BUCKET).upload(uploadedPath,pendingProfileFile,{
     cacheControl:'3600',upsert:false,contentType:pendingProfileFile.type
    });
    if(uploadError)throw uploadError;
-   changes.avatar_url=uploadedPath;
-  }else if(removeProfilePhoto){changes.avatar_url=null}
-  const {data, error:updateError}=await sb.from('members').update(changes).eq('id',meId).select('id').single();
-  if(updateError)throw updateError;
-  if(!data)throw new Error('Your profile could not be updated.');
+   avatarPath=uploadedPath;
+  }else if(removeProfilePhoto){avatarPath=null}
+  // The RPC authorizes by auth.uid() on the database, not by a client-
+  // supplied member ID. It returns that member's ID or an explicit error.
+  const {data:updatedId,error:updateError}=await sb.rpc('update_study_profile',{
+   p_display_name:name,p_avatar_url:avatarPath
+  });
+  if(updateError)throw new Error(updateError.message);
+  if(updatedId!==owner.id)throw new Error('Profile update returned an unexpected member.');
   avatarCache.delete(meId);
-  const previousPath=me.avatar_url;
+  const previousPath=owner.avatar_url;
   closeProfileEditor();
   await load();
-  if(previousPath && previousPath!==changes.avatar_url && (uploadedPath||removeProfilePhoto)){
+  if(previousPath && previousPath!==avatarPath){
    sb.storage.from(AVATAR_BUCKET).remove([previousPath]).then(({error})=>{
     if(error)console.warn('Could not remove old avatar:',error.message);
    });
   }
  }catch(e){
   if(uploadedPath){sb.storage.from(AVATAR_BUCKET).remove([uploadedPath]).catch(()=>{});}
-  authMessage('profileStatus',e?.message||'Could not save your profile.',true);
+  const msg=e?.code==='PGRST202'
+   ? 'The profile update function is missing. Run study_room_profile_fix.sql in Supabase SQL Editor first.'
+   : (e?.message||'Could not save your profile.');
+  authMessage('profileStatus',msg,true);
  }finally{button.disabled=false;$('#profileCancel').disabled=false;button.textContent='Save changes'}
 };
 
