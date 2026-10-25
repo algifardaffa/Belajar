@@ -363,7 +363,10 @@ const ymd=d=>d.toLocaleDateString('sv',{timeZone:TZ});
 const addD=(s,n)=>{const d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
 const today=()=>ymd(new Date());
 const wk=()=>{const t=today(),dow=(new Date(t+'T00:00:00Z').getUTCDay()+6)%7;return addD(t,-dow)};
-const el=s=>{const e=sess(s);return e?e.accumulated_seconds+(e.status==='active'?(Date.now()-new Date(e.last_resumed_at))/1000:0):0};
+const baseKey=id=>'srBase_'+id;
+const getBase=id=>{try{const o=JSON.parse(localStorage.getItem(baseKey(id))||'null');return o&&o.day===today()?o.v:0}catch(_){return 0}};
+const setBase=(id,v)=>{try{localStorage.setItem(baseKey(id),JSON.stringify({day:today(),v}))}catch(_){}};
+const el=s=>{const e=sess(s);return e?getBase(s)+e.accumulated_seconds+(e.status==='active'?(Date.now()-new Date(e.last_resumed_at))/1000:0):tot(s,today())};
 const sess=id=>sessions[id];
 const err=m=>$('#err').textContent=m||'';
 
@@ -404,15 +407,15 @@ function render(){
  const live=Object.values(sessions).filter(s=>s.status==='active').length;
  const done=0;
  const keep=$('#subj')?.value||'';
- $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying'} · updates live`;
+ $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying right now'} · updates live`;
  $('#ov').innerHTML=`<div class="hero-main">${[['Today',fmt(sum('today')),IC.clock],['This week',fmt(sum('week')),IC.cal],['All-time',fmt(sum('all')),IC.trophy]].map(([l,v,i])=>`<div><div class="lb">${i}${l}</div><div class="hv">${v}</div></div>`).join('')}</div>`;
  const goal=members.reduce((a,m)=>a+(goals[m.id]?.daily_goal_seconds||0),0),td=sum('today'),pct=goal?Math.min(100,td/goal*100):0;
  $('#cp').textContent=goal?`${Math.round(pct)}% · ${fmt(td)} of ${fmt(goal)}`:'No goals set yet';$('#cb').style.width=pct+'%';
- const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId;
+ const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=(!s&&tot(m.id,today())>0)?'paused':st;
   const ctl=!mine?'':st==='idle'?`<input id="subj" placeholder="What are you studying? (optional)" aria-label="Subject"><button class="p" data-a="start_study_session">Start studying</button>`:
    st==='active'?`<button data-a="pause_study_session">Pause</button><button class="p" data-a="finish_study_session">Finish</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
-  return`<article class="mc ${st}${mine?' me':''}"><div class="mc-main"><div class="row"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${mine?'<em class="you">You</em>':''}</div><span class="sp"></span><span class="st ${st}"><i class="dot ${st}"></i>${SL[st]}</span></div>
+  return`<article class="mc ${vs}${mine?' me':''}"><div class="mc-main"><div class="row"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${mine?'<em class="you">You</em>':''}</div><span class="sp"></span><span class="st ${vs}"><i class="dot ${vs}"></i>${SL[vs]}</span></div>
   <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${s?.subject?`<div class="subj">${IC.book}<span>${esc(s.subject)}</span></div>`:''}
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
@@ -461,6 +464,7 @@ document.addEventListener('click',async e=>{
   b.disabled=true;
   try{
    await checkCurrentMember();
+   if(b.dataset.a==='start_study_session')setBase(meId,tot(meId,today()));
    const args=b.dataset.a==='start_study_session'?{p_subject:$('#subj')?.value||null}:{};
    const {error}=await sb.rpc(b.dataset.a,args);
    if(error)throw error;
