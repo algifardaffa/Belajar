@@ -204,6 +204,13 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px 0;text-align:center}.cal-w{padding-bottom:8px;font-size:12px;color:var(--mu)}
 .cal-d{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;min-height:44px;padding:4px 0;border-radius:8px;font-size:14px;font-variant-numeric:tabular-nums}
 .cal-d.dim{opacity:.4}.cal-d.today{background:var(--acs);color:var(--ach);font-weight:700}.cal-dots{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;min-height:6px}.cal-dots i{width:6px;height:6px;border-radius:50%}
+
+.st-wrap{display:grid;gap:4px;justify-items:start}.st-wrap .subj{max-width:100%}
+.goal-row{display:flex;align-items:center;gap:24px}.donut{position:relative;width:120px;height:120px;flex:none}.donut svg{width:100%;height:100%}
+.d-bg,.d-fg{fill:none;stroke-width:10}.d-bg{stroke:var(--sec)}.d-fg{stroke:var(--ac);stroke-linecap:round;transition:stroke-dashoffset .6s}.d-fg.done{stroke:var(--ok)}
+.d-c{position:absolute;inset:0;display:grid;place-items:center;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.goal-form{display:grid;gap:8px;justify-items:start}.goal-in{display:flex;align-items:center;gap:8px}.goal-in input{width:64px;text-align:center}
+@media(max-width:420px){.goal-row{gap:16px}.donut{width:96px;height:96px}.d-c{font-size:20px}.goal-in input{width:56px}}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -239,6 +246,7 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 <button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
 <section id="dash"><div class="row live-row"><h2 class="h2">Your session</h2><span class="sp"></span><div id="live" class="status"></div></div><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
+<h2 class="h2 sec-title">Daily goal</h2><div class="goal-row"><div class="donut"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div><div class="goal-form"><div class="lb nc">Set goal</div><div class="goal-in"><input id="gH" type="number" min="0" max="23" inputmode="numeric" placeholder="0" aria-label="Goal hours"><span>h</span><input id="gM" type="number" min="0" max="59" inputmode="numeric" placeholder="0" aria-label="Goal minutes"><span>m</span></div><button type="button" class="p" id="gSave">Save goal</button><div class="sub" id="gNote"></div></div></div>
 <h2 class="h2 sec-title">Conclusion</h2><div class="panel"><div id="ov"></div><div id="recap" class="recap hide"></div></div></section>
 
 <section id="an" class="hide"><div id="lb"><div class="panel"><div class="head"><div><h2 class="h2">Time Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div>
@@ -435,16 +443,18 @@ function render(){
   const ctl=!mine?'':st==='idle'?`<input id="subj" placeholder="What are you studying? (optional)" aria-label="Subject"><button class="p" data-a="start_study_session">Start studying</button>`:
    st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
-  return`<article class="mc ${vs}${mine?' me':''}"><div class="mc-main"><div class="row"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div><span class="sp"></span><span class="st ${vs}"><i class="dot ${vs}"></i>${SL[vs]}</span></div>
-  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${s?.subject?`<div class="subj">${IC.book}<span>${esc(s.subject)}</span></div>`:''}
+  return`<article class="mc ${vs}${mine?' me':''}"><div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
+  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${SL[vs]}</span>${s?.subject?`<div class="subj">${IC.book}<span>${esc(s.subject)}</span></div>`:''}</div>
+  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
+ donutRender();
  lbRender();anRender();
 }
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let lastDay=today();
-function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)))}
+function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)));donutRender()}
 function lbRender(){
  const k=mode,rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]);
  const max=Math.max(1,...rows.map(r=>r[k])),lead=rows.length&&rows[0][k]>0?rows[0][k]:null;
@@ -456,6 +466,19 @@ const FLAME='<svg class="ic orange" viewBox="0 0 24 24" aria-hidden="true"><path
 /* streak = consecutive study days up to today (today counts once studied or while a session runs; it is not broken until the day ends) */
 function streakOf(id){const days=new Set();stats.forEach(r=>{if(r.member_id===id&&r.seconds>0)days.add(r.day)});const t=today(),ok=x=>days.has(x)||(x===t&&!!sessions[id]);let d=ok(t)?t:addD(t,-1),n=0;while(ok(d)){n++;d=addD(d,-1)}return n}
 function streakHtml(id){const n=streakOf(id);return`<span class="streak${n?'':' off'}" title="${n}-day streak">${FLAME}${n}</span>`}
+/* Daily goal: stored in study_goals; if the table refuses the write, it is kept on this device instead. */
+const goalSecs=()=>{let l=null;try{l=localStorage.getItem('sr-goal-'+meId)}catch(_){}return l!==null?+l||0:(goals[meId]?.daily_goal_seconds||0)};
+function donutRender(){const arc=$('#dArc');if(!arc||!meId)return;
+ const g=goalSecs(),t=Math.floor(el(meId)),p=g?t/g*100:0,C=2*Math.PI*42;
+ arc.style.strokeDasharray=C;arc.style.strokeDashoffset=C*(1-Math.min(1,p/100));arc.classList.toggle('done',g>0&&p>=100);
+ $('#dPct').textContent=g?Math.round(p)+'%':'–';
+ if(document.activeElement!==$('#gH')&&document.activeElement!==$('#gM')){$('#gH').value=g?Math.floor(g/3600):'';$('#gM').value=g?Math.floor(g%3600/60):''}
+ if(!$('#gNote').dataset.msg)$('#gNote').textContent=g?'Goal: '+fmt(g):'No goal set yet'}
+async function saveGoal(){const secs=Math.max(0,Math.min(86400,(+$('#gH').value||0)*3600+(+$('#gM').value||0)*60)),n=$('#gNote');
+ const{error}=await sb.from('study_goals').upsert({member_id:meId,daily_goal_seconds:secs},{onConflict:'member_id'});
+ try{error?localStorage.setItem('sr-goal-'+meId,secs):localStorage.removeItem('sr-goal-'+meId)}catch(_){}
+ if(!error)goals[meId]={member_id:meId,daily_goal_seconds:secs};
+ n.dataset.msg='1';n.textContent=error?'Saved on this device only':'Goal saved';setTimeout(()=>{delete n.dataset.msg;donutRender()},2500);donutRender()}
 function anRender(){
  if(!members.length||!$('#cmpBox'))return;
  cmpP=meId;cmpC.delete(cmpP);calRender();
@@ -535,6 +558,7 @@ document.addEventListener('click',async e=>{
   document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));if(b.dataset.v==='an')anRender()}
  if(b.dataset.m){mode=b.dataset.m;sortK=null;document.querySelectorAll('#modes button').forEach(x=>x.classList.toggle('on',x===b));lbRender()}
  if(b.dataset.cm){cmpMode=b.dataset.cm;document.querySelectorAll('#cmpModes button').forEach(x=>x.classList.toggle('on',x===b));anRender()}
+ if(b.id==='gSave'){saveGoal()}
  if(b.dataset.kc){calC.has(b.dataset.kc)?calC.delete(b.dataset.kc):calC.add(b.dataset.kc);calRender()}
  if(b.dataset.kq){calC=b.dataset.kq==='all'?new Set(calOthers().map(m=>m.id)):new Set();calRender()}
  if(b.dataset.kn){const[y,mo]=calMonth.split('-').map(Number);calMonth=new Date(Date.UTC(y,mo-1+(+b.dataset.kn),1)).toISOString().slice(0,7);calRender()}
