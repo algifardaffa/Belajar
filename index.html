@@ -449,8 +449,11 @@ function anRender(){
  const cum={};members.forEach(m=>cum[m.id]=cumul(m.id));
  const rankAt=(id,i)=>1+members.filter(o=>cum[o.id][i]>cum[id][i]).length;
  const rk=cmpMode==='rank',h2=v=>Math.round(v/36)/100,last=labels.length-1,fnt={family:'Inter',size:12};
+ const firstDay=id=>Object.keys(byDay[id]||{}).sort()[0]||null;
+ const gFirst=members.map(m=>firstDay(m.id)).filter(Boolean).sort()[0]||null;
+ const mask=(arr,start)=>arr.map((v,j)=>start&&labels[j]>=start?v:null); /* days before any data exist are null, not 0 */
  const ds=sel.map((m,i)=>{const c=col(m);
-  const data=rk?labels.map((d,j)=>rankAt(m.id,j)):cmpMode==='score'?cum[m.id].map(h2):daily(m.id).map(h2);
+  const data=mask(rk?labels.map((d,j)=>rankAt(m.id,j)):cmpMode==='score'?cum[m.id].map(h2):daily(m.id).map(h2),rk?gFirst:firstDay(m.id));
   const tail=rk?'#'+rankAt(m.id,last):hm(cmpMode==='score'?cum[m.id][last]:daily(m.id).reduce((a,b)=>a+b,0));
   return{label:m.display_name+' · '+tail,data,borderColor:c,backgroundColor:c+'26',borderWidth:i?2.5:3,fill:!rk&&i===0,tension:rk?0:.25,clip:false,pointRadius:days>50?2:4,pointHoverRadius:6,pointBackgroundColor:c}});
  if(cmpChart)cmpChart.destroy();
