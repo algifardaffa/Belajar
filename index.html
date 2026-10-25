@@ -440,27 +440,29 @@ function anRender(){
  const others=members.filter(m=>m.id!==cmpP),col=m=>m.id===cmpP?'#818cf8':CMPC[others.indexOf(m)%4];
  
  $('#ccRow').innerHTML=others.map(m=>`<button type="button" class="cmp-chip${cmpC.has(m.id)?' on':''}" style="--c:${col(m)}" data-cc="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`).join('')+'<button type="button" class="cmp-chip" data-cq="all">All players</button><button type="button" class="cmp-chip" data-cq="none">Clear</button>';
- const to=today(),from=addD(to,-(days-1)),labels=[];for(let d=from;d<=to;d=addD(d,1))labels.push(d);
+ const to=today(),from=addD(to,-(days-1)),allDays=[];for(let d=from;d<=to;d=addD(d,1))allDays.push(d);
  const sel=[members.find(m=>m.id===cmpP),...others.filter(m=>cmpC.has(m.id))],dark=document.documentElement.dataset.theme==='dark',tc=dark?'#8a99af':'#56657c',gc=dark?'rgba(51,65,85,.4)':'#e2e8f0';
  const hm=s=>{const m=Math.round(s/60);return m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+'m'};
  const byDay={};stats.forEach(r=>{const o=byDay[r.member_id]||(byDay[r.member_id]={});o[r.day]=(o[r.day]||0)+r.seconds});
- const daily=id=>labels.map(d=>(byDay[id]||{})[d]||0);
- const cumul=id=>{const mp=byDay[id]||{};let c=0;for(const d in mp)if(d<from)c+=mp[d];return labels.map(d=>(c+=mp[d]||0))};
- const cum={};members.forEach(m=>cum[m.id]=cumul(m.id));
- const rankAt=(id,i)=>1+members.filter(o=>cum[o.id][i]>cum[id][i]).length;
- const rk=cmpMode==='rank',h2=v=>Math.round(v/36)/100,last=labels.length-1,fnt={family:'Inter',size:12};
  const firstDay=id=>Object.keys(byDay[id]||{}).sort()[0]||null;
  const gFirst=members.map(m=>firstDay(m.id)).filter(Boolean).sort()[0]||null,g0=gFirst?addD(gFirst,-1):null; /* day zero: the day before the first record */
- const mask=(arr,start)=>arr.map((v,j)=>start&&labels[j]>=start?v:null); /* only days before day zero are null; everyone starts at 0 on day zero */
- const ds=sel.map((m,i)=>{const c=col(m);
-  const data=mask(rk?labels.map((d,j)=>rankAt(m.id,j)):cmpMode==='score'?cum[m.id].map(h2):daily(m.id).map(h2),g0);
-  const tail=rk?'#'+rankAt(m.id,last):hm(cmpMode==='score'?cum[m.id][last]:daily(m.id).reduce((a,b)=>a+b,0));
-  return{label:m.display_name+' · '+tail,data,borderColor:c,backgroundColor:c+'26',borderWidth:i?2.5:3,fill:!rk&&i===0,tension:rk?0:.25,clip:false,pointRadius:days>50?2:4,pointHoverRadius:6,pointBackgroundColor:c}});
+ /* The x axis follows the data: day zero plus only the dates that have a record, whatever the 7/30/90 toggle says. */
+ const dset=new Set();sel.forEach(m=>Object.keys(byDay[m.id]||{}).forEach(d=>{if(d>=from&&d<=to)dset.add(d)}));
+ if(g0&&g0>=from&&g0<=to)dset.add(g0);
+ const labels=[...dset].sort(),at={};allDays.forEach((d,k)=>at[d]=k);
+ const daily=id=>allDays.map(d=>(byDay[id]||{})[d]||0);
+ const cumul=id=>{const mp=byDay[id]||{};let c=0;for(const d in mp)if(d<from)c+=mp[d];return allDays.map(d=>(c+=mp[d]||0))};
+ const cum={};members.forEach(m=>cum[m.id]=cumul(m.id));
+ const rankAt=(id,k)=>1+members.filter(o=>cum[o.id][k]>cum[id][k]).length;
+ const rk=cmpMode==='rank',h2=v=>Math.round(v/36)/100,fnt={family:'Inter',size:12};
+ const ds=sel.map((m,i)=>{const c=col(m),dl=daily(m.id),cl=cum[m.id];
+  const data=labels.map(d=>{const k=at[d];return rk?rankAt(m.id,k):cmpMode==='score'?h2(cl[k]):h2(dl[k])});
+  return{label:m.display_name,data,borderColor:c,backgroundColor:c+'26',borderWidth:i?2.5:3,fill:!rk&&sel.length===1,tension:rk?0:.25,clip:false,pointRadius:labels.length>50?2:4,pointHoverRadius:6,pointBackgroundColor:c}});
  if(cmpChart)cmpChart.destroy();
- cmpChart=new Chart($('#cmpChart').getContext('2d'),{type:'line',data:{labels:labels.map(d=>String(+d.slice(8))),datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{top:8,right:8,bottom:4}},
+ cmpChart=new Chart($('#cmpChart').getContext('2d'),{type:'line',data:{labels:labels.map(d=>d.slice(8)+'/'+d.slice(5,7)),datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{top:8,right:8,bottom:4}},
   plugins:{legend:{display:true,position:'top',labels:{color:dark?'#94a3b8':'#475569',font:fnt}},
    tooltip:{backgroundColor:dark?'#1e293b':'#fff',titleColor:dark?'#f8fafc':'#0f172a',bodyColor:dark?'#cbd5e1':'#334155',borderColor:dark?'#334155':'#cbd5e1',borderWidth:1,padding:12,boxPadding:6,usePointStyle:true,
-    callbacks:{label:c=>` ${c.dataset.label.split(' · ')[0]}: ${rk?'Rank #'+c.parsed.y:hm(c.parsed.y*3600)}`}}},
+    callbacks:{label:c=>` ${c.dataset.label}: ${rk?'Rank #'+c.parsed.y:hm(c.parsed.y*3600)}`}}},
   scales:{x:{grid:{color:gc,drawBorder:false},ticks:{color:tc,font:fnt,maxRotation:45,autoSkip:true,maxTicksLimit:15}},
    y:rk?{reverse:true,min:1,max:Math.max(2,members.length),grid:{color:gc,drawBorder:false},ticks:{color:tc,font:fnt,stepSize:1,precision:0,callback:v=>'#'+v}}
     :{beginAtZero:true,grid:{color:gc,drawBorder:false},ticks:{color:tc,font:fnt,callback:v=>v+' h'}}}}});
