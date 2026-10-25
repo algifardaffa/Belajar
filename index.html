@@ -231,14 +231,14 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 <section id="dash"><h2 class="h2">Your session</h2><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
 <h2 class="h2 sec-title">Conclusion</h2><div class="panel"><div id="ov"></div><div class="goal"><div class="row"><span class="lb">Daily goal</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar"><i id="cb" style="width:0"></i></div></div></div></section>
 
-<section id="an" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div>
+<section id="an" class="hide"><div id="lb"><div class="panel"><div class="head"><div><h2 class="h2">Score Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div>
+<div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div>
+<div id="sdList" class="sd-list"></div>
+<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div><div class="panel" style="margin-top:16px"><div class="head"><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div>
 <div class="tgs"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Score</button><button type="button" data-cm="growth" class="on">Growth</button><button type="button" data-cm="rank">Rank</button></div>
 <div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div>
 <div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
-<div class="lb" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div><div id="lb" style="margin-top:16px"><div class="panel"><div class="head"><div><h2 class="h2">Score Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div>
-<div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Session</button></div></div>
-<div id="sdList" class="sd-list"></div>
-<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div></section>
+<div class="lb" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div></section>
 <section id="ach" class="hide"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg>
 <div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></section>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -402,7 +402,7 @@ async function load(){
  render();
 }
 const tot=(id,from)=>stats.filter(r=>r.member_id===id&&r.day>=from).reduce((a,r)=>a+r.seconds,0);
-const totals=id=>({today:tot(id,today()),week:tot(id,wk()),month:tot(id,today().slice(0,8)+'01'),all:tot(id,'2000-01-01'),n:counts[id]||0});
+const totals=id=>({today:tot(id,today()),week:tot(id,wk()),month:tot(id,today().slice(0,8)+'01'),all:tot(id,'2000-01-01'),n:A.u.filter(u=>u.owner_id===id).length});
 function render(){
  const me=members.find(m=>m.id===meId);if(!me)return;$('#me').innerHTML=esc(avatarInitial(me))+(avatarCache.get(me.id)?.url?`<img src="${esc(avatarCache.get(me.id).url)}" alt="">`:``);$('#me').title=me.display_name;$('#myName').textContent=me.display_name;
  const T=members.map(m=>totals(m.id)),sum=k=>T.reduce((a,t)=>a+t[k],0);
@@ -430,7 +430,7 @@ function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}document
 function lbRender(){
  const k=mode,rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]);
  const max=Math.max(1,...rows.map(r=>r[k])),lead=rows.length&&rows[0][k]>0?rows[0][k]:null;
- $('#sdSub').textContent=k==='n'?'Number of sessions by member':'Study time by member';
+ $('#sdSub').textContent=k==='n'?'Awards earned by member':'Study time by member';
  $('#sdList').innerHTML=rows.map(r=>`<div class="score-dist-row${lead!==null&&r[k]===lead?' is-top':''}"><span class="score-dist-label" title="${esc(r.m.display_name)}">${esc(r.m.display_name)}${r.m.id===meId?' (you)':''}</span><div class="score-dist-track"><div class="score-dist-fill" style="width:${r[k]/max*100}%"></div></div><span class="score-dist-count">${k==='n'?r.n:fmt(r[k])}</span></div>`).join('');
  $('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
 }
@@ -439,7 +439,8 @@ function anRender(){
  cmpP=meId;cmpC.delete(cmpP);
  const others=members.filter(m=>m.id!==cmpP),col=m=>m.id===cmpP?'#818cf8':CMPC[others.indexOf(m)%4];
  
- $('#ccRow').innerHTML=others.map(m=>`<button type="button" class="cmp-chip${cmpC.has(m.id)?' on':''}" style="--c:${col(m)}" data-cc="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`).join('')+'<button type="button" class="cmp-chip" data-cq="all">All players</button><button type="button" class="cmp-chip" data-cq="none">Clear</button>';
+ const chip=m=>`<button type="button" class="cmp-chip${cmpC.has(m.id)?' on':''}" style="--c:${col(m)}" data-cc="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`;
+ $('#ccRow').innerHTML=others.slice(0,3).map(chip).join('')+'<button type="button" class="cmp-chip" data-cq="none">Clear</button>'+others.slice(3).map(chip).join('')+'<button type="button" class="cmp-chip" data-cq="all">All players</button>';
  const to=today(),from=addD(to,-(days-1)),allDays=[];for(let d=from;d<=to;d=addD(d,1))allDays.push(d);
  const sel=[members.find(m=>m.id===cmpP),...others.filter(m=>cmpC.has(m.id))],dark=document.documentElement.dataset.theme==='dark',tc=dark?'#8a99af':'#56657c',gc=dark?'rgba(51,65,85,.4)':'#e2e8f0';
  const hm=s=>{const m=Math.round(s/60);return m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+'m'};
@@ -702,7 +703,7 @@ async function achNotify(){if(notifying)return;const mine=A.u.filter(u=>u.owner_
 async function loadAch(){
  const[a,b,c]=await Promise.all([sb.from('achievement_definitions').select('*').eq('active',true).order('sort_order'),sb.from('achievement_unlocks').select('*'),sb.from('achievement_progress').select('*')]);
  if(a.error||b.error||c.error){$('#achBox').innerHTML='<div class="alert" style="display:block">Achievements are not set up yet. Run study_room_achievements.sql in the Supabase SQL Editor.</div>';return}
- A={d:a.data,u:b.data,p:c.data};renderAch();achNotify()}
+ A={d:a.data,u:b.data,p:c.data};renderAch();achNotify();if(members.length)lbRender()}
 function achSub(){if(achCh)return;let t;
  achCh=sb.channel('ach').on('postgres_changes',{event:'INSERT',schema:'public',table:'achievement_unlocks'},p=>{
   const u=p.new,d=A.d.find(x=>x.key===u.ach_key);if(u.owner_id===ROOM&&d)toast(d.name,u.tier,fv(d.unit,d['t'+u.tier])+' studied together','Team Achievement');
