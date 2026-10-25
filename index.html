@@ -194,6 +194,7 @@ html[data-theme=light] .sd-tg{background:#f1f5f9;border-color:#cbd5e1}html[data-
 html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .score-dist-track{background:#e2e8f0}html[data-theme=light] .score-dist-fill{background:#818cf8}html[data-theme=light] .score-dist-row.is-top .score-dist-fill{background:#6366f1}html[data-theme=light] .score-dist-count{color:#334155}
 @media(max-width:420px){.score-dist-label{width:88px;flex-basis:88px}.score-dist-row{gap:8px}.sd-tg button{padding:8px 8px}}
 .tgs{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hero-main{grid-template-columns:repeat(2,1fr)}.hero-main .hero-d{margin-left:2px}.hero-main .lb{margin-top:8px}.live-row{margin-bottom:16px}.live-row .status{margin:0}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -219,7 +220,7 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 <header class="top"><button type="button" id="profileButton" class="profile-trigger" title="Edit your profile" aria-label="Edit your nickname and photo"><span class="av" id="me"></span><span class="profile-name" id="myName"></span></button>
 <nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button><button data-v="an"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>User</button><button data-v="ach"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Awards</button></nav>
 <button id="th" type="button" class="pill" aria-label="Toggle dark and light mode"></button></header>
-<div class="status-row"><div id="live" class="status"></div><button id="installAppBtn" type="button" class="pill dl dl-right"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="installAppLabel">Download app</span></button></div><p id="installHint" class="profile-helps dl-hint" hidden></p><div id="err" class="alert" role="alert"></div>
+<div class="status-row"><button id="installAppBtn" type="button" class="pill dl dl-right"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="installAppLabel">Download app</span></button></div><p id="installHint" class="profile-helps dl-hint" hidden></p><div id="err" class="alert" role="alert"></div>
 <div id="profileBackdrop" class="profile-backdrop hide" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><div class="panel profile-modal">
 <h2 class="h2" id="profileTitle">Edit profile</h2>
 <div class="profile-avatar-edit"><div class="av av-lg" id="profilePreview"></div><div><b id="profileCurrentName"></b><div class="profile-helps">Your personal avatar</div></div></div>
@@ -228,14 +229,14 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 
 <button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
-<section id="dash"><h2 class="h2">Your session</h2><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
+<section id="dash"><div class="row live-row"><h2 class="h2">Your session</h2><span class="sp"></span><div id="live" class="status"></div></div><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
 <h2 class="h2 sec-title">Conclusion</h2><div class="panel"><div id="ov"></div><div class="goal"><div class="row"><span class="lb">Daily goal</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar"><i id="cb" style="width:0"></i></div></div></div></section>
 
 <section id="an" class="hide"><div id="lb"><div class="panel"><div class="head"><div><h2 class="h2">Score Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div>
 <div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div>
 <div id="sdList" class="sd-list"></div>
 <div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div><div class="panel" style="margin-top:16px"><div class="head"><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div>
-<div class="tgs"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Score</button><button type="button" data-cm="growth" class="on">Growth</button><button type="button" data-cm="rank">Rank</button></div>
+<div class="tgs"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Total</button><button type="button" data-cm="growth" class="on">Daily</button><button type="button" data-cm="rank">Rank</button></div>
 <div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div>
 <div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
 <div class="lb" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div></section>
@@ -407,8 +408,9 @@ function render(){
  const live=Object.values(sessions).filter(s=>s.status==='active').length;
  const done=0;
  const keep=$('#subj')?.value||'';
- $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying'} `;
- $('#ov').innerHTML=`<div class="hero-main">${[['Today',fmt(sum('today')),IC.clock],['This week',fmt(sum('week')),IC.cal],['All-time',fmt(sum('all')),IC.trophy]].map(([l,v,i])=>`<div><div class="lb">${i}${l}</div><div class="hv">${v}</div></div>`).join('')}</div>`;
+ $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying now'}`;
+ const hm2=v=>{v=Math.max(0,Math.floor(v));return[Math.floor(v/3600),String(Math.floor(v%3600/60)).padStart(2,'0')]};
+ $('#ov').innerHTML=`<div class="hero-main">${[['Today',sum('today'),IC.clock],['This week',sum('week'),IC.cal]].map(([l,v,i])=>{const[h,m]=hm2(v);return`<div><div><span class="hero-n">${h}</span><span class="hero-d">:${m}</span></div><div class="lb">${i}${l}</div></div>`}).join('')}</div>`;
  const goal=members.reduce((a,m)=>a+(goals[m.id]?.daily_goal_seconds||0),0),td=sum('today'),pct=goal?Math.min(100,td/goal*100):0;
  $('#cp').textContent=goal?`${Math.round(pct)}% · ${fmt(td)} of ${fmt(goal)}`:'No goals set yet';$('#cb').style.width=pct+'%';
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=(!s&&tot(m.id,today())>0)?'paused':st;
