@@ -266,6 +266,9 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 body.goal-lock{overflow:hidden}
 .hd-ic{display:flex;align-items:center;gap:12px;min-width:0}.hd-i{width:28px;height:28px;padding:5px;box-sizing:content-box;border-radius:12px;background:color-mix(in srgb,currentColor 14%,transparent)}.ttl .hd-i{width:22px;height:22px;padding:5px}
 .head.out{margin-bottom:12px}h2.ttl:not(.sec-title){margin:0 0 12px}
+
+.tg-slot:empty{display:none}.tg-slot{margin-bottom:16px}
+@media(max-width:640px){.tg-slot .hd-tg{width:100%}.tg-slot .sd-tg{display:flex;width:100%}.tg-slot .sd-tg button{flex:1}.tg-slot .tgs{display:grid;gap:8px}.tg-slot .tgs .sd-tg,.tg-slot .tgs .rg{width:100%}.tg-slot .rg button{flex:1}.tg-slot .cal-nav{justify-content:space-between}.head.out{justify-content:flex-start}}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -306,14 +309,14 @@ body.goal-lock{overflow:hidden}
 <h2 class="h2 sec-title ttl"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Conclusion</h2><div class="panel"><div id="ov"></div><div id="recap" class="recap hide"></div></div></section>
 
 <section id="an" class="hide"><div id="lb"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><div><h2 class="h2">Time Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div></div>
-<div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div><div class="panel">
+<div class="hd-tg"><div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div></div><div class="panel"><div class="tg-slot"></div>
 <div id="sdList" class="sd-list"></div>
 <div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div><div class="head out" style="margin-top:24px"><div class="hd-ic"><svg class="ic red hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/></svg><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div></div>
-<div class="tgs"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Total</button><button type="button" data-cm="growth" class="on">Daily</button><button type="button" data-cm="rank">Rank</button></div>
-<div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div><div class="panel">
+<div class="tgs hd-tg"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Total</button><button type="button" data-cm="growth" class="on">Daily</button><button type="button" data-cm="rank">Rank</button></div>
+<div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div><div class="panel"><div class="tg-slot"></div>
 <div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
 <div class="lb nc" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div>
-<div class="head out" style="margin-top:24px"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><div><h2 class="h2">Calendar</h2><div class="sub">Days people studied</div></div></div><div class="cal-nav"><button type="button" class="ghost" data-kn="-1" aria-label="Previous month"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="calTitle"></b><button type="button" class="ghost" data-kn="1" aria-label="Next month"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div><div class="panel" id="calPanel"><div class="cal-grid" id="calGrid"></div><div class="lb nc" style="margin-top:16px">Show players</div><div class="cmp-chips" id="calChips"></div></div></section>
+<div class="head out" style="margin-top:24px"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><div><h2 class="h2">Calendar</h2><div class="sub">Days people studied</div></div></div><div class="cal-nav hd-tg"><button type="button" class="ghost" data-kn="-1" aria-label="Previous month"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="calTitle"></b><button type="button" class="ghost" data-kn="1" aria-label="Next month"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div><div class="panel" id="calPanel"><div class="tg-slot"></div><div class="cal-grid" id="calGrid"></div><div class="lb nc" style="margin-top:16px">Show players</div><div class="cmp-chips" id="calChips"></div></div></section>
 <section id="ach" class="hide"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg>
 <div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></section>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -849,5 +852,10 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
  if(b.dataset.ak){openK.has(b.dataset.ak)?openK.delete(b.dataset.ak):openK.add(b.dataset.ak);renderAch()}});
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&b.dataset.af){const i=+b.dataset.af;tierFilter=tierFilter===i?-1:i;renderAch()}});
 let _ac=achCols();addEventListener('resize',()=>{const c=achCols();if(c!==_ac){_ac=c;renderAch()}});
+
+(function(){const mq=matchMedia('(max-width:640px)');
+function place(){document.querySelectorAll('.hd-tg').forEach(t=>{if(!t._home){t._home=t.parentNode;t._slot=t._home.nextElementSibling&&t._home.nextElementSibling.querySelector('.tg-slot')}
+ if(!t._slot)return;(mq.matches?t._slot:t._home).appendChild(t)})}
+place();(mq.addEventListener?mq.addEventListener('change',place):mq.addListener(place))})();
 </script>
 </body></html>
