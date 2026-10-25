@@ -212,6 +212,16 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 .goal-form{display:grid;gap:8px;justify-items:start}.goal-in{display:flex;align-items:center;gap:8px}.goal-in input{width:64px;text-align:center}
 @media(max-width:420px){.goal-row{gap:16px}.donut{width:96px;height:96px}.d-c{font-size:20px}.goal-in input{width:56px}}
 .gcard{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:24px}@media(max-width:420px){.gcard{padding:16px}}
+
+/* unified Your Session panel */
+.ys{padding:24px}.ys-head{margin-bottom:20px}
+.ys-body{display:grid;grid-template-columns:1fr;gap:20px}
+.ys-goal{padding-top:20px;border-top:1px solid var(--bd)}.ys-lb{margin-bottom:14px}
+@media(min-width:720px){.ys-body{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0}.ys-sess{padding-right:32px}.ys-goal{padding:0 0 0 32px;border-top:0;border-left:1px solid var(--bd)}}
+#ys #mine .mc,#ys .ys-sess .mc{display:grid;grid-template-columns:1fr;gap:16px;padding:0;background:transparent;border:0;border-radius:0;align-items:start}
+#ys #mine .clock{font-size:clamp(2.2rem,8vw,2.9rem)}
+#ys #mine .mc-main{gap:10px}
+@media(max-width:620px){.ys{padding:16px}}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -246,9 +256,9 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 
 <button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
-<section id="dash"><div class="row live-row"><h2 class="h2">Daily goal</h2><span class="sp"></span><div id="live" class="status"></div></div>
-<div class="goal-row gcard"><div class="donut"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div><div class="goal-form"><div class="lb nc">Set goal</div><div class="goal-in"><input id="gH" type="number" min="0" max="23" inputmode="numeric" placeholder="0" aria-label="Goal hours"><span>h</span><input id="gM" type="number" min="0" max="59" inputmode="numeric" placeholder="0" aria-label="Goal minutes"><span>m</span></div><button type="button" class="p" id="gSave">Save goal</button><div class="sub" id="gNote"></div></div></div>
-<h2 class="h2 sec-title">Your session</h2><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
+<section id="dash"><div class="panel ys" id="ys"><div class="row live-row ys-head"><h2 class="h2">Your Session</h2><span class="sp"></span><div id="live" class="status"></div></div>
+<div class="ys-body"><div class="ys-sess" id="mine"></div><div class="ys-goal"><div class="lb ys-lb">Daily goal</div><div class="goal-row"><div class="donut"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div><div class="goal-form"><div class="lb nc">Set goal</div><div class="goal-in"><input id="gH" type="number" min="0" max="23" inputmode="numeric" placeholder="0" aria-label="Goal hours"><span>h</span><input id="gM" type="number" min="0" max="59" inputmode="numeric" placeholder="0" aria-label="Goal minutes"><span>m</span></div><button type="button" class="p" id="gSave">Save goal</button><div class="sub" id="gNote"></div></div></div></div></div></div>
+<h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
 <h2 class="h2 sec-title">Conclusion</h2><div class="panel"><div id="ov"></div><div id="recap" class="recap hide"></div></div></section>
 
 <section id="an" class="hide"><div id="lb"><div class="panel"><div class="head"><div><h2 class="h2">Time Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div>
