@@ -193,6 +193,7 @@ html[data-theme=light] .sd-tg{background:#f1f5f9;border-color:#cbd5e1}html[data-
 .score-dist-count{min-width:56px;flex:0 0 auto;text-align:right;font-size:12px;font-variant-numeric:tabular-nums;color:#e2e8f0}
 html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .score-dist-track{background:#e2e8f0}html[data-theme=light] .score-dist-fill{background:#818cf8}html[data-theme=light] .score-dist-row.is-top .score-dist-fill{background:#6366f1}html[data-theme=light] .score-dist-count{color:#334155}
 @media(max-width:420px){.score-dist-label{width:88px;flex-basis:88px}.score-dist-row{gap:8px}.sd-tg button{padding:8px 8px}}
+.tgs{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -230,13 +231,14 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 <section id="dash"><h2 class="h2">Your session</h2><div id="mine"></div><h2 class="h2 sec-title">Study room</h2><div class="grid" id="cards"></div>
 <h2 class="h2 sec-title">Conclusion</h2><div class="panel"><div id="ov"></div><div class="goal"><div class="row"><span class="lb">Daily goal</span><span class="sp"></span><span id="cp" class="sub"></span></div><div class="bar"><i id="cb" style="width:0"></i></div></div></div></section>
 
-<section id="an" class="hide"><div class="panel"><div class="head"><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div>
-<div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div>
-<div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
-<div class="lb" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div><div id="lb" style="margin-top:16px"><div class="panel"><div class="head"><div><h2 class="h2">Score Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div>
-<div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Session</button></div></div>
+<section id="an" class="hide"><div id="lb"><div class="panel"><div class="head"><div><h2 class="h2">Score Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div>
+<div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div>
 <div id="sdList" class="sd-list"></div>
-<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div></section>
+<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div><div class="panel" style="margin-top:16px"><div class="head"><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div>
+<div class="tgs"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Score</button><button type="button" data-cm="growth" class="on">Growth</button><button type="button" data-cm="rank">Rank</button></div>
+<div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div>
+<div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
+<div class="lb" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div></section>
 <section id="ach" class="hide"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg>
 <div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></section>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -398,7 +400,7 @@ async function load(){
  render();
 }
 const tot=(id,from)=>stats.filter(r=>r.member_id===id&&r.day>=from).reduce((a,r)=>a+r.seconds,0);
-const totals=id=>({today:tot(id,today()),week:tot(id,wk()),month:tot(id,today().slice(0,8)+'01'),all:tot(id,'2000-01-01'),n:counts[id]||0});
+const totals=id=>({today:tot(id,today()),week:tot(id,wk()),month:tot(id,today().slice(0,8)+'01'),all:tot(id,'2000-01-01'),n:A.u.filter(u=>u.owner_id===id).length});
 function render(){
  const me=members.find(m=>m.id===meId);if(!me)return;$('#me').innerHTML=esc(avatarInitial(me))+(avatarCache.get(me.id)?.url?`<img src="${esc(avatarCache.get(me.id).url)}" alt="">`:``);$('#me').title=me.display_name;$('#myName').textContent=me.display_name;
  const T=members.map(m=>totals(m.id)),sum=k=>T.reduce((a,t)=>a+t[k],0);
@@ -411,7 +413,7 @@ function render(){
  $('#cp').textContent=goal?`${Math.round(pct)}% · ${fmt(td)} of ${fmt(goal)}`:'No goals set yet';$('#cb').style.width=pct+'%';
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=(!s&&tot(m.id,today())>0)?'paused':st;
   const ctl=!mine?'':st==='idle'?`<input id="subj" placeholder="What are you studying? (optional)" aria-label="Subject"><button class="p" data-a="start_study_session">Start studying</button>`:
-   st==='active'?`<button data-a="pause_study_session">Pause</button><button class="p" data-a="finish_study_session">Finish</button>`:
+   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
   return`<article class="mc ${vs}${mine?' me':''}"><div class="mc-main"><div class="row"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${mine?'<em class="you">You</em>':''}</div><span class="sp"></span><span class="st ${vs}"><i class="dot ${vs}"></i>${SL[vs]}</span></div>
   <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${s?.subject?`<div class="subj">${IC.book}<span>${esc(s.subject)}</span></div>`:''}
@@ -421,11 +423,12 @@ function render(){
  lbRender();anRender();
 }
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function tick(){document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)))}
+let lastDay=today();
+function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)))}
 function lbRender(){
  const k=mode,rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]);
  const max=Math.max(1,...rows.map(r=>r[k])),lead=rows.length&&rows[0][k]>0?rows[0][k]:null;
- $('#sdSub').textContent=k==='n'?'Number of sessions by member · log scale':'Study time by member · log scale';
+ $('#sdSub').textContent=k==='n'?'Awards earned by member · log scale':'Study time by member · log scale';
  $('#sdList').innerHTML=rows.map(r=>`<div class="score-dist-row${lead!==null&&r[k]===lead?' is-top':''}"><span class="score-dist-label" title="${esc(r.m.display_name)}">${esc(r.m.display_name)}${r.m.id===meId?' (you)':''}</span><div class="score-dist-track"><div class="score-dist-fill" style="width:${Math.log1p(k==='n'?r[k]:r[k]/60)/Math.log1p(k==='n'?max:max/60)*100}%"></div></div><span class="score-dist-count">${k==='n'?r.n:fmt(r[k])}</span></div>`).join('');
  $('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
 }
@@ -434,22 +437,36 @@ function anRender(){
  cmpP=meId;cmpC.delete(cmpP);
  const others=members.filter(m=>m.id!==cmpP),col=m=>m.id===cmpP?'#818cf8':CMPC[others.indexOf(m)%4];
  
- $('#ccRow').innerHTML=others.map(m=>`<button type="button" class="cmp-chip${cmpC.has(m.id)?' on':''}" style="--c:${col(m)}" data-cc="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`).join('')+'<button type="button" class="cmp-chip" data-cq="all">All players</button><button type="button" class="cmp-chip" data-cq="none">Clear</button>';
- const to=today(),from=addD(to,-(days-1)),labels=[];for(let d=from;d<=to;d=addD(d,1))labels.push(d);
+ const chip=m=>`<button type="button" class="cmp-chip${cmpC.has(m.id)?' on':''}" style="--c:${col(m)}" data-cc="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`;
+ $('#ccRow').innerHTML=others.slice(0,3).map(chip).join('')+'<button type="button" class="cmp-chip" data-cq="none">Clear</button>'+others.slice(3).map(chip).join('')+'<button type="button" class="cmp-chip" data-cq="all">All players</button>';
+ const to=today(),from=addD(to,-(days-1)),allDays=[];for(let d=from;d<=to;d=addD(d,1))allDays.push(d);
  const sel=[members.find(m=>m.id===cmpP),...others.filter(m=>cmpC.has(m.id))],dark=document.documentElement.dataset.theme==='dark',tc=dark?'#8a99af':'#56657c',gc=dark?'rgba(51,65,85,.4)':'#e2e8f0';
  const hm=s=>{const m=Math.round(s/60);return m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+'m'};
- const ds=sel.map((m,i)=>{const mp={};stats.filter(r=>r.member_id===m.id&&r.day>=from).forEach(r=>mp[r.day]=(mp[r.day]||0)+r.seconds);
-  const c=col(m),tot=Object.values(mp).reduce((a,b)=>a+b,0);
-  return{label:m.display_name+' · '+hm(tot),data:labels.map(d=>Math.round((mp[d]||0)/36)/100),borderColor:c,backgroundColor:c+'26',borderWidth:i?2.5:3,fill:i===0,tension:.25,pointRadius:days>50?2:4,pointHoverRadius:6,pointBackgroundColor:c}});
+ const byDay={};stats.forEach(r=>{const o=byDay[r.member_id]||(byDay[r.member_id]={});o[r.day]=(o[r.day]||0)+r.seconds});
+ const firstDay=id=>Object.keys(byDay[id]||{}).sort()[0]||null;
+ const gFirst=members.map(m=>firstDay(m.id)).filter(Boolean).sort()[0]||null,g0=gFirst?addD(gFirst,-1):null; /* day zero: the day before the first record */
+ /* The x axis follows the data: day zero plus only the dates that have a record, whatever the 7/30/90 toggle says. */
+ const dset=new Set();sel.forEach(m=>Object.keys(byDay[m.id]||{}).forEach(d=>{if(d>=from&&d<=to)dset.add(d)}));
+ if(g0&&g0>=from&&g0<=to)dset.add(g0);
+ const labels=[...dset].sort(),at={};allDays.forEach((d,k)=>at[d]=k);
+ const daily=id=>allDays.map(d=>(byDay[id]||{})[d]||0);
+ const cumul=id=>{const mp=byDay[id]||{};let c=0;for(const d in mp)if(d<from)c+=mp[d];return allDays.map(d=>(c+=mp[d]||0))};
+ const cum={};members.forEach(m=>cum[m.id]=cumul(m.id));
+ const rankAt=(id,k)=>1+members.filter(o=>cum[o.id][k]>cum[id][k]).length;
+ const rk=cmpMode==='rank',h2=v=>Math.round(v/36)/100,fnt={family:'Inter',size:12};
+ const ds=sel.map((m,i)=>{const c=col(m),dl=daily(m.id),cl=cum[m.id];
+  const data=labels.map(d=>{const k=at[d];return rk?rankAt(m.id,k):cmpMode==='score'?h2(cl[k]):h2(dl[k])});
+  return{label:m.display_name,data,borderColor:c,backgroundColor:c+'26',borderWidth:i?2.5:3,fill:!rk&&sel.length===1,tension:rk?0:.25,clip:false,pointRadius:labels.length>50?2:4,pointHoverRadius:6,pointBackgroundColor:c}});
  if(cmpChart)cmpChart.destroy();
- cmpChart=new Chart($('#cmpChart').getContext('2d'),{type:'line',data:{labels:labels.map(d=>String(+d.slice(8))),datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-  plugins:{legend:{display:true,position:'top',labels:{color:dark?'#94a3b8':'#475569',font:{family:'Inter',size:12}}},
+ cmpChart=new Chart($('#cmpChart').getContext('2d'),{type:'line',data:{labels:labels.map(d=>d.slice(8)+'/'+d.slice(5,7)),datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{top:8,right:8,bottom:4}},
+  plugins:{legend:{display:true,position:'top',labels:{color:dark?'#94a3b8':'#475569',font:fnt}},
    tooltip:{backgroundColor:dark?'#1e293b':'#fff',titleColor:dark?'#f8fafc':'#0f172a',bodyColor:dark?'#cbd5e1':'#334155',borderColor:dark?'#334155':'#cbd5e1',borderWidth:1,padding:12,boxPadding:6,usePointStyle:true,
-    callbacks:{label:c=>` ${c.dataset.label.split(' · ')[0]}: ${hm(c.parsed.y*3600)}`}}},
-  scales:{x:{grid:{color:gc,drawBorder:false},ticks:{color:tc,font:{family:'Inter',size:12},maxRotation:45,autoSkip:true,maxTicksLimit:15}},
-   y:{beginAtZero:true,grid:{color:gc,drawBorder:false},ticks:{color:tc,font:{family:'Inter',size:12},callback:v=>v+' h'}}}}});
+    callbacks:{label:c=>` ${c.dataset.label}: ${rk?'Rank #'+c.parsed.y:hm(c.parsed.y*3600)}`}}},
+  scales:{x:{grid:{color:gc,drawBorder:false},ticks:{color:tc,font:fnt,maxRotation:45,autoSkip:true,maxTicksLimit:15}},
+   y:rk?{reverse:true,min:1,max:Math.max(2,members.length),grid:{color:gc,drawBorder:false},ticks:{color:tc,font:fnt,stepSize:1,precision:0,callback:v=>'#'+v}}
+    :{beginAtZero:true,grid:{color:gc,drawBorder:false},ticks:{color:tc,font:fnt,callback:v=>v+' h'}}}}});
 }
-let cmpP=null,cmpC=new Set(),cmpChart;const CMPC=['#34d399','#f59e0b','#f472b6','#38bdf8'];
+let cmpP=null,cmpC=new Set(),cmpChart,cmpMode='growth';const CMPC=['#34d399','#f59e0b','#f472b6','#38bdf8'];
 let ch;function subscribe(){
  if(ch)return;let t;const re=()=>{clearTimeout(t);t=setTimeout(load,250)};
  ch=sb.channel('room').on('postgres_changes',{event:'*',schema:'public',table:'study_sessions'},re)
@@ -474,6 +491,7 @@ document.addEventListener('click',async e=>{
  if(b.dataset.v){document.querySelectorAll('section').forEach(s=>s.classList.toggle('hide',s.id!==b.dataset.v));
   document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));if(b.dataset.v==='an')anRender()}
  if(b.dataset.m){mode=b.dataset.m;sortK=null;document.querySelectorAll('#modes button').forEach(x=>x.classList.toggle('on',x===b));lbRender()}
+ if(b.dataset.cm){cmpMode=b.dataset.cm;document.querySelectorAll('#cmpModes button').forEach(x=>x.classList.toggle('on',x===b));anRender()}
  if(b.dataset.d){days=+b.dataset.d;document.querySelectorAll('[data-d]').forEach(x=>x.classList.toggle('on',x===b));anRender()}
 });
 
@@ -682,7 +700,7 @@ async function achNotify(){if(notifying)return;const mine=A.u.filter(u=>u.owner_
 async function loadAch(){
  const[a,b,c]=await Promise.all([sb.from('achievement_definitions').select('*').eq('active',true).order('sort_order'),sb.from('achievement_unlocks').select('*'),sb.from('achievement_progress').select('*')]);
  if(a.error||b.error||c.error){$('#achBox').innerHTML='<div class="alert" style="display:block">Achievements are not set up yet. Run study_room_achievements.sql in the Supabase SQL Editor.</div>';return}
- A={d:a.data,u:b.data,p:c.data};renderAch();achNotify()}
+ A={d:a.data,u:b.data,p:c.data};renderAch();achNotify();if(members.length)lbRender()}
 function achSub(){if(achCh)return;let t;
  achCh=sb.channel('ach').on('postgres_changes',{event:'INSERT',schema:'public',table:'achievement_unlocks'},p=>{
   const u=p.new,d=A.d.find(x=>x.key===u.ach_key);if(u.owner_id===ROOM&&d)toast(d.name,u.tier,fv(d.unit,d['t'+u.tier])+' studied together','Team Achievement');
