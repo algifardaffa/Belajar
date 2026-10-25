@@ -857,5 +857,13 @@ let _ac=achCols();addEventListener('resize',()=>{const c=achCols();if(c!==_ac){_
 function place(){document.querySelectorAll('.hd-tg').forEach(t=>{if(!t._home){t._home=t.parentNode;t._slot=t._home.nextElementSibling&&t._home.nextElementSibling.querySelector('.tg-slot')}
  if(!t._slot)return;(mq.matches?t._slot:t._home).appendChild(t)})}
 place();(mq.addEventListener?mq.addEventListener('change',place):mq.addListener(place))})();
+
+(function(){const P=document.getElementById('ys');if(!P)return;
+function fit(){const c=P.querySelector('.clock'),w=P.querySelector('.ys-wave');if(!c||!w)return;
+ const top=c.getBoundingClientRect().top-P.getBoundingClientRect().top+6,ph=P.clientHeight;if(top<=0||ph<=0)return;
+ w.style.height=Math.max(60,(ph-top)/0.883)+'px'}
+if(window.ResizeObserver)new ResizeObserver(fit).observe(P);
+new MutationObserver(fit).observe(document.getElementById('mine'),{childList:true});
+addEventListener('resize',fit);setTimeout(fit,0);addEventListener('load',fit)})();
 </script>
 </body></html>
