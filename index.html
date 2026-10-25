@@ -407,7 +407,7 @@ function render(){
  const live=Object.values(sessions).filter(s=>s.status==='active').length;
  const done=0;
  const keep=$('#subj')?.value||'';
- $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying right now'} · updates live`;
+ $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying'} · updates live`;
  $('#ov').innerHTML=`<div class="hero-main">${[['Today',fmt(sum('today')),IC.clock],['This week',fmt(sum('week')),IC.cal],['All-time',fmt(sum('all')),IC.trophy]].map(([l,v,i])=>`<div><div class="lb">${i}${l}</div><div class="hv">${v}</div></div>`).join('')}</div>`;
  const goal=members.reduce((a,m)=>a+(goals[m.id]?.daily_goal_seconds||0),0),td=sum('today'),pct=goal?Math.min(100,td/goal*100):0;
  $('#cp').textContent=goal?`${Math.round(pct)}% · ${fmt(td)} of ${fmt(goal)}`:'No goals set yet';$('#cb').style.width=pct+'%';
