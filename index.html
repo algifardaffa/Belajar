@@ -359,6 +359,11 @@ body.goal-lock{overflow:hidden}
 #ccPanel>*:not(.ys-wave){position:relative;z-index:1}
 #ccPanel>.ys-wave{z-index:0;height:65%;pointer-events:none;opacity:.65}
 [data-theme=light] #ccPanel>.ys-wave{opacity:.40}
+/* podium animation (from v2) */
+#sdList.pre .pcol{opacity:0}
+@keyframes shine{0%{box-shadow:0 0 0 3px #f1cf7a,0 0 0 0 rgba(255,236,160,0)}35%{box-shadow:0 0 0 3px #fff3c4,0 0 18px 6px rgba(255,236,160,.85)}100%{box-shadow:0 0 0 3px #f1cf7a,0 0 0 0 rgba(255,236,160,0)}}
+.pcol.r1.shine .av{animation:shine 8s ease-out 1}
+@media(prefers-reduced-motion:reduce){.pcol.shine .av{animation:none!important}#sdList.pre .pcol{opacity:1!important}}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -1009,6 +1014,26 @@ $('#confirmPassword').onkeydown=e=>{if(e.key==='Enter')$('#saveNewPassword').cli
 themeBtn();
 $('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click()});
 boot();
+/* ===== Podium animation (from v2) ===== */
+const SP=2,PS=5;const EO='cubic-bezier(.22,1,.36,1)';
+const M={get rm(){return matchMedia('(prefers-reduced-motion:reduce)').matches},fr:new Set(),
+ seen(e,cb){if(M.rm||!('IntersectionObserver'in window)){cb();return}const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)){io.disconnect();cb()}},{threshold:0});io.observe(e)},
+ anim(e,kf,o,k=SP){if(M.rm||!e||!e.animate)return null;return e.animate(kf,{...o,duration:(o.duration||0)*k,delay:(o.delay||0)*k})},
+ tween(ms,fn,delay=0,k=SP){ms*=k;delay*=k;if(M.rm){fn(1);return}fn(0);setTimeout(()=>{const t0=performance.now(),s=t=>{const p=Math.min(1,(t-t0)/ms);fn(1-Math.pow(1-p,3));if(p<1)requestAnimationFrame(s)};requestAnimationFrame(s)},delay)}};
+/* Podium: columns rise 5,4,3,2,1; values count up; champion ring glints once */
+M.podRun=()=>{const k=mode,cols=[...document.querySelectorAll('#sdList .pcol')];if(!cols.length)return;
+ const rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]).slice(0,5);
+ const f=v=>k==='n'?Math.round(v)+(Math.round(v)===1?' award':' awards'):fmt(v);
+ cols.forEach(c=>{const n=+((c.className.match(/\br(\d)\b/)||[])[1]);if(!n)return;const d=(5-n)*150,b=c.querySelector('.pblk'),pv=c.querySelector('.pv'),r=rows[n-1];
+  M.anim(c,[{opacity:0},{opacity:1}],{duration:300,delay:d,fill:'backwards'},PS);
+  M.anim(b,[{height:'0px'},{height:getComputedStyle(b).height}],{duration:650,delay:d,easing:EO,fill:'backwards'},PS);
+  if(pv&&r)M.tween(900,p=>{pv.textContent=f(r[k]*p)},d,PS)});
+ const c1=cols.find(c=>c.classList.contains('r1')&&!c.classList.contains('zero'));
+ if(c1&&!M.rm)setTimeout(()=>{c1.classList.add('shine');setTimeout(()=>c1.classList.remove('shine'),1800*PS)},1300*PS)};
+M.podium=()=>{const L=$('#sdList');if(!L)return;
+ if(!M.pS){L.classList.add('pre');if(!M.pP){M.pP=1;M.seen(L,()=>{M.pS=1;M.pk=mode;L.classList.remove('pre');M.podRun()})}return}
+ if(M.pk!==mode){M.pk=mode;M.podRun()}};
+const _lb=lbRender;lbRender=function(){_lb();M.podium()};
 </script><script id="pwa-js">
 (function(){
   var btn=document.getElementById('installAppBtn'),label=document.getElementById('installAppLabel'),hint=document.getElementById('installHint'),deferred=null;
@@ -1033,7 +1058,7 @@ const fv=(u,v)=>u==='seconds'?(v>=3600?(Math.round(v/360)/10)+' h':Math.round(v/
 const aSt=(d,o)=>{const hi=Math.max(0,...A.u.filter(x=>x.ach_key===d.key&&x.owner_id===o).map(x=>x.tier)),p=A.p.find(x=>x.ach_key===d.key&&x.owner_id===o),V=+(p?.best_value||0),cur=+(p?.current_value||0),th=[d.t1,d.t2,d.t3,d.t4,d.t5].map(Number),L=hi?th[hi-1]:0,N=th[hi],pct=hi===5?100:Math.max(0,Math.min(100,(V-L)/(N-L)*100));return{hi,V,cur,th,N,pct}};
 const dt=s=>new Date(s).toLocaleDateString('en-GB',{timeZone:TZ,day:'numeric',month:'short',year:'numeric'});
 const TCOL=['#65d83b','#b56cff','#fde047','#ff6b8f','#67e8f9'];let tierFilter=-1;
-const achCols=()=>innerWidth>=1024?3:innerWidth>=340?2:1;
+const achCols=()=>innerWidth>=1024?3:innerWidth>720?2:1;
 function achPlace(open){const C=achCols(),pos=[];let q=open.map((_,i)=>i),r=1;
  while(q.length){const row=[];let used=0;
   while(q.length&&used<C){const i=q[0],w=open[i]&&C>1?2:1;
