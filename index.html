@@ -370,6 +370,16 @@ body.goal-lock{overflow:hidden}
 .profile-avatar-label{flex:1;min-width:0;overflow-wrap:anywhere}
 .profile-avatar-edit #th{flex:none;margin-left:auto;white-space:nowrap}
 @media(max-width:420px){.profile-avatar-edit #th{padding:7px 10px}.profile-avatar-edit #th span{display:none}}
+
+/* Audio edition: centered desktop navigation and icon-only sound control. */
+#snd{width:42px;min-width:42px;padding:8px;flex:0 0 42px}
+#snd .ic{width:19px;height:19px}
+@media(min-width:800px){
+  .top{position:relative;min-height:58px}
+  .top #nav{position:absolute;left:50%;transform:translateX(-50%);margin:0;z-index:2}
+  .top #profileButton{max-width:calc(50% - 135px);min-width:0}
+  .top #profileButton .profile-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -1053,7 +1063,7 @@ const M={get rm(){return matchMedia('(prefers-reduced-motion:reduce)').matches},
  tween(ms,fn,delay=0,k=SP){ms*=k;delay*=k;if(M.rm){fn(1);return}fn(0);setTimeout(()=>{const t0=performance.now(),s=t=>{const p=Math.min(1,(t-t0)/ms);fn(1-Math.pow(1-p,3));if(p<1)requestAnimationFrame(s)};requestAnimationFrame(s)},delay)}};
 /* Podium: columns rise 5,4,3,2,1; values count up; champion ring glints once */
 M.podRun=()=>{const k=mode,cols=[...document.querySelectorAll('#sdList .pcol')];if(!cols.length)return;const runId=M.runId=(M.runId||0)+1;
- try{SND.podIntro()}catch(_){};
+ try{SND.podIntro();SND.applause(M.rm?1:8)}catch(_){};
  const rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]).slice(0,5);
  const f=v=>k==='n'?Math.round(v)+(Math.round(v)===1?' award':' awards'):fmt(v);
  cols.forEach(c=>{const n=+((c.className.match(/\br(\d)\b/)||[])[1]);if(!n)return;const d=(5-n)*150,b=c.querySelector('.pblk'),pv=c.querySelector('.pv'),r=rows[n-1];
@@ -1166,7 +1176,7 @@ addEventListener('resize',fit);setTimeout(fit,0);addEventListener('load',fit)})(
 
 /* ===== Sound effects (Web Audio, tanpa file audio) ===== */
 const SND=(()=>{
- const AC=window.AudioContext||window.webkitAudioContext;let ctx=null,on=true,nz=null;
+ const AC=window.AudioContext||window.webkitAudioContext;let ctx=null,on=true,nz=null,applauseBus=null;
  try{on=localStorage.getItem('sr-sound')!=='off'}catch(_){}
  const run=()=>{if(!AC)return null;if(!ctx){ctx=new AC();const m=ctx.createGain();m.gain.value=.7;m.connect(ctx.destination);ctx.m=m}if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx};
  const ok=()=>(on&&!document.hidden&&ctx&&ctx.state==='running')?ctx:null;
@@ -1176,7 +1186,7 @@ const SND=(()=>{
  return{
   get on(){return on},
   get friendEnabled(){return on},
-  set(v){on=v;try{localStorage.setItem('sr-sound',v?'on':'off')}catch(_){}},
+  set(v){on=v;if(!v)this.stopApplause();try{localStorage.setItem('sr-sound',v?'on':'off')}catch(_){}},
   unlock(){run()},
   blip(){const c=run();if(c&&on&&c.state==='running')tone(c,880,c.currentTime,.12,'sine',.15)},
   start(){const c=ok();if(!c)return;const t=c.currentTime+.01; // short soft rising click
@@ -1190,6 +1200,40 @@ const SND=(()=>{
    for(let i=0;i<k+1&&i<5;i++)tone(c,N[i],t+i*.08,.28,'triangle',.15);
    if(k>=3)tone(c,N[4]*1.5,t+.5,.6,'sine',.07);
    if(k>=4)[N[0],N[2],N[3]].forEach(f=>tone(c,f,t+.45,.8,'triangle',.1))},
+  userTap(){const c=ok();if(!c)return;const t=c.currentTime+.005;
+   tone(c,685,t,.075,'sine',.035);tone(c,885,t+.04,.095,'sine',.023)},
+  awardToggle(open){const c=ok();if(!c)return;const t=c.currentTime+.005;
+   if(open){tone(c,540,t,.085,'sine',.043);tone(c,760,t+.065,.15,'sine',.036)}
+   else{tone(c,760,t,.075,'sine',.036);tone(c,490,t+.06,.13,'sine',.032)}},
+  stopApplause(){if(!applauseBus||!ctx)return;try{
+    const t=ctx.currentTime;applauseBus.gain.cancelScheduledValues(t);
+    applauseBus.gain.setValueAtTime(Math.max(.0001,applauseBus.gain.value),t);
+    applauseBus.gain.exponentialRampToValueAtTime(.0001,t+.04)
+   }catch(_){}applauseBus=null},
+  applause(seconds=8){const c=ok();if(!c)return;
+   if(applauseBus){try{const a=applauseBus;a.gain.cancelScheduledValues(c.currentTime);a.gain.setValueAtTime(Math.max(.0001,a.gain.value),c.currentTime);a.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.04)}catch(_){}}
+   const dur=Math.max(1,Math.min(12,seconds));const t=c.currentTime+.02;
+   const bus=c.createGain();bus.gain.setValueAtTime(.0001,t);
+   bus.gain.linearRampToValueAtTime(.34,t+.45);
+   bus.gain.setValueAtTime(.34,t+Math.max(.46,dur-.55));
+   bus.gain.linearRampToValueAtTime(.0001,t+dur);
+   bus.connect(c.m);applauseBus=bus;
+   // Many short filtered noise bursts create a low-volume, crowd-like clapping texture.
+   // All nodes are scheduled immediately in the current audio context (no repeated timers).
+   if(!nz){nz=c.createBuffer(1,c.sampleRate,c.sampleRate);const x=nz.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1}
+   const count=Math.floor(dur*10);
+   for(let i=0;i<count;i++){
+    const start=t+i*.1+Math.random()*.07,life=.035+Math.random()*.055;
+    const src=c.createBufferSource(),flt=c.createBiquadFilter(),env=c.createGain();
+    src.buffer=nz;flt.type='bandpass';flt.frequency.value=950+Math.random()*1600;flt.Q.value=.55+Math.random()*.7;
+    env.gain.setValueAtTime(.0001,start);
+    env.gain.linearRampToValueAtTime(.035+Math.random()*.045,start+.007);
+    env.gain.exponentialRampToValueAtTime(.0001,start+life);
+    src.connect(flt);flt.connect(env);env.connect(bus);src.start(start,Math.random()*.6);src.stop(start+life+.015);
+   }
+   // Silence routing after this run rather than leaving previous applause audible.
+   setTimeout(()=>{if(applauseBus===bus)applauseBus=null;try{bus.disconnect()}catch(_){ }},(dur+.5)*1000)
+  },
   podIntro(){const c=ok();if(!c)return;const t=c.currentTime+.025;
    [392,493.88,587.33].forEach((f,i)=>tone(c,f,t+i*.115,.18,'sine',.045));
    tone(c,783.99,t+.39,.31,'triangle',.035)},
@@ -1212,8 +1256,20 @@ const SND=(()=>{
 (function(){const b=document.getElementById('snd');if(!b)return;
  const ON='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
   OFF='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM22 9l-6 6M16 9l6 6"/></svg>';
- const paint=()=>{b.innerHTML=(SND.on?ON:OFF)+'<span>'+(SND.on?'Sound':'Muted')+'</span>';b.setAttribute('aria-pressed',SND.on)};
+ const paint=()=>{b.innerHTML=SND.on?ON:OFF;b.setAttribute('aria-pressed',String(SND.on));b.setAttribute('aria-label',SND.on?'Mute sound':'Unmute sound');b.setAttribute('title',SND.on?'Mute sound':'Unmute sound')};
  b.onclick=()=>{SND.set(!SND.on);paint();if(SND.on)SND.blip()};paint()})();
+/* User dashboard button feedback and distinct Awards card expand/collapse sounds. */
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.ak && b.closest('#ach')){
+   try{SND.awardToggle(!openK.has(b.dataset.ak))}catch(_){}
+   return;
+ }
+ if(!b.closest('#an'))return;
+ if(b.dataset.a||b.id==='snd'||b.id==='th'||b.id==='profileButton')return;
+ if(b.disabled)return;
+ try{SND.userTap()}catch(_){}
+},true);
 /* donut: bunyi sekali saat target harian baru tercapai (bukan saat halaman dibuka dalam kondisi sudah 100%) */
 (function(){const _d=donutRender;let prev=null;
  donutRender=function(){_d.apply(this,arguments);const a=$('#dArc');if(!a||!meId)return;const done=a.classList.contains('done');if(prev===false&&done)SND.goal();prev=done}})();
