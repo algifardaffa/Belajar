@@ -364,6 +364,12 @@ body.goal-lock{overflow:hidden}
 @keyframes shine{0%{box-shadow:0 0 0 3px #f1cf7a,0 0 0 0 rgba(255,236,160,0)}35%{box-shadow:0 0 0 3px #fff3c4,0 0 18px 6px rgba(255,236,160,.85)}100%{box-shadow:0 0 0 3px #f1cf7a,0 0 0 0 rgba(255,236,160,0)}}
 .pcol.r1.shine .av{animation:shine 8s ease-out 1}
 @media(prefers-reduced-motion:reduce){.pcol.shine .av{animation:none!important}#sdList.pre .pcol{opacity:1!important}}
+/* Sound lives at the far right of the header; theme lives beside avatar and name in profile card. */
+.top #snd{margin-left:auto;flex:none;white-space:nowrap}
+.profile-avatar-edit{min-width:0;width:100%}
+.profile-avatar-label{flex:1;min-width:0;overflow-wrap:anywhere}
+.profile-avatar-edit #th{flex:none;margin-left:auto;white-space:nowrap}
+@media(max-width:420px){.profile-avatar-edit #th{padding:7px 10px}.profile-avatar-edit #th span{display:none}}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -388,11 +394,11 @@ body.goal-lock{overflow:hidden}
 
 <header class="top"><button type="button" id="profileButton" class="profile-trigger" title="Edit your profile" aria-label="Edit your nickname and photo"><span class="av" id="me"></span><span class="profile-name" id="myName"></span></button>
 <nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button><button data-v="an"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>User</button><button data-v="ach"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Awards</button></nav>
-<button id="th" type="button" class="pill" aria-label="Toggle dark and light mode"></button></header>
+<button id="snd" type="button" class="pill" aria-label="Sound on or off"></button></header>
 <div class="status-row"><button id="installAppBtn" type="button" class="pill dl dl-right"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="installAppLabel">Download app</span></button></div><p id="installHint" class="profile-helps dl-hint" hidden></p><div id="err" class="alert" role="alert"></div>
 <div id="profileBackdrop" class="profile-backdrop hide" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><div class="panel profile-modal">
 <h2 class="h2" id="profileTitle">Edit profile</h2>
-<div class="profile-avatar-edit"><div class="av av-lg" id="profilePreview"></div><div><b id="profileCurrentName"></b><div class="profile-helps">Your personal avatar</div></div></div>
+<div class="profile-avatar-edit"><div class="av av-lg" id="profilePreview"></div><div class="profile-avatar-label"><b id="profileCurrentName"></b><div class="profile-helps">Your personal avatar</div></div><button id="th" type="button" class="pill profile-theme-button" aria-label="Toggle dark and light mode" title="Switch theme"></button></div>
 <label class="lb" for="profileNickname">Nickname</label><input id="profileNickname" type="text" minlength="1" maxlength="8" placeholder="Your nickname" autocomplete="nickname">
 <label class="lb" for="profileImage">Profile photo</label><input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
 
@@ -566,6 +572,8 @@ async function boot(){
  $('#login').classList.add('hide');$('#app').classList.remove('hide');
  await load();subscribe();achInit();clearInterval(timer);timer=setInterval(tick,1000);
 }
+let friendSessionBaseline=null;
+const friendSfxTimes=new Map();
 async function load(){
  const[a,b,c,d]=await Promise.all([
   sb.from('study_sessions').select('*').in('status',['active','paused']),
@@ -573,7 +581,24 @@ async function load(){
   sb.rpc('daily_stats',{p_from:'2000-01-01',p_to:today()}),
   sb.from('study_sessions').select('member_id').eq('status','completed')]);
  if(a.error||c.error)return err('Load failed: '+(a.error||c.error).message);
- err('');sessions={};a.data.forEach(s=>sessions[s.member_id]=s);
+ err('');
+ // Compare active sessions only after first successful load, not on sign-in.
+ // A newly active *other* member plays a soft note only when explicitly enabled.
+ const previousFriends=friendSessionBaseline;
+ const nowFriends=new Map(a.data.map(s=>[s.member_id,{id:s.id,status:s.status}]));
+ friendSessionBaseline=nowFriends;
+ if(previousFriends&&meId&&!document.hidden){
+  for(const entry of a.data){
+   if(entry.member_id===meId||entry.status!=='active')continue;
+   const before=previousFriends.get(entry.member_id);
+   if(before&&before.id===entry.id)continue; // no replay on refresh or pause/resume
+   const last=friendSfxTimes.get(entry.member_id)||0;
+   if(Date.now()-last<15000)continue;
+   friendSfxTimes.set(entry.member_id,Date.now());
+   try{if(typeof SND!=='undefined')SND.friend()}catch(_){}
+  }
+ }
+ sessions={};a.data.forEach(s=>sessions[s.member_id]=s);
  goals={};(b.data||[]).forEach(g=>goals[g.member_id]=g);stats=c.data;statsAt=Date.now();
  counts={};(d.data||[]).forEach(r=>counts[r.member_id]=(counts[r.member_id]||0)+1);
  const{data:ms,error:membersError}=await sb.from('members').select('*').order('slot_number');
@@ -697,6 +722,7 @@ function pomoRequestNotifications(){
  }catch(e){console.warn('Notification permission unavailable:',e)}
 }
 function pomoBeep(){try{
+ if(localStorage.getItem('sr-sound')==='off')return;
  if(!pomoAudio||pomoAudio.state!=='running')return;
  const t=pomoAudio.currentTime;
  [0,.23].forEach((at,i)=>{const osc=pomoAudio.createOscillator(),gain=pomoAudio.createGain();
@@ -847,6 +873,11 @@ document.addEventListener('click',async e=>{
    const {error}=await sb.rpc(act,args);
    if(error){if(error.code==='PGRST202'&&act.includes('pomodoro'))throw new Error('Install study_room_aurora_pomodoro.sql in Supabase before using Pomodoro.');throw error}
    if(action==='finish_study_session'){await sb.rpc('ach_sync');loadAch()}
+   // Success-only stopwatch cues. Distinct from Pomodoro's existing completion alarm.
+   try{
+    if(['start_study_session','start_pomodoro','start_next_pomodoro_focus'].includes(action))SND.start();
+    else if(action==='finish_study_session')SND.finish();
+   }catch(_){}
    err('');
   }catch(e){err(e?.message||'Stopwatch action failed.');}
   finally{await load();b.disabled=false;}
@@ -854,7 +885,7 @@ document.addEventListener('click',async e=>{
  }
  if(b.dataset.v){document.querySelectorAll('section').forEach(s=>s.classList.toggle('hide',s.id!==b.dataset.v));
   document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));if(b.dataset.v==='an')anRender()}
- if(b.dataset.m){mode=b.dataset.m;sortK=null;document.querySelectorAll('#modes button').forEach(x=>x.classList.toggle('on',x===b));lbRender()}
+ if(b.dataset.m){const wasMode=mode;mode=b.dataset.m;sortK=null;document.querySelectorAll('#modes button').forEach(x=>x.classList.toggle('on',x===b));lbRender();if(wasMode===mode&&typeof M!=='undefined'&&M.pS)M.podRun()}
  if(b.dataset.cm){cmpMode=b.dataset.cm;document.querySelectorAll('#cmpModes button').forEach(x=>x.classList.toggle('on',x===b));anRender()}
  if(b.id==='gSave'){b.disabled=true;Promise.resolve(saveGoal()).finally(()=>{b.disabled=false;closeGoal()})}
  if(b.dataset.kc){calC.has(b.dataset.kc)?calC.delete(b.dataset.kc):calC.add(b.dataset.kc);calRender()}
@@ -1021,15 +1052,17 @@ const M={get rm(){return matchMedia('(prefers-reduced-motion:reduce)').matches},
  anim(e,kf,o,k=SP){if(M.rm||!e||!e.animate)return null;return e.animate(kf,{...o,duration:(o.duration||0)*k,delay:(o.delay||0)*k})},
  tween(ms,fn,delay=0,k=SP){ms*=k;delay*=k;if(M.rm){fn(1);return}fn(0);setTimeout(()=>{const t0=performance.now(),s=t=>{const p=Math.min(1,(t-t0)/ms);fn(1-Math.pow(1-p,3));if(p<1)requestAnimationFrame(s)};requestAnimationFrame(s)},delay)}};
 /* Podium: columns rise 5,4,3,2,1; values count up; champion ring glints once */
-M.podRun=()=>{const k=mode,cols=[...document.querySelectorAll('#sdList .pcol')];if(!cols.length)return;
+M.podRun=()=>{const k=mode,cols=[...document.querySelectorAll('#sdList .pcol')];if(!cols.length)return;const runId=M.runId=(M.runId||0)+1;
+ try{SND.podIntro()}catch(_){};
  const rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]).slice(0,5);
  const f=v=>k==='n'?Math.round(v)+(Math.round(v)===1?' award':' awards'):fmt(v);
  cols.forEach(c=>{const n=+((c.className.match(/\br(\d)\b/)||[])[1]);if(!n)return;const d=(5-n)*150,b=c.querySelector('.pblk'),pv=c.querySelector('.pv'),r=rows[n-1];
   M.anim(c,[{opacity:0},{opacity:1}],{duration:300,delay:d,fill:'backwards'},PS);
   M.anim(b,[{height:'0px'},{height:getComputedStyle(b).height}],{duration:650,delay:d,easing:EO,fill:'backwards'},PS);
+  if(!M.rm)setTimeout(()=>{if(runId===M.runId)try{SND.podStep(n)}catch(_){}},d*PS);
   if(pv&&r)M.tween(900,p=>{pv.textContent=f(r[k]*p)},d,PS)});
  const c1=cols.find(c=>c.classList.contains('r1')&&!c.classList.contains('zero'));
- if(c1&&!M.rm)setTimeout(()=>{c1.classList.add('shine');setTimeout(()=>c1.classList.remove('shine'),1800*PS)},1300*PS)};
+ if(c1&&!M.rm)setTimeout(()=>{if(runId!==M.runId)return;c1.classList.remove('shine');void c1.offsetWidth;c1.classList.add('shine');try{SND.cheer()}catch(_){}setTimeout(()=>c1.classList.remove('shine'),1800*PS)},1300*PS)};
 M.podium=()=>{const L=$('#sdList');if(!L)return;
  if(!M.pS){L.classList.add('pre');if(!M.pP){M.pP=1;M.seen(L,()=>{M.pS=1;M.pk=mode;L.classList.remove('pre');M.podRun()})}return}
  if(M.pk!==mode){M.pk=mode;M.podRun()}};
@@ -1130,5 +1163,62 @@ function fit(){const c=P.querySelector('.clock'),w=P.querySelector('.ys-wave');i
 if(window.ResizeObserver)new ResizeObserver(fit).observe(P);
 new MutationObserver(fit).observe(document.getElementById('mine'),{childList:true});
 addEventListener('resize',fit);setTimeout(fit,0);addEventListener('load',fit)})();
+
+/* ===== Sound effects (Web Audio, tanpa file audio) ===== */
+const SND=(()=>{
+ const AC=window.AudioContext||window.webkitAudioContext;let ctx=null,on=true,nz=null;
+ try{on=localStorage.getItem('sr-sound')!=='off'}catch(_){}
+ const run=()=>{if(!AC)return null;if(!ctx){ctx=new AC();const m=ctx.createGain();m.gain.value=.7;m.connect(ctx.destination);ctx.m=m}if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx};
+ const ok=()=>(on&&!document.hidden&&ctx&&ctx.state==='running')?ctx:null;
+ const tone=(c,f,t,d,ty,g)=>{const o=c.createOscillator(),a=c.createGain();o.type=ty||'triangle';o.frequency.value=f;a.gain.setValueAtTime(.0001,t);a.gain.exponentialRampToValueAtTime(g||.2,t+.02);a.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(a);a.connect(c.m);o.start(t);o.stop(t+d+.05)};
+ const noise=(c,t,d,f,g)=>{if(!nz){nz=c.createBuffer(1,c.sampleRate,c.sampleRate);const x=nz.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1}const s=c.createBufferSource(),b=c.createBiquadFilter(),a=c.createGain();s.buffer=nz;b.type='bandpass';b.frequency.value=f;b.Q.value=.8;a.gain.setValueAtTime(g,t);a.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(b);b.connect(a);a.connect(c.m);s.start(t,Math.random()*.5);s.stop(t+d+.02)};
+ const N=[523.25,659.25,783.99,1046.5,1318.5];
+ return{
+  get on(){return on},
+  get friendEnabled(){return on},
+  set(v){on=v;try{localStorage.setItem('sr-sound',v?'on':'off')}catch(_){}},
+  unlock(){run()},
+  blip(){const c=run();if(c&&on&&c.state==='running')tone(c,880,c.currentTime,.12,'sine',.15)},
+  start(){const c=ok();if(!c)return;const t=c.currentTime+.01; // short soft rising click
+   tone(c,510,t,.065,'sine',.055);tone(c,740,t+.055,.085,'sine',.045)},
+  finish(){const c=ok();if(!c)return;const t=c.currentTime+.01; // lower two-note finish
+   tone(c,740,t,.075,'triangle',.052);tone(c,470,t+.075,.13,'sine',.05)},
+  friend(){const c=ok();if(!c)return;const t=c.currentTime+.02;
+   tone(c,587.33,t,.16,'sine',.042);tone(c,783.99,t+.12,.27,'sine',.036)},
+  goal(){const c=ok();if(!c)return;const t=c.currentTime+.03;N.slice(0,4).forEach((f,i)=>tone(c,f,t+i*.09,.35,'triangle',.18));tone(c,2093,t+.4,.5,'sine',.08)},
+  ach(tier){const c=ok();if(!c)return;const k=Math.max(1,Math.min(5,+tier||1)),t=c.currentTime+.03;
+   for(let i=0;i<k+1&&i<5;i++)tone(c,N[i],t+i*.08,.28,'triangle',.15);
+   if(k>=3)tone(c,N[4]*1.5,t+.5,.6,'sine',.07);
+   if(k>=4)[N[0],N[2],N[3]].forEach(f=>tone(c,f,t+.45,.8,'triangle',.1))},
+  podIntro(){const c=ok();if(!c)return;const t=c.currentTime+.025;
+   [392,493.88,587.33].forEach((f,i)=>tone(c,f,t+i*.115,.18,'sine',.045));
+   tone(c,783.99,t+.39,.31,'triangle',.035)},
+  podStep(rank){const c=ok();if(!c)return;const t=c.currentTime+.01;
+   const f=[0,783.99,698.46,659.25,587.33,523.25][rank]||523.25;
+   tone(c,f,t,.13,'sine',.038)},
+  cheer(){const c=ok();if(!c)return;const t=c.currentTime+.05;
+   [0,.13,.26].forEach((d,i)=>tone(c,N[i],t+d,.22,'triangle',.16));
+   [N[0],N[2],N[3]].forEach(f=>tone(c,f,t+.4,.9,'triangle',.1));
+   const v=t+.4,o=c.createOscillator(),g=c.createGain(),a=c.createBiquadFilter(),b=c.createBiquadFilter();
+   o.type='sawtooth';o.frequency.setValueAtTime(280,v);o.frequency.linearRampToValueAtTime(440,v+.3);o.frequency.linearRampToValueAtTime(400,v+1);
+   a.type=b.type='bandpass';a.Q.value=6;b.Q.value=8;
+   a.frequency.setValueAtTime(300,v);a.frequency.linearRampToValueAtTime(600,v+.3);
+   b.frequency.setValueAtTime(2300,v);b.frequency.linearRampToValueAtTime(1900,v+.3);
+   g.gain.setValueAtTime(.0001,v);g.gain.exponentialRampToValueAtTime(.35,v+.08);g.gain.setValueAtTime(.35,v+.7);g.gain.exponentialRampToValueAtTime(.0001,v+1.05);
+   o.connect(a);o.connect(b);a.connect(g);b.connect(g);g.connect(c.m);o.start(v);o.stop(v+1.1);
+   for(let i=0;i<14;i++)noise(c,t+.5+i*.06+Math.random()*.03,.05,2500+Math.random()*1500,.12)}
+ }})();
+['pointerdown','keydown','touchend'].forEach(e=>addEventListener(e,()=>SND.unlock(),{passive:true}));
+(function(){const b=document.getElementById('snd');if(!b)return;
+ const ON='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+  OFF='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM22 9l-6 6M16 9l6 6"/></svg>';
+ const paint=()=>{b.innerHTML=(SND.on?ON:OFF)+'<span>'+(SND.on?'Sound':'Muted')+'</span>';b.setAttribute('aria-pressed',SND.on)};
+ b.onclick=()=>{SND.set(!SND.on);paint();if(SND.on)SND.blip()};paint()})();
+/* donut: bunyi sekali saat target harian baru tercapai (bukan saat halaman dibuka dalam kondisi sudah 100%) */
+(function(){const _d=donutRender;let prev=null;
+ donutRender=function(){_d.apply(this,arguments);const a=$('#dArc');if(!a||!meId)return;const done=a.classList.contains('done');if(prev===false&&done)SND.goal();prev=done}})();
+/* achievement baru: bunyi mengikuti tier tertinggi, maksimal sekali per 1,5 detik */
+(function(){const _t=toast;let last=0;
+ toast=function(name,t){const n=Date.now();if(n-last>1500){last=n;try{SND.ach(t)}catch(_){}}return _t.apply(this,arguments)}})();
 </script>
 </body></html>
