@@ -349,6 +349,16 @@ body.goal-lock{overflow:hidden}
 #ccPanel.cc{background:var(--panel)}
 #an>#ccPanel{margin-bottom:28px}
 #an>.sec-title:first-child{margin-top:0}
+/* Awards: one full-width achievement card per row on phones/narrow screens. */
+@media(max-width:720px){
+  #achBox .ag{grid-template-columns:minmax(0,1fr);grid-auto-flow:row}
+  #achBox .ag .ac2,#achBox .ag .ac2.open{grid-column:1 / -1!important}
+}
+/* Weekly Recap: restore the profile-colored wave in its User panel. */
+#ccPanel{position:relative;overflow:hidden;isolation:isolate}
+#ccPanel>*:not(.ys-wave){position:relative;z-index:1}
+#ccPanel>.ys-wave{z-index:0;height:65%;pointer-events:none;opacity:.65}
+[data-theme=light] #ccPanel>.ys-wave{opacity:.40}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -600,7 +610,7 @@ function render(){
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
- setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#podiumPanel','ys-wave',waveOf(me));
+ setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#podiumPanel','ys-wave',waveOf(me));setPanelWave('#ccPanel','ys-wave',waveOf(me));
  donutRender();
  lbRender();anRender();
 }
