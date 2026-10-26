@@ -338,6 +338,17 @@ body.goal-lock{overflow:hidden}
 [data-theme=light] .mc-wave{opacity:.90}
 [data-theme=light] .wv-pick button[aria-pressed=true]{background:color-mix(in srgb,var(--c) 10%,transparent)}
 [data-theme=light] .wv-pick button:hover{background:color-mix(in srgb,var(--c) 8%,transparent)}
+
+/* v12: Podium on Home, Weekly Recap on User; wave follows the podium. */
+.home-podium{margin-top:28px}
+.home-podium .head.out{margin-bottom:12px}
+.podium-wave-panel{position:relative;overflow:hidden;isolation:isolate}
+.podium-wave-panel>*:not(.ys-wave){position:relative;z-index:1}
+.podium-wave-panel .ys-wave{height:85%;opacity:.65;z-index:0}
+[data-theme=light] .podium-wave-panel .ys-wave{opacity:.35}
+#ccPanel.cc{background:var(--panel)}
+#an>#ccPanel{margin-bottom:28px}
+#an>.sec-title:first-child{margin-top:0}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -376,12 +387,13 @@ body.goal-lock{overflow:hidden}
 <section id="dash"><div class="row live-row ys-head"><h2 class="h2"><span class="t-desk">Your Session</span><span class="t-mob">Daily goal</span></h2><span class="sp"></span><div id="live" class="status"></div></div>
 <div class="panel ys" id="ys"><div class="ys-body"><div class="ys-sess" id="mine"></div><div class="ys-goal"><div class="lb ys-lb">Daily goal</div><div class="goal-row"><div class="donut" id="donutBtn" role="button" tabindex="0" aria-label="Set daily goal" title="Tap to set your daily goal"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div></div></div></div></div>
 <h2 class="h2 sec-title ttl"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study room</h2><div class="grid" id="cards"></div>
-<h2 class="h2 sec-title ttl"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Weekly Recap</h2><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div></section>
+<div id="lb" class="home-podium"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M8 21V11h8v10M2 21v-6h6M16 21v-4h6"/></svg><div><h2 class="h2">Podium</h2></div></div>
+<div class="hd-tg"><div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div></div><div class="panel podium-wave-panel" id="podiumPanel"><div class="tg-slot"></div>
+<div id="sdList" class="podium"></div>
+<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div></section>
 
-<section id="an" class="hide"><div id="lb"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M8 21V11h8v10M2 21v-6h6M16 21v-4h6"/></svg><div><h2 class="h2">Podium</h2><div class="sub" id="sdSub">Study time by member</div></div></div>
-<div class="hd-tg"><div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div></div><div class="panel"><div class="tg-slot"></div>
-<div id="podWin" class="pod-win hide"></div><div id="sdList" class="podium"></div>
-<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div><div class="head out" style="margin-top:24px"><div class="hd-ic"><svg class="ic red hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/></svg><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div></div>
+<section id="an" class="hide"><h2 class="h2 sec-title ttl"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Weekly Recap</h2><p class="sub" style="margin:4px 0 12px">Last week, Monday to Sunday</p><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div>
+<div class="head out" style="margin-top:24px"><div class="hd-ic"><svg class="ic red hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/></svg><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div></div>
 <div class="tgs hd-tg"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Total</button><button type="button" data-cm="growth" class="on">Daily</button><button type="button" data-cm="rank">Rank</button></div>
 <div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div><div class="panel"><div class="tg-slot"></div>
 <div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
@@ -575,7 +587,7 @@ function render(){
     const bk=Object.keys(dt).sort((a,b)=>dt[b]-dt[a])[0],[bid,bday]=bk.split('|'),bm=members.find(m=>m.id===bid),wd=new Date(bday+'T00:00:00Z').toLocaleDateString('en-US',{weekday:'long',timeZone:'UTC'});
     const rows=[[IC.trophy,`${esc(hi.m.display_name)} studied the most`,hmr(hi.s)],[IC.clock,`${esc(lo.m.display_name)} studied the least`,hmr(lo.s)],
      [IC.users,'The room studied together',hmr(tt)],[IC.cal,`Longest day: ${esc(bm?bm.display_name:'')} on ${wd}`,hmr(dt[bk])]];
-    rc.innerHTML=`<h2 class="h2 rc-t">Last week, Monday to Sunday</h2>`+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
+    rc.innerHTML=rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=expiredPomo(s)?'paused':(!s&&tot(m.id,today())>0)?'paused':st,po=mine?pomoGet(s):null;
   const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
   const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
@@ -588,7 +600,7 @@ function render(){
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
- setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#ccPanel','ys-wave',waveOf(me));
+ setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#podiumPanel','ys-wave',waveOf(me));
  donutRender();
  lbRender();anRender();
 }
@@ -714,12 +726,7 @@ function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&meId)void load().then(()=>pomoStep()).catch(e=>err(e.message))});
 function lbRender(){
  const k=mode,rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]).slice(0,5);
- const when={today:'today',week:'this week',month:'this month',all:'of all time',n:'with the most awards'}[k];
- $('#sdSub').textContent=k==='n'?'Awards earned by member':'Study time by member';
  const val=r=>k==='n'?r.n+(r.n===1?' award':' awards'):fmt(r[k]);
- const top=rows[0],has=top&&top[k]>0;
- const W=$('#podWin');W.classList.remove('hide');
- W.innerHTML=`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><div><b>${has?`The winner ${when}`:`No winner ${when} yet`}</b>${has?`<br><span>${esc(top.m.display_name)}${top.m.id===meId?' (you)':''} · ${val(top)}</span>`:''}</div>`;
  const order=[3,1,0,2,4].filter(i=>i<rows.length);
  $('#sdList').innerHTML=order.map(i=>{const r=rows[i],n=i+1;return`<div class="pcol r${n}${r[k]>0?'':' zero'}">${avatarMarkup(r.m)}<span class="pn" title="${esc(r.m.display_name)}">${esc(r.m.display_name)}${r.m.id===meId?' (you)':''}</span><span class="pv">${val(r)}</span><div class="pblk">${n}</div></div>`}).join('');
  $('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
