@@ -332,6 +332,12 @@ body.goal-lock{overflow:hidden}
 .r4 .pblk{background:linear-gradient(180deg,#828faa,#555f77)}
 .r5 .pblk{background:linear-gradient(180deg,#718093,#475569)}
 [data-theme=light] .pblk{color:rgba(255,255,255,.93)}
+
+/* Aurora Harmony: calmer fill; readable muted strokes in both themes. */
+[data-theme=light] .ys-wave,
+[data-theme=light] .mc-wave{opacity:.90}
+[data-theme=light] .wv-pick button[aria-pressed=true]{background:color-mix(in srgb,var(--c) 10%,transparent)}
+[data-theme=light] .wv-pick button:hover{background:color-mix(in srgb,var(--c) 8%,transparent)}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -491,7 +497,7 @@ function refreshProfilePreview(){
  $('#profileCurrentName').textContent=$('#profileNickname').value.trim()||me.display_name;
 }
 let pendingWave='moonlight';
-function paintWavePick(){const w=$('#wavePick');if(!w)return;waveDefs();w.innerHTML=Object.entries(WAVES).map(([k,v])=>`<button type="button" data-wv="${k}" style="--c:${v[1]}" aria-label="${v[3]}" title="${v[3]}" aria-pressed="${k===pendingWave}"><span class="wv-symbol" aria-hidden="true">≈</span></button>`).join('')}
+function paintWavePick(){const w=$('#wavePick');if(!w)return;waveDefs();const light=document.documentElement.dataset.theme==='light';w.innerHTML=Object.entries(WAVES).map(([k,v])=>`<button type="button" data-wv="${k}" style="--c:${v[light?4:1]}" aria-label="${v[3]}" title="${v[3]}" aria-pressed="${k===pendingWave}"><span class="wv-symbol" aria-hidden="true">≈</span></button>`).join('')}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-wv]');if(!b)return;e.stopPropagation();pendingWave=b.dataset.wv;paintWavePick()},true);
 function openProfileEditor(){
  const me=members.find(m=>m.id===meId);if(!me)return;pendingWave=waveOf(me);paintWavePick();
@@ -572,12 +578,12 @@ function render(){
     rc.innerHTML=`<h2 class="h2 rc-t">Last week, Monday to Sunday</h2>`+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=expiredPomo(s)?'paused':(!s&&tot(m.id,today())>0)?'paused':st,po=mine?pomoGet(s):null;
   const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
-  const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start studying</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
+  const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
    st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
    po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
   return`<article class="mc ${vs}${mine?' me':''}">${mine?'':waveSvg(waveOf(m),'mc-wave')}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
-  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span><button type="button" class="pomo-alert-btn" id="pomoAlerts" title="Enable system notifications">Alerts</button>`:''}</div>
+  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span>`:''}</div>
   <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
@@ -587,13 +593,16 @@ function render(){
  lbRender();anRender();
 }
 
-// Aurora Pastel: five gentle colors, unique default shade per slot.
+// Aurora Harmony: five low-saturation colors with high-contrast light-mode accents.
+// Database keys sunset/sakura are retained for compatibility with the existing
+// Supabase CHECK constraint and update_study_wave RPC; only their VISUAL labels
+// and colors change to Dusty Mauve / Soft Sage. No SQL migration is required.
 const WAVES={
- moonlight:['#94A3B8','#CBD5E1','#E2E8F0','Moonlight','#64748B','#94A3B8'],
- iris:['#818CF8','#A5B4FC','#C7D2FE','Iris','#4F46E5','#6366F1'],
- arctic:['#22D3EE','#67E8F9','#A5F3FC','Arctic','#0891B2','#06B6D4'],
- sunset:['#FB923C','#FDBA9A','#FED7AA','Sunset','#C2410C','#EA580C'],
- sakura:['#FB7185','#FDA4AF','#FECDD3','Sakura','#BE123C','#E11D48']
+ moonlight:['#94A3B8','#CBD5E1','#E2E8F0','Moonlight','#64748B','#64748B'],
+ iris:['#8D9CE3','#A5B4FC','#C7D2FE','Iris','#5964B2','#5964B2'],
+ arctic:['#45B9D2','#67E8F9','#A5F3FC','Arctic','#0E7490','#0E7490'],
+ sunset:['#A58BAB','#B9A3BC','#D5C6D7','Dusty Mauve','#806585','#806585'],
+ sakura:['#7DAF98','#9FC9B2','#C4E0D0','Soft Sage','#3C7960','#3C7960']
 };
 const WDEF=['moonlight','iris','arctic','sunset','sakura'];
 const waveOk=c=>Object.prototype.hasOwnProperty.call(WAVES,c);
@@ -605,9 +614,13 @@ const waveOf=m=>{if(!m)return WDEF[0];if(waveOk(m.wave_color))return m.wave_colo
 };
 // Compare Players and Calendar deliberately use slot-assigned colors,
 // regardless of user-selected waves. Hence 5 players always have 5 unique colors.
-const memberAccent=m=>WAVES[WDEF[Math.max(0,Math.min(4,(Number(m?.slot_number)||1)-1))]][1];
+const memberAccent=m=>{
+ const palette=WAVES[WDEF[Math.max(0,Math.min(4,(Number(m?.slot_number)||1)-1))]];
+ // Chart and calendar remain unique per slot. Use darker colors on white UI.
+ return palette[document.documentElement.dataset.theme==='light'?4:1];
+};
 function waveDefs(){if($('#waveDefs'))return;const d=document.createElement('div');d.id='waveDefs';d.setAttribute('aria-hidden','true');d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
- d.innerHTML='<svg width="0" height="0"><defs>'+Object.entries(WAVES).map(([k,[a,b,c,,la,lb]])=>`<linearGradient id="wg-${k}" x1="0" x2="1"><stop offset="0" stop-color="${a}" stop-opacity="0"/><stop offset=".35" stop-color="${b}"/><stop offset=".7" stop-color="${c}"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wf-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}" stop-opacity=".42"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wgl-${k}" x1="0" x2="1"><stop offset="0" stop-color="${la}" stop-opacity="0"/><stop offset=".35" stop-color="${lb}"/><stop offset=".7" stop-color="${la}"/><stop offset="1" stop-color="${la}" stop-opacity="0"/></linearGradient><linearGradient id="wfl-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lb}" stop-opacity=".32"/><stop offset="1" stop-color="${lb}" stop-opacity="0"/></linearGradient>`).join('')+'</defs></svg>';document.body.appendChild(d);
+ d.innerHTML='<svg width="0" height="0"><defs>'+Object.entries(WAVES).map(([k,[a,b,c,,la,lb]])=>`<linearGradient id="wg-${k}" x1="0" x2="1"><stop offset="0" stop-color="${a}" stop-opacity="0"/><stop offset=".35" stop-color="${b}"/><stop offset=".7" stop-color="${c}"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wf-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}" stop-opacity=".23"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wgl-${k}" x1="0" x2="1"><stop offset="0" stop-color="${la}" stop-opacity="0"/><stop offset=".35" stop-color="${lb}"/><stop offset=".7" stop-color="${la}"/><stop offset="1" stop-color="${la}" stop-opacity="0"/></linearGradient><linearGradient id="wfl-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lb}" stop-opacity=".19"/><stop offset="1" stop-color="${lb}" stop-opacity="0"/></linearGradient>`).join('')+'</defs></svg>';document.body.appendChild(d);
  const st=document.createElement('style');st.textContent=Object.entries(WAVES).map(([k,[,b,,,la,lb]])=>`svg[data-k=${k}] .w3{color:${b}}[data-theme=light] svg[data-k=${k}] .w3{color:${lb}}[data-theme=light] svg[data-k=${k}] .w3 path{stroke:url(#wgl-${k})}[data-theme=light] svg[data-k=${k}] .w1 path,[data-theme=light] svg[data-k=${k}] .w2 path{fill:url(#wfl-${k})}`).join('');document.head.appendChild(st)}
 const waveSvg=(k,cls)=>`<svg class="${cls}" data-k="${k}" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><g class="w1"><path d="M0 36 Q150 -4 300 36 T600 36 T900 36 T1200 36 V120 H0Z" fill="url(#wf-${k})"/></g><g class="w2"><path d="M0 44 Q150 6 300 44 T600 44 T900 44 T1200 44 V120 H0Z" fill="url(#wf-${k})" opacity=".55"/></g><g class="w3"><path d="M0 34 Q150 -6 300 34 T600 34 T900 34 T1200 34" fill="none" stroke="url(#wg-${k})" stroke-width="2.5" stroke-linecap="round"/></g></svg>`;
 function setPanelWave(sel,cls,k){const P=$(sel);if(!P)return;const o=P.querySelector('.'+cls);if(o&&o.dataset.k===k)return;const t=document.createElement('div');t.innerHTML=waveSvg(k,cls);const n=t.firstChild;if(o)o.replaceWith(n);else P.insertBefore(n,P.firstChild);dispatchEvent(new Event('resize'))}
@@ -643,6 +656,19 @@ function pomoUnlockAudio(){try{
  if(!pomoAudio)pomoAudio=new C();
  if(pomoAudio.state==='suspended')pomoAudio.resume().catch(()=>{});
  }catch(e){console.warn('Audio is unavailable:',e)}}
+// Request permission directly in the Pomodoro click gesture (before any await).
+// A blocked or unavailable notification API must never prevent studying.
+function pomoRequestNotifications(){
+ if(typeof Notification==='undefined')return;
+ if(Notification.permission!=='default')return;
+ if(!window.isSecureContext)return;
+ try{
+  Promise.resolve(Notification.requestPermission()).then(permission=>{
+   if(permission==='granted')pomoNote('Pomodoro notifications enabled.');
+   else if(permission==='denied')pomoNote('System notifications blocked. In-app alerts remain available.');
+  }).catch(e=>console.warn('Notification permission unavailable:',e));
+ }catch(e){console.warn('Notification permission unavailable:',e)}
+}
 function pomoBeep(){try{
  if(!pomoAudio||pomoAudio.state!=='running')return;
  const t=pomoAudio.currentTime;
@@ -788,6 +814,7 @@ document.addEventListener('click',async e=>{
    const action=b.dataset.a;
    // Unlock audio synchronously during the click, before any awaited network call.
    if(action==='start_pomodoro'||action==='start_next_pomodoro_focus')pomoUnlockAudio();
+   if(action==='start_pomodoro')pomoRequestNotifications();
    await checkCurrentMember();
    if(['finish_study_session','cancel_study_session'].includes(action)&&pomoGet()?.phase==='focus'&&Date.now()>=pomoGet().end){
     const sync=await sb.rpc('sync_pomodoro_session');if(sync.error)throw sync.error;
@@ -801,14 +828,6 @@ document.addEventListener('click',async e=>{
    err('');
   }catch(e){err(e?.message||'Stopwatch action failed.');}
   finally{await load();b.disabled=false;}
-  return;
- }
- if(b.id==='pomoAlerts'){
-  pomoUnlockAudio();
-  if(typeof Notification==='undefined'){pomoNote('System notifications are unavailable in this browser. In-app alerts remain active.')}
-  else if(Notification.permission==='granted')pomoNote('Pomodoro alerts are enabled.');
-  else if(Notification.permission==='denied')pomoNote('System notifications are blocked. In-app alerts remain active.');
-  else{try{const p=await Notification.requestPermission();pomoNote(p==='granted'?'Pomodoro alerts enabled.':'In-app alerts will still appear.')}catch(_){pomoNote('In-app alerts remain active.')}}
   return;
  }
  if(b.dataset.v){document.querySelectorAll('section').forEach(s=>s.classList.toggle('hide',s.id!==b.dataset.v));
@@ -899,7 +918,7 @@ $('#profileSave').onclick=async()=>{
  }finally{button.disabled=false;$('#profileCancel').disabled=false;button.textContent='Save changes'}
 };
 
-$('#th').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem('sr-theme',n);themeBtn();anRender()};
+$('#th').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem('sr-theme',n);themeBtn();paintWavePick();anRender()};
 $('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
 $('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('#em').value,password:$('#pw').value});
   if(error)$('#le').textContent=error.message;else{$('#le').textContent='';boot()}};
