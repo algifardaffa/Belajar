@@ -628,10 +628,11 @@ function render(){
  $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying now'}`;
  const hm2=v=>{v=Math.max(0,Math.floor(v));return[Math.floor(v/3600),String(Math.floor(v%3600/60)).padStart(2,'0')]};
  $('#ov').innerHTML=`<div class="hero-main">${[['Today',sum('today'),IC.clock],['This week',sum('week'),IC.cal]].map(([l,v,i])=>{const[h,m]=hm2(v);return`<div><div><span class="hero-n">${h}</span><span class="hero-d">h ${m}m</span></div><div class="lb">${i}${l}</div></div>`}).join('')}</div>`;
- {const rc=$('#recap'),t0=today(),mon=new Date(t0+'T00:00:00Z').getUTCDay()===1;
-  if(!mon)rc.classList.add('hide');else{const from=addD(t0,-7),to=addD(t0,-1);
+ {const rc=$('#recap'),t0=today(),weekday=new Date(t0+'T00:00:00Z').getUTCDay(),daysSinceMonday=(weekday+6)%7;
+  /* Always show the most recently completed Monday–Sunday week. On the next Monday, advance. */
+  {const from=addD(t0,-(daysSinceMonday+7)),to=addD(t0,-(daysSinceMonday+1));
    const per=members.map(m=>({m,s:stats.filter(r=>r.member_id===m.id&&r.day>=from&&r.day<=to).reduce((a,r)=>a+r.seconds,0)})),tt=per.reduce((a,b)=>a+b.s,0);
-   if(!tt)rc.classList.add('hide');else{const hmr=v=>{const k=Math.round(v/60);return Math.floor(k/60)+'h '+(k%60)+'m'};
+   if(!tt){rc.innerHTML='<div class="sub">No study sessions recorded last week.</div>';rc.classList.remove('hide')}else{const hmr=v=>{const k=Math.round(v/60);return Math.floor(k/60)+'h '+(k%60)+'m'};
     const hi=per.reduce((a,b)=>b.s>a.s?b:a),lo=per.reduce((a,b)=>b.s<a.s?b:a),dt={};
     stats.forEach(r=>{if(r.day>=from&&r.day<=to){const k=r.member_id+'|'+r.day;dt[k]=(dt[k]||0)+r.seconds}});
     const bk=Object.keys(dt).sort((a,b)=>dt[b]-dt[a])[0],[bid,bday]=bk.split('|'),bm=members.find(m=>m.id===bid),wd=new Date(bday+'T00:00:00Z').toLocaleDateString('en-US',{weekday:'long',timeZone:'UTC'});
@@ -1063,7 +1064,7 @@ const M={get rm(){return matchMedia('(prefers-reduced-motion:reduce)').matches},
  tween(ms,fn,delay=0,k=SP){ms*=k;delay*=k;if(M.rm){fn(1);return}fn(0);setTimeout(()=>{const t0=performance.now(),s=t=>{const p=Math.min(1,(t-t0)/ms);fn(1-Math.pow(1-p,3));if(p<1)requestAnimationFrame(s)};requestAnimationFrame(s)},delay)}};
 /* Podium: columns rise 5,4,3,2,1; values count up; champion ring glints once */
 M.podRun=()=>{const k=mode,cols=[...document.querySelectorAll('#sdList .pcol')];if(!cols.length)return;const runId=M.runId=(M.runId||0)+1;
- try{SND.podIntro();SND.applause(M.rm?1:8)}catch(_){};
+ try{SND.podIntro()}catch(_){};
  const rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]).slice(0,5);
  const f=v=>k==='n'?Math.round(v)+(Math.round(v)===1?' award':' awards'):fmt(v);
  cols.forEach(c=>{const n=+((c.className.match(/\br(\d)\b/)||[])[1]);if(!n)return;const d=(5-n)*150,b=c.querySelector('.pblk'),pv=c.querySelector('.pv'),r=rows[n-1];
@@ -1072,7 +1073,11 @@ M.podRun=()=>{const k=mode,cols=[...document.querySelectorAll('#sdList .pcol')];
   if(!M.rm)setTimeout(()=>{if(runId===M.runId)try{SND.podStep(n)}catch(_){}},d*PS);
   if(pv&&r)M.tween(900,p=>{pv.textContent=f(r[k]*p)},d,PS)});
  const c1=cols.find(c=>c.classList.contains('r1')&&!c.classList.contains('zero'));
- if(c1&&!M.rm)setTimeout(()=>{if(runId!==M.runId)return;c1.classList.remove('shine');void c1.offsetWidth;c1.classList.add('shine');try{SND.cheer()}catch(_){}setTimeout(()=>c1.classList.remove('shine'),1800*PS)},1300*PS)};
+ if(c1&&!M.rm){
+  // Start the rising drum roll two seconds before the champion's golden ring.
+  setTimeout(()=>{if(runId!==M.runId)return;try{SND.drumRoll()}catch(_){}},Math.max(0,1300*PS-2000));
+  setTimeout(()=>{if(runId!==M.runId)return;c1.classList.remove('shine');void c1.offsetWidth;c1.classList.add('shine');try{SND.cheer()}catch(_){}setTimeout(()=>c1.classList.remove('shine'),1800*PS)},1300*PS)
+ }};
 M.podium=()=>{const L=$('#sdList');if(!L)return;
  if(!M.pS){L.classList.add('pre');if(!M.pP){M.pP=1;M.seen(L,()=>{M.pS=1;M.pk=mode;L.classList.remove('pre');M.podRun()})}return}
  if(M.pk!==mode){M.pk=mode;M.podRun()}};
@@ -1176,7 +1181,7 @@ addEventListener('resize',fit);setTimeout(fit,0);addEventListener('load',fit)})(
 
 /* ===== Sound effects (Web Audio, tanpa file audio) ===== */
 const SND=(()=>{
- const AC=window.AudioContext||window.webkitAudioContext;let ctx=null,on=true,nz=null,applauseBus=null;
+ const AC=window.AudioContext||window.webkitAudioContext;let ctx=null,on=true,nz=null;
  try{on=localStorage.getItem('sr-sound')!=='off'}catch(_){}
  const run=()=>{if(!AC)return null;if(!ctx){ctx=new AC();const m=ctx.createGain();m.gain.value=.7;m.connect(ctx.destination);ctx.m=m}if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx};
  const ok=()=>(on&&!document.hidden&&ctx&&ctx.state==='running')?ctx:null;
@@ -1186,7 +1191,7 @@ const SND=(()=>{
  return{
   get on(){return on},
   get friendEnabled(){return on},
-  set(v){on=v;if(!v)this.stopApplause();try{localStorage.setItem('sr-sound',v?'on':'off')}catch(_){}},
+  set(v){on=v;try{localStorage.setItem('sr-sound',v?'on':'off')}catch(_){}},
   unlock(){run()},
   blip(){const c=run();if(c&&on&&c.state==='running')tone(c,880,c.currentTime,.12,'sine',.15)},
   start(){const c=ok();if(!c)return;const t=c.currentTime+.01; // short soft rising click
@@ -1200,39 +1205,31 @@ const SND=(()=>{
    for(let i=0;i<k+1&&i<5;i++)tone(c,N[i],t+i*.08,.28,'triangle',.15);
    if(k>=3)tone(c,N[4]*1.5,t+.5,.6,'sine',.07);
    if(k>=4)[N[0],N[2],N[3]].forEach(f=>tone(c,f,t+.45,.8,'triangle',.1))},
+  navTap(){const c=ok();if(!c)return;const t=c.currentTime+.005;tone(c,690,t,.070,'sine',.032);tone(c,940,t+.058,.085,'sine',.022)},
+  profileTap(){const c=ok();if(!c)return;const t=c.currentTime+.005;tone(c,630,t,.090,'triangle',.027)},
+  tierTap(v){const c=ok();if(!c)return;const n=Math.max(0,Math.min(4,Number(v)||0)),t=c.currentTime+.005;
+   tone(c,[490,560,630,710,800][n],t,.13,'sine',.036);
+   tone(c,[660,740,830,940,1060][n],t+.075,.15,'sine',.024)},
   userTap(){const c=ok();if(!c)return;const t=c.currentTime+.005;
    tone(c,685,t,.075,'sine',.035);tone(c,885,t+.04,.095,'sine',.023)},
   awardToggle(open){const c=ok();if(!c)return;const t=c.currentTime+.005;
    if(open){tone(c,540,t,.085,'sine',.043);tone(c,760,t+.065,.15,'sine',.036)}
    else{tone(c,760,t,.075,'sine',.036);tone(c,490,t+.06,.13,'sine',.032)}},
-  stopApplause(){if(!applauseBus||!ctx)return;try{
-    const t=ctx.currentTime;applauseBus.gain.cancelScheduledValues(t);
-    applauseBus.gain.setValueAtTime(Math.max(.0001,applauseBus.gain.value),t);
-    applauseBus.gain.exponentialRampToValueAtTime(.0001,t+.04)
-   }catch(_){}applauseBus=null},
-  applause(seconds=8){const c=ok();if(!c)return;
-   if(applauseBus){try{const a=applauseBus;a.gain.cancelScheduledValues(c.currentTime);a.gain.setValueAtTime(Math.max(.0001,a.gain.value),c.currentTime);a.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.04)}catch(_){}}
-   const dur=Math.max(1,Math.min(12,seconds));const t=c.currentTime+.02;
-   const bus=c.createGain();bus.gain.setValueAtTime(.0001,t);
-   bus.gain.linearRampToValueAtTime(.34,t+.45);
-   bus.gain.setValueAtTime(.34,t+Math.max(.46,dur-.55));
-   bus.gain.linearRampToValueAtTime(.0001,t+dur);
-   bus.connect(c.m);applauseBus=bus;
-   // Many short filtered noise bursts create a low-volume, crowd-like clapping texture.
-   // All nodes are scheduled immediately in the current audio context (no repeated timers).
-   if(!nz){nz=c.createBuffer(1,c.sampleRate,c.sampleRate);const x=nz.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1}
-   const count=Math.floor(dur*10);
-   for(let i=0;i<count;i++){
-    const start=t+i*.1+Math.random()*.07,life=.035+Math.random()*.055;
-    const src=c.createBufferSource(),flt=c.createBiquadFilter(),env=c.createGain();
-    src.buffer=nz;flt.type='bandpass';flt.frequency.value=950+Math.random()*1600;flt.Q.value=.55+Math.random()*.7;
-    env.gain.setValueAtTime(.0001,start);
-    env.gain.linearRampToValueAtTime(.035+Math.random()*.045,start+.007);
-    env.gain.exponentialRampToValueAtTime(.0001,start+life);
-    src.connect(flt);flt.connect(env);env.connect(bus);src.start(start,Math.random()*.6);src.stop(start+life+.015);
+  drumRoll(){const c=ok();if(!c)return;const t=c.currentTime+.008;
+   // Two-second drum cadence: deep kick hits accelerate, their pitch and brightness rise.
+   const hits=18;for(let i=0;i<hits;i++){
+    const u=i/(hits-1),at=t+2*(1-Math.pow(1-u,1.40));
+    const osc=c.createOscillator(),gain=c.createGain(),flt=c.createBiquadFilter();
+    osc.type='triangle';osc.frequency.setValueAtTime(82+u*95,at);
+    osc.frequency.exponentialRampToValueAtTime(45+u*110,at+.12);
+    flt.type='lowpass';flt.frequency.value=430+u*1450;
+    gain.gain.setValueAtTime(.0001,at);
+    gain.gain.exponentialRampToValueAtTime(.065+u*.045,at+.009);
+    gain.gain.exponentialRampToValueAtTime(.0001,at+.15);
+    osc.connect(flt);flt.connect(gain);gain.connect(c.m);osc.start(at);osc.stop(at+.16);
+    noise(c,at+.002,.045,430+u*1900,.014+u*.026);
    }
-   // Silence routing after this run rather than leaving previous applause audible.
-   setTimeout(()=>{if(applauseBus===bus)applauseBus=null;try{bus.disconnect()}catch(_){ }},(dur+.5)*1000)
+   tone(c,440,t+1.83,.17,'triangle',.035);
   },
   podIntro(){const c=ok();if(!c)return;const t=c.currentTime+.025;
    [392,493.88,587.33].forEach((f,i)=>tone(c,f,t+i*.115,.18,'sine',.045));
@@ -1250,7 +1247,7 @@ const SND=(()=>{
    b.frequency.setValueAtTime(2300,v);b.frequency.linearRampToValueAtTime(1900,v+.3);
    g.gain.setValueAtTime(.0001,v);g.gain.exponentialRampToValueAtTime(.35,v+.08);g.gain.setValueAtTime(.35,v+.7);g.gain.exponentialRampToValueAtTime(.0001,v+1.05);
    o.connect(a);o.connect(b);a.connect(g);b.connect(g);g.connect(c.m);o.start(v);o.stop(v+1.1);
-   for(let i=0;i<14;i++)noise(c,t+.5+i*.06+Math.random()*.03,.05,2500+Math.random()*1500,.12)}
+}
  }})();
 ['pointerdown','keydown','touchend'].forEach(e=>addEventListener(e,()=>SND.unlock(),{passive:true}));
 (function(){const b=document.getElementById('snd');if(!b)return;
@@ -1269,6 +1266,19 @@ document.addEventListener('click',e=>{
  if(b.dataset.a||b.id==='snd'||b.id==='th'||b.id==='profileButton')return;
  if(b.disabled)return;
  try{SND.userTap()}catch(_){}
+},true);
+/* Navigation, profile modal actions, and all five Awards tier filters: quiet tactile audio. */
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b||b.disabled)return;
+ if(b.closest('#nav')){try{SND.navTap()}catch(_){};return}
+ if(b.closest('#profileBackdrop') || b.id==='profileButton'){
+  if(b.id==='th'){try{SND.navTap()}catch(_){}}
+  else {try{SND.profileTap()}catch(_){}}
+  return;
+ }
+ if(b.closest('#ach') && (b.dataset.af!==undefined || b.classList.contains('ach-clear'))){
+  try{SND.tierTap(b.dataset.af)}catch(_){}
+ }
 },true);
 /* donut: bunyi sekali saat target harian baru tercapai (bukan saat halaman dibuka dalam kondisi sudah 100%) */
 (function(){const _d=donutRender;let prev=null;
