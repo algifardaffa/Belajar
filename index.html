@@ -127,8 +127,8 @@ body{font-size:12px}input{font-size:14px}.hv{font-size:20px}.clock{font-size:20p
 .cmp-box{position:relative;width:100%;height:300px;margin-top:8px}@media(min-width:640px){.cmp-box{height:480px}}
 /* achievements (reference style) */
 :root{--t5:#a5b4fc}[data-theme=light]{--t5:#4f46e5}
-.ag{grid-template-columns:1fr;grid-auto-flow:dense}
-@media(min-width:640px){.ag{grid-template-columns:1fr 1fr}.ac2.open{grid-column:span 2}}
+.ag{grid-template-columns:1fr 1fr;grid-auto-flow:dense}
+@media(max-width:339px){.ag{grid-template-columns:1fr}}.ac2.open{grid-column:span 2}
 @media(min-width:1024px){.ag{grid-template-columns:repeat(3,1fr)}}
 .a-hero{margin:8px 0 24px}.hero-n{font-size:clamp(2.6rem,10vw,3.6rem);font-weight:800;line-height:1;letter-spacing:-.03em}
 .hero-d{font-size:16px;font-weight:600;color:var(--mu);margin-left:8px}
@@ -250,7 +250,7 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 .ys{position:relative;overflow:hidden}.ys>*:not(.ys-wave){position:relative;z-index:1}
 .ys-wave{position:absolute;left:0;bottom:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .ys-wave g{transform-box:fill-box;transform-origin:0 0}
-.ys-wave .w1{animation:wv 16s linear infinite}.ys-wave .w2{animation:wv 24s linear infinite reverse}.ys-wave .w3{animation:wv 11s linear infinite;filter:drop-shadow(0 0 6px #818cf8)}
+.ys-wave .w1{animation:wv 16s linear infinite}.ys-wave .w2{animation:wv 24s linear infinite reverse}.ys-wave .w3{animation:wv 11s linear infinite;filter:drop-shadow(0 0 6px currentColor)}
 .ys-wave{width:200%}.ys-wave{left:0}
 @keyframes wv{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.ys-wave g{animation:none!important}}
@@ -269,6 +269,48 @@ body.goal-lock{overflow:hidden}
 
 .tg-slot:empty{display:none}.tg-slot{margin-bottom:16px}
 @media(max-width:640px){.tg-slot .hd-tg{width:100%}.tg-slot .sd-tg{display:flex;width:100%}.tg-slot .sd-tg button{flex:1}.tg-slot .tgs{display:grid;gap:8px}.tg-slot .tgs .sd-tg,.tg-slot .tgs .rg{width:100%}.tg-slot .rg button{flex:1}.tg-slot .cal-nav{justify-content:space-between}.head.out{justify-content:flex-start}}
+
+/* member card wave */
+.grid .mc{position:relative;overflow:hidden}.grid .mc>*:not(.mc-wave){position:relative;z-index:1}
+.mc-wave{position:absolute;left:0;bottom:0;width:200%;height:70%;z-index:0;pointer-events:none}
+.mc-wave g{transform-box:fill-box;transform-origin:0 0}.mc-wave .w1{animation:wv 18s linear infinite}.mc-wave .w2{animation:wv 26s linear infinite reverse}.mc-wave .w3{animation:wv 12s linear infinite;filter:drop-shadow(0 0 5px currentColor)}
+@media(prefers-reduced-motion:reduce){.mc-wave g{animation:none!important}}
+/* wave colour picker */
+.wv-pick{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 4px}
+.wv-pick button{width:40px;height:40px;min-height:0;padding:0;border-radius:50%;border:2px solid transparent;background:var(--c);box-shadow:0 0 0 2px var(--bd);position:relative}
+.wv-pick button[aria-pressed=true]{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--c)}
+.wv-pick button[aria-pressed=true]::after{content:"";position:absolute;left:12px;top:8px;width:8px;height:15px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg);filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+/* start row */
+.start-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1 1 100%}
+.start-row button{min-width:0;white-space:nowrap;padding-left:8px;padding-right:8px;font-size:15px}
+.pomo{background:color-mix(in srgb,var(--bad) 85%,#000);border-color:transparent;color:#fff}.pomo:hover{background:var(--bad)}
+.pomo-b{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--bad)}
+/* podium */
+.pod-win{display:flex;align-items:center;gap:10px;margin:2px 0 18px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--i-yellow) 12%,transparent);border:1px solid color-mix(in srgb,var(--i-yellow) 35%,transparent)}
+.pod-win .ic{width:22px;height:22px;color:var(--i-yellow)}.pod-win b{font-size:15px}.pod-win span{font-size:13px;color:var(--tx2)}
+.podium{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;align-items:end}
+.pcol{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
+.pcol .av{width:44px;height:44px}.pcol.r1 .av{width:54px;height:54px;box-shadow:0 0 0 3px #facc15}
+.pn{max-width:100%;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pv{font-size:11px;color:var(--mu);font-variant-numeric:tabular-nums;margin-bottom:2px}
+.pblk{width:100%;display:grid;place-items:start center;padding-top:8px;border-radius:12px 12px 4px 4px;font-size:26px;font-weight:800;color:rgba(255,255,255,.92);position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.pblk::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 55%)}
+.r1 .pblk{height:150px;background:linear-gradient(180deg,#facc15,#b45309)}
+.r2 .pblk{height:114px;background:linear-gradient(180deg,#cbd5e1,#64748b)}
+.r3 .pblk{height:90px;background:linear-gradient(180deg,#fdba74,#9a3412)}
+.r4 .pblk{height:68px;background:linear-gradient(180deg,#818cf8,#3730a3)}
+.r5 .pblk{height:50px;background:linear-gradient(180deg,#94a3b8,#334155)}
+.pcol.zero{opacity:.55}
+@media(max-width:420px){.podium{gap:5px}.pcol .av{width:36px;height:36px}.pcol.r1 .av{width:44px;height:44px}.pblk{font-size:20px}.pn{font-size:11px}}
+/* awards glass */
+.ac2{background:linear-gradient(160deg,rgba(51,65,85,.38),rgba(15,23,42,.28))!important;border:1px solid rgba(148,163,184,.22)!important;border-radius:16px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+[data-theme=light] .ac2{background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(241,245,249,.7))!important;border-color:#cbd5e1!important}
+.ac2-t{padding:14px}.ac2-h{gap:6px;flex-wrap:nowrap}.ac2-h h3{font-size:15px;flex:0 1 auto;min-width:0}.ac2-h .a-b{flex:none;font-size:12px;white-space:nowrap}
+@media(max-width:420px){.ac2-t{padding:12px}.ac2-h h3{font-size:14px}.ac2-b{padding:0 12px 12px}}
+#achBox>.panel{position:relative;overflow:hidden;isolation:isolate}
+.ach-wave{position:absolute;left:0;top:0;width:200%;height:230px;z-index:-1;pointer-events:none}
+.ach-wave g{transform-box:fill-box;transform-origin:0 0}.ach-wave .w1{animation:wv 16s linear infinite}.ach-wave .w2{animation:wv 24s linear infinite reverse}.ach-wave .w3{animation:wv 11s linear infinite;filter:drop-shadow(0 0 6px currentColor)}
+@media(prefers-reduced-motion:reduce){.ach-wave g{animation:none!important}}
+#achBox>.ag{margin-top:16px}#achBox .awp .ach-st{margin-bottom:0}#achBox .awp{padding:20px}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -301,16 +343,17 @@ body.goal-lock{overflow:hidden}
 <label class="lb" for="profileNickname">Nickname</label><input id="profileNickname" type="text" minlength="1" maxlength="8" placeholder="Your nickname" autocomplete="nickname">
 <label class="lb" for="profileImage">Profile photo</label><input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
 
+<div class="lb">Wave color</div><div class="wv-pick" id="wavePick" role="group" aria-label="Wave color"></div>
 <button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
 <section id="dash"><div class="row live-row ys-head"><h2 class="h2"><span class="t-desk">Your Session</span><span class="t-mob">Daily goal</span></h2><span class="sp"></span><div id="live" class="status"></div></div>
-<div class="panel ys" id="ys"><svg class="ys-wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wg" x1="0" x2="1"><stop offset="0" stop-color="#6366f1" stop-opacity="0"/><stop offset=".35" stop-color="#818cf8"/><stop offset=".7" stop-color="#a78bfa"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></linearGradient><linearGradient id="wf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6366f1" stop-opacity=".42"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></linearGradient></defs><g class="w1"><path d="M0 36 Q150 -4 300 36 T600 36 T900 36 T1200 36 V120 H0Z" fill="url(#wf)"/></g><g class="w2"><path d="M0 44 Q150 6 300 44 T600 44 T900 44 T1200 44 V120 H0Z" fill="url(#wf)" opacity=".55"/></g><g class="w3"><path d="M0 34 Q150 -6 300 34 T600 34 T900 34 T1200 34" fill="none" stroke="url(#wg)" stroke-width="2.5" stroke-linecap="round"/></g></svg><div class="ys-body"><div class="ys-sess" id="mine"></div><div class="ys-goal"><div class="lb ys-lb">Daily goal</div><div class="goal-row"><div class="donut" id="donutBtn" role="button" tabindex="0" aria-label="Set daily goal" title="Tap to set your daily goal"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div></div></div></div></div>
+<div class="panel ys" id="ys"><div class="ys-body"><div class="ys-sess" id="mine"></div><div class="ys-goal"><div class="lb ys-lb">Daily goal</div><div class="goal-row"><div class="donut" id="donutBtn" role="button" tabindex="0" aria-label="Set daily goal" title="Tap to set your daily goal"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div></div></div></div></div>
 <h2 class="h2 sec-title ttl"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study room</h2><div class="grid" id="cards"></div>
 <h2 class="h2 sec-title ttl"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Weekly Recap</h2><div class="panel ys cc" id="ccPanel"><svg class="ys-wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wg2" x1="0" x2="1"><stop offset="0" stop-color="#6366f1" stop-opacity="0"/><stop offset=".35" stop-color="#818cf8"/><stop offset=".7" stop-color="#a78bfa"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></linearGradient><linearGradient id="wf2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6366f1" stop-opacity=".42"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></linearGradient></defs><g class="w1"><path d="M0 36 Q150 -4 300 36 T600 36 T900 36 T1200 36 V120 H0Z" fill="url(#wf2)"/></g><g class="w2"><path d="M0 44 Q150 6 300 44 T600 44 T900 44 T1200 44 V120 H0Z" fill="url(#wf2)" opacity=".55"/></g><g class="w3"><path d="M0 34 Q150 -6 300 34 T600 34 T900 34 T1200 34" fill="none" stroke="url(#wg2)" stroke-width="2.5" stroke-linecap="round"/></g></svg><div id="ov"></div><div id="recap" class="recap hide"></div></div></section>
 
-<section id="an" class="hide"><div id="lb"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><div><h2 class="h2">Time Distribution</h2><div class="sub" id="sdSub">Study time by member</div></div></div>
+<section id="an" class="hide"><div id="lb"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M8 21V11h8v10M2 21v-6h6M16 21v-4h6"/></svg><div><h2 class="h2">Podium</h2><div class="sub" id="sdSub">Study time by member</div></div></div>
 <div class="hd-tg"><div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div></div><div class="panel"><div class="tg-slot"></div>
-<div id="sdList" class="sd-list"></div>
+<div id="podWin" class="pod-win hide"></div><div id="sdList" class="podium"></div>
 <div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div><div class="head out" style="margin-top:24px"><div class="hd-ic"><svg class="ic red hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/></svg><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div></div>
 <div class="tgs hd-tg"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Total</button><button type="button" data-cm="growth" class="on">Daily</button><button type="button" data-cm="rank">Rank</button></div>
 <div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div><div class="panel"><div class="tg-slot"></div>
@@ -426,8 +469,11 @@ function refreshProfilePreview(){
  $('#profilePreview').innerHTML=esc(avatarInitial({...me,display_name:$('#profileNickname').value.trim()||me.display_name}))+(url?`<img src="${esc(url)}" alt="Profile photo preview">`:``);
  $('#profileCurrentName').textContent=$('#profileNickname').value.trim()||me.display_name;
 }
+let pendingWave='purple';
+function paintWavePick(){const w=$('#wavePick');if(!w)return;waveDefs();w.innerHTML=Object.entries(WAVES).map(([k,v])=>`<button type="button" data-wv="${k}" style="--c:${v[1]}" aria-label="${v[3]}" title="${v[3]}" aria-pressed="${k===pendingWave}"></button>`).join('')}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-wv]');if(!b)return;e.stopPropagation();pendingWave=b.dataset.wv;paintWavePick()},true);
 function openProfileEditor(){
- const me=members.find(m=>m.id===meId);if(!me)return;
+ const me=members.find(m=>m.id===meId);if(!me)return;pendingWave=waveOf(me);paintWavePick();
  pendingProfileFile=null;removeProfilePhoto=false;disposeProfilePreview();
  $('#profileNickname').value=me.display_name;$('#profileImage').value='';
  authMessage('profileStatus','');refreshProfilePreview();
@@ -500,26 +546,61 @@ function render(){
      [IC.users,'The room studied together',hmr(tt)],[IC.cal,`Longest day: ${esc(bm?bm.display_name:'')} on ${wd}`,hmr(dt[bk])]];
     rc.innerHTML=`<h2 class="h2 rc-t">Last week, Monday to Sunday</h2>`+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=(!s&&tot(m.id,today())>0)?'paused':st;
-  const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><button class="p" data-a="start_study_session">Start studying</button>`:
+  const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start studying</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
    st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
-  return`<article class="mc ${vs}${mine?' me':''}"><div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
-  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${SL[vs]}</span></div>
+  return`<article class="mc ${vs}${mine?' me':''}">${mine?'':waveSvg(waveOf(m),'mc-wave')}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
+  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${SL[vs]}</span>${mine&&s&&pomoGet()?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText()}</span>`:''}</div>
   <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${s?.subject?`<div class="subj">${IC.book}<span>${esc(s.subject)}</span></div>`:''}
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
+ setPanelWave('#ys','ys-wave',waveOf(me));
  donutRender();
  lbRender();anRender();
 }
+
+const WAVES={purple:['#6366f1','#818cf8','#a78bfa','Purple'],green:['#16a34a','#22c55e','#4ade80','Green'],sky:['#0284c7','#38bdf8','#7dd3fc','Light blue'],yellow:['#ca8a04','#eab308','#fde047','Yellow'],red:['#dc2626','#ef4444','#f87171','Red']};
+const waveOk=c=>Object.prototype.hasOwnProperty.call(WAVES,c);
+const waveOf=m=>{if(!m)return'purple';if(waveOk(m.wave_color))return m.wave_color;let l=null;try{l=localStorage.getItem('sr-wave-'+m.id)}catch(_){}return waveOk(l)?l:'purple'};
+function waveDefs(){if($('#waveDefs'))return;const d=document.createElement('div');d.id='waveDefs';d.setAttribute('aria-hidden','true');d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
+ d.innerHTML='<svg width="0" height="0"><defs>'+Object.entries(WAVES).map(([k,[a,b,c]])=>`<linearGradient id="wg-${k}" x1="0" x2="1"><stop offset="0" stop-color="${a}" stop-opacity="0"/><stop offset=".35" stop-color="${b}"/><stop offset=".7" stop-color="${c}"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wf-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}" stop-opacity=".42"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient>`).join('')+'</defs></svg>';document.body.appendChild(d)}
+const waveSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><g class="w1"><path d="M0 36 Q150 -4 300 36 T600 36 T900 36 T1200 36 V120 H0Z" fill="url(#wf-${k})"/></g><g class="w2"><path d="M0 44 Q150 6 300 44 T600 44 T900 44 T1200 44 V120 H0Z" fill="url(#wf-${k})" opacity=".55"/></g><g class="w3" style="color:${WAVES[k][1]}"><path d="M0 34 Q150 -6 300 34 T600 34 T900 34 T1200 34" fill="none" stroke="url(#wg-${k})" stroke-width="2.5" stroke-linecap="round"/></g></svg>`;
+function setPanelWave(sel,cls,k){const P=$(sel);if(!P)return;const o=P.querySelector('.'+cls);if(o&&o.dataset.k===k)return;const t=document.createElement('div');t.innerHTML=waveSvg(k,cls);const n=t.firstChild;n.dataset.k=k;if(o)o.replaceWith(n);else P.insertBefore(n,P.firstChild);dispatchEvent(new Event('resize'))}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let lastDay=today();
-function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)));donutRender()}
+
+/* Pomodoro: 25 min focus -> auto pause for a 5 min break (15 min after every 4th focus) -> auto resume. Kept on this device. */
+const POMO={focus:25*60,brk:5*60,long:15*60};let pomoBusy=false;
+const pomoKey=()=>'sr-pomo-'+meId;
+function pomoGet(){try{const o=JSON.parse(localStorage.getItem(pomoKey())||'null');return o&&o.end?o:null}catch(_){return null}}
+function pomoSet(o){try{o?localStorage.setItem(pomoKey(),JSON.stringify(o)):localStorage.removeItem(pomoKey())}catch(_){}}
+function pomoText(){const o=pomoGet();if(!o)return'';const left=Math.max(0,Math.round((o.end-Date.now())/1000));return`${o.phase==='focus'?'Focus':'Break'} ${o.cycle} · ${String(left/60|0).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`}
+function pomoNote(msg){const e=document.createElement('div');e.className='tn';e.innerHTML=`<div><b>${esc(msg)}</b></div>`;$('#toast').appendChild(e);setTimeout(()=>e.remove(),7000)}
+async function pomoStep(){const o=pomoGet();if(!o||pomoBusy)return;const mine=sess(meId);
+ if(!mine){pomoSet(null);return}
+ const b=$('#pomoBadge');if(b)b.textContent='\u{1F345} '+pomoText();
+ if(Date.now()<o.end)return;pomoBusy=true;
+ try{
+  if(o.phase==='focus'&&mine.status==='active'){const long=o.cycle%4===0;
+   const{error}=await sb.rpc('pause_study_session');if(error)throw error;
+   pomoSet({phase:'break',cycle:o.cycle,end:Date.now()+(long?POMO.long:POMO.brk)*1000});pomoNote(long?'Long break: 15 minutes':'Break time: 5 minutes');await load()}
+  else if(o.phase==='break'&&mine.status==='paused'){
+   const{error}=await sb.rpc('resume_study_session');if(error)throw error;
+   pomoSet({phase:'focus',cycle:o.cycle+1,end:Date.now()+POMO.focus*1000});pomoNote('Back to focus: 25 minutes');await load()}
+  else pomoSet({phase:mine.status==='active'?'focus':'break',cycle:o.cycle,end:Date.now()+(mine.status==='active'?POMO.focus:POMO.brk)*1000});
+ }catch(e){err(e?.message||'Pomodoro step failed.')}finally{pomoBusy=false}}
+function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)));donutRender();pomoStep()}
 function lbRender(){
- const k=mode,rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]);
- const max=Math.max(1,...rows.map(r=>r[k])),lead=rows.length&&rows[0][k]>0?rows[0][k]:null;
- $('#sdSub').textContent=k==='n'?'Awards earned by member · log scale':'Study time by member · log scale';
- $('#sdList').innerHTML=rows.map(r=>`<div class="score-dist-row${lead!==null&&r[k]===lead?' is-top':''}"><span class="score-dist-label" title="${esc(r.m.display_name)}">${esc(r.m.display_name)}${r.m.id===meId?' (you)':''}</span><div class="score-dist-track"><div class="score-dist-fill" style="width:${Math.log1p(k==='n'?r[k]:r[k]/60)/Math.log1p(k==='n'?max:max/60)*100}%"></div></div><span class="score-dist-count">${k==='n'?r.n:fmt(r[k])}</span></div>`).join('');
+ const k=mode,rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]).slice(0,5);
+ const when={today:'today',week:'this week',month:'this month',all:'of all time',n:'with the most awards'}[k];
+ $('#sdSub').textContent=k==='n'?'Awards earned by member':'Study time by member';
+ const val=r=>k==='n'?r.n+(r.n===1?' award':' awards'):fmt(r[k]);
+ const top=rows[0],has=top&&top[k]>0;
+ const W=$('#podWin');W.classList.remove('hide');
+ W.innerHTML=`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><div><b>${has?`The winner ${when}`:`No winner ${when} yet`}</b>${has?`<br><span>${esc(top.m.display_name)}${top.m.id===meId?' (you)':''} · ${val(top)}</span>`:''}</div>`;
+ const order=[3,1,0,2,4].filter(i=>i<rows.length);
+ $('#sdList').innerHTML=order.map(i=>{const r=rows[i],n=i+1;return`<div class="pcol r${n}${r[k]>0?'':' zero'}">${avatarMarkup(r.m)}<span class="pn" title="${esc(r.m.display_name)}">${esc(r.m.display_name)}${r.m.id===meId?' (you)':''}</span><span class="pv">${val(r)}</span><div class="pblk">${n}</div></div>`}).join('');
  $('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
 }
 const FLAME='<svg class="ic orange" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
@@ -610,9 +691,13 @@ document.addEventListener('click',async e=>{
   b.disabled=true;
   try{
    await checkCurrentMember();
-   const args=b.dataset.a==='start_study_session'?{p_subject:$('#subj')?.value||null}:{};
-   const {error}=await sb.rpc(b.dataset.a,args);
+   const act=b.dataset.a==='start_pomodoro'?'start_study_session':b.dataset.a;
+   const args=act==='start_study_session'?{p_subject:$('#subj')?.value||null}:{};
+   const {error}=await sb.rpc(act,args);
    if(error)throw error;
+   if(b.dataset.a==='start_pomodoro')pomoSet({phase:'focus',cycle:1,end:Date.now()+POMO.focus*1000});
+   else if(b.dataset.a==='start_study_session'||b.dataset.a==='finish_study_session'||b.dataset.a==='cancel_study_session')pomoSet(null);
+   else if(b.dataset.a==='resume_study_session'){const o=pomoGet();if(o&&o.phase==='break')pomoSet({phase:'focus',cycle:o.cycle+1,end:Date.now()+POMO.focus*1000})}
    if(b.dataset.a==='finish_study_session'){await sb.rpc('ach_sync');loadAch()}
    err('');
   }catch(e){err(e?.message||'Stopwatch action failed.');}
@@ -678,6 +763,11 @@ $('#profileSave').onclick=async()=>{
   });
   if(updateError)throw new Error(updateError.message);
   if(updatedId!==owner.id)throw new Error('Profile update returned an unexpected member.');
+  if(pendingWave!==waveOf(me)){
+   let saved=false;const{error:wErr}=await sb.rpc('update_study_wave',{p_color:pendingWave});
+   if(!wErr)saved=true;else if(wErr.code!=='PGRST202'&&!/update_study_wave/.test(wErr.message||''))throw new Error(wErr.message);
+   try{localStorage.setItem('sr-wave-'+meId,pendingWave)}catch(_){}
+   me.wave_color=pendingWave;if(!saved)console.warn('update_study_wave is missing: wave color is kept on this device only.')}
   avatarCache.delete(meId);
   const previousPath=owner.avatar_url;
   closeProfileEditor();
@@ -794,7 +884,7 @@ const fv=(u,v)=>u==='seconds'?(v>=3600?(Math.round(v/360)/10)+' h':Math.round(v/
 const aSt=(d,o)=>{const hi=Math.max(0,...A.u.filter(x=>x.ach_key===d.key&&x.owner_id===o).map(x=>x.tier)),p=A.p.find(x=>x.ach_key===d.key&&x.owner_id===o),V=+(p?.best_value||0),cur=+(p?.current_value||0),th=[d.t1,d.t2,d.t3,d.t4,d.t5].map(Number),L=hi?th[hi-1]:0,N=th[hi],pct=hi===5?100:Math.max(0,Math.min(100,(V-L)/(N-L)*100));return{hi,V,cur,th,N,pct}};
 const dt=s=>new Date(s).toLocaleDateString('en-GB',{timeZone:TZ,day:'numeric',month:'short',year:'numeric'});
 const TCOL=['#65d83b','#b56cff','#fde047','#ff6b8f','#67e8f9'];let tierFilter=-1;
-const achCols=()=>innerWidth>=1024?3:innerWidth>=640?2:1;
+const achCols=()=>innerWidth>=1024?3:innerWidth>=340?2:1;
 function achPlace(open){const C=achCols(),pos=[];let q=open.map((_,i)=>i),r=1;
  while(q.length){const row=[];let used=0;
   while(q.length&&used<C){const i=q[0],w=open[i]&&C>1?2:1;
@@ -817,10 +907,10 @@ function renderAch(){
  const shown=R.filter(x=>tierFilter<0||x.hi>tierFilter),pos=achPlace(shown.map(x=>openK.has(x.d.key))),tp=T?achPlace([openK.has(T.key)]):[];
  const stats=TN.map((nm,i)=>`<button type="button" class="ach-stat" data-af="${i}" aria-pressed="${tierFilter===i}" aria-label="Show achievements at ${nm} or higher" style="--tc:var(--t${i+1})"><div class="st-nm" style="color:var(--t${i+1})">${bdg(i+1,14)}<span>${nm}</span></div><div class="st-ct">${cnt[i]}</div></button>`).join('');
  const clr=tierFilter>=0?`<div class="ach-ctl"><button type="button" class="ach-clear" data-af="${tierFilter}" style="--tc:var(--t${tierFilter+1})">${TN[tierFilter]}+ · ${shown.length} shown · Clear ✕</button></div>`:'';
- $('#achBox').innerHTML=`<h2 class="h2 ttl"><svg class="ic yellow hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Achievement Profile <span class="sub" style="font-size:14px;font-weight:400">• ${esc(m.display_name)}</span></span></h2><div class="panel">
+ $('#achBox').dataset.w=waveOf(m);$('#achBox').innerHTML=`<h2 class="h2 ttl"><svg class="ic yellow hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Achievement Profile <span class="sub" style="font-size:14px;font-weight:400">• ${esc(m.display_name)}</span></span></h2><div class="panel awp">${waveSvg(waveOf(m),'ach-wave')}
  <div class="a-hero"><div class="lb">Overall progress</div><div style="margin-top:8px"><span class="hero-n">${n}</span><span class="hero-d">/ 50 tiers unlocked</span></div><div class="hero-bar"><span style="width:${pc.toFixed(1)}%"></span></div><div class="sub">${pc.toFixed(1)}% complete</div></div>
- <div class="ach-st">${stats}</div>${clr}
- <div class="ag">${shown.length?shown.map((x,i)=>aCard(x.d,mid,pos[i])).join(''):'<div class="sub">No achievements at this tier yet.</div>'}</div>${T?`<h2 class="h2 sec-title">Team Achievement</h2><div class="ag">${aCard(T,ROOM,tp[0])}</div>`:''}</div>`;
+ <div class="ach-st">${stats}</div></div>${clr}
+ <div class="ag">${shown.length?shown.map((x,i)=>aCard(x.d,mid,pos[i])).join(''):'<div class="sub">No achievements at this tier yet.</div>'}</div>${T?`<h2 class="h2 sec-title">Team Achievement</h2><div class="ag">${aCard(T,ROOM,tp[0])}</div>`:''}`;
  renderProfileAch();
 }
 function renderProfileAch(){const box=$('#profileAch');if(!box||!A.d.length)return;
@@ -851,6 +941,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
  if(b.dataset.cq){cmpC=new Set(b.dataset.cq==='all'?members.filter(m=>m.id!==cmpP).map(m=>m.id):[]);anRender()}
  if(b.dataset.ak){openK.has(b.dataset.ak)?openK.delete(b.dataset.ak):openK.add(b.dataset.ak);renderAch()}});
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&b.dataset.af){const i=+b.dataset.af;tierFilter=tierFilter===i?-1:i;renderAch()}});
+waveDefs();
 let _ac=achCols();addEventListener('resize',()=>{const c=achCols();if(c!==_ac){_ac=c;renderAch()}});
 
 (function(){const mq=matchMedia('(max-width:640px)');
