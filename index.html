@@ -326,11 +326,11 @@ body.goal-lock{overflow:hidden}
 .pcol.r1 .av{box-shadow:0 0 0 2px #bcae9c}
 .pblk{color:rgba(245,248,255,.82);box-shadow:inset 0 1px 0 rgba(255,255,255,.17);border:1px solid rgba(220,231,243,.10)}
 .pblk::after{background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 55%)}
-.r1 .pblk{background:linear-gradient(180deg,#b4a48d,#736a62)}
-.r2 .pblk{background:linear-gradient(180deg,#9cabbc,#657387)}
-.r3 .pblk{background:linear-gradient(180deg,#b3998d,#7c6967)}
-.r4 .pblk{background:linear-gradient(180deg,#828faa,#555f77)}
-.r5 .pblk{background:linear-gradient(180deg,#718093,#475569)}
+.r1 .pblk{background:linear-gradient(180deg,#d6d6e5,#929bbf)}
+.r2 .pblk{background:linear-gradient(180deg,#afc7d7,#617f9a)}
+.r3 .pblk{background:linear-gradient(180deg,#baa9cd,#75698f)}
+.r4 .pblk{background:linear-gradient(180deg,#8ea9c9,#526d91)}
+.r5 .pblk{background:linear-gradient(180deg,#738da7,#40576f)}
 [data-theme=light] .pblk{color:rgba(255,255,255,.93)}
 
 /* Aurora Harmony: calmer fill; readable muted strokes in both themes. */
@@ -392,7 +392,7 @@ body.goal-lock{overflow:hidden}
 <div id="sdList" class="podium"></div>
 <div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div></section>
 
-<section id="an" class="hide"><h2 class="h2 sec-title ttl"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Weekly Recap</h2><p class="sub" style="margin:4px 0 12px">Last week, Monday to Sunday</p><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div>
+<section id="an" class="hide"><div class="head out" style="margin-top:0"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><h2 class="h2">Weekly Recap</h2><p class="sub" style="margin:4px 0 0">Last week, Monday to Sunday</p></div></div></div><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div>
 <div class="head out" style="margin-top:24px"><div class="hd-ic"><svg class="ic red hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/></svg><div><h2 class="h2">Compare Players</h2><p class="sub" style="margin:4px 0 0">Pick up to 4 opponents</p></div></div>
 <div class="tgs hd-tg"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Total</button><button type="button" data-cm="growth" class="on">Daily</button><button type="button" data-cm="rank">Rank</button></div>
 <div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div><div class="panel"><div class="tg-slot"></div>
@@ -592,7 +592,7 @@ function render(){
   const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
   const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
    st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
-   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`:
+   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
   return`<article class="mc ${vs}${mine?' me':''}">${mine?'':waveSvg(waveOf(m),'mc-wave')}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
   <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span>`:''}</div>
