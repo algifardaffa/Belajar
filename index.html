@@ -315,6 +315,23 @@ body.goal-lock{overflow:hidden}
 .ach-wave g{transform-box:fill-box;transform-origin:0 0}.ach-wave .w1{animation:wv 16s linear infinite}.ach-wave .w2{animation:wv 24s linear infinite reverse}.ach-wave .w3{animation:wv 11s linear infinite;filter:drop-shadow(0 0 6px currentColor)}
 @media(prefers-reduced-motion:reduce){.ach-wave g{animation:none!important}}
 #achBox>.ag{margin-top:16px}#achBox .awp .ach-st{margin-bottom:0}#achBox .awp{padding:20px}
+
+/* Aurora Pastel: soft wave picker and member distinctions */
+.wv-pick button .wv-symbol{filter:drop-shadow(0 0 8px color-mix(in srgb,var(--c) 20%,transparent))}
+.cmp-dot{width:9px;height:9px;box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 12%,transparent)}
+.cal-dots i{width:7px;height:7px;box-shadow:0 0 0 1px rgba(15,23,42,.16)}
+.pomo-alert-btn{min-height:28px;padding:3px 9px;font-size:11px;font-weight:600;color:var(--tx2);border:1px solid var(--bd);border-radius:999px}
+#pomoBreakBtn{color:var(--mu);background:var(--inset)}
+/* Podium: calm, desaturated architectural blocks instead of saturated prizes */
+.pcol.r1 .av{box-shadow:0 0 0 2px #bcae9c}
+.pblk{color:rgba(245,248,255,.82);box-shadow:inset 0 1px 0 rgba(255,255,255,.17);border:1px solid rgba(220,231,243,.10)}
+.pblk::after{background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 55%)}
+.r1 .pblk{background:linear-gradient(180deg,#b4a48d,#736a62)}
+.r2 .pblk{background:linear-gradient(180deg,#9cabbc,#657387)}
+.r3 .pblk{background:linear-gradient(180deg,#b3998d,#7c6967)}
+.r4 .pblk{background:linear-gradient(180deg,#828faa,#555f77)}
+.r5 .pblk{background:linear-gradient(180deg,#718093,#475569)}
+[data-theme=light] .pblk{color:rgba(255,255,255,.93)}
 </style></head>
 <body><div class="w">
 <div id="login" class="auth hide"><div class="panel authcard"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1M9 3h6"/></svg></span><h1>STUDY ROOM</h1></div><h2 class="h2">Welcome back</h2><div class="sub">Sign in with your member account</div>
@@ -473,7 +490,7 @@ function refreshProfilePreview(){
  $('#profilePreview').innerHTML=esc(avatarInitial({...me,display_name:$('#profileNickname').value.trim()||me.display_name}))+(url?`<img src="${esc(url)}" alt="Profile photo preview">`:``);
  $('#profileCurrentName').textContent=$('#profileNickname').value.trim()||me.display_name;
 }
-let pendingWave='purple';
+let pendingWave='moonlight';
 function paintWavePick(){const w=$('#wavePick');if(!w)return;waveDefs();w.innerHTML=Object.entries(WAVES).map(([k,v])=>`<button type="button" data-wv="${k}" style="--c:${v[1]}" aria-label="${v[3]}" title="${v[3]}" aria-pressed="${k===pendingWave}"><span class="wv-symbol" aria-hidden="true">≈</span></button>`).join('')}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-wv]');if(!b)return;e.stopPropagation();pendingWave=b.dataset.wv;paintWavePick()},true);
 function openProfileEditor(){
@@ -495,7 +512,11 @@ const addD=(s,n)=>{const d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+
 const today=()=>ymd(new Date());
 const wk=()=>{const t=today(),dow=(new Date(t+'T00:00:00Z').getUTCDay()+6)%7;return addD(t,-dow)};
 let statsAt=Date.now();
-const el=s=>{const e=sess(s),t=tot(s,today());return e&&e.status==='active'?t+(Date.now()-statsAt)/1000:t};
+const el=id=>{const e=sess(id),t=tot(id,today());if(!e||e.status!=='active')return t;
+ const until=e.pomodoro_focus_until?Date.parse(e.pomodoro_focus_until):Infinity;
+ return t+Math.max(0,Math.min(Date.now(),until)-statsAt)/1000;};
+const expiredPomo=s=>!!s&&s.status==='active'&&s.pomodoro_focus_until&&Date.now()>=Date.parse(s.pomodoro_focus_until);
+const expiredPomoLabel=s=>{const end=Date.parse(s.pomodoro_focus_until);const rest=(Number(s.pomodoro_cycle)||1)%4===0?15:5;return Date.now()>=end+rest*60000?'Ready for focus':'On break'};
 const sess=id=>sessions[id];
 const err=m=>$('#err').textContent=m||'';
 
@@ -533,7 +554,7 @@ const totals=id=>({today:tot(id,today()),week:tot(id,wk()),month:tot(id,today().
 function render(){
  const me=members.find(m=>m.id===meId);if(!me)return;$('#me').innerHTML=esc(avatarInitial(me))+(avatarCache.get(me.id)?.url?`<img src="${esc(avatarCache.get(me.id).url)}" alt="">`:``);$('#me').title=me.display_name;$('#myName').textContent=me.display_name;
  const T=members.map(m=>totals(m.id)),sum=k=>T.reduce((a,t)=>a+t[k],0);
- const live=Object.values(sessions).filter(s=>s.status==='active').length;
+ const live=Object.values(sessions).filter(s=>s.status==='active'&&!expiredPomo(s)).length;
  const done=0;
  const keep=$('#subj')?.value||'';
  $('#live').innerHTML=`<i class="dot ${live?'active':''}"></i>${live?`${live} studying now`:'Nobody is studying now'}`;
@@ -549,12 +570,14 @@ function render(){
     const rows=[[IC.trophy,`${esc(hi.m.display_name)} studied the most`,hmr(hi.s)],[IC.clock,`${esc(lo.m.display_name)} studied the least`,hmr(lo.s)],
      [IC.users,'The room studied together',hmr(tt)],[IC.cal,`Longest day: ${esc(bm?bm.display_name:'')} on ${wd}`,hmr(dt[bk])]];
     rc.innerHTML=`<h2 class="h2 rc-t">Last week, Monday to Sunday</h2>`+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
- const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=(!s&&tot(m.id,today())>0)?'paused':st,lbl=(vs==='active'&&isPomo(s))?'Pomodoro':SL[vs];
+ const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=expiredPomo(s)?'paused':(!s&&tot(m.id,today())>0)?'paused':st,po=mine?pomoGet(s):null;
+  const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
   const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start studying</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
    st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
+   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
   return`<article class="mc ${vs}${mine?' me':''}">${mine?'':waveSvg(waveOf(m),'mc-wave')}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
-  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&s&&pomoGet()?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText()}</span>`:''}</div>
+  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span><button type="button" class="pomo-alert-btn" id="pomoAlerts" title="Enable system notifications">Alerts</button>`:''}</div>
   <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
@@ -564,10 +587,25 @@ function render(){
  lbRender();anRender();
 }
 
-const WAVES={purple:['#6366f1','#818cf8','#a78bfa','Purple','#4f46e5','#7c3aed'],green:['#16a34a','#22c55e','#4ade80','Green','#15803d','#16a34a'],sky:['#0284c7','#38bdf8','#7dd3fc','Light blue','#0369a1','#0284c7'],yellow:['#ca8a04','#eab308','#fde047','Yellow','#a16207','#ca8a04'],red:['#dc2626','#ef4444','#f87171','Red','#b91c1c','#dc2626']};
-const WDEF=['purple','sky','green','yellow','red'];
+// Aurora Pastel: five gentle colors, unique default shade per slot.
+const WAVES={
+ moonlight:['#94A3B8','#CBD5E1','#E2E8F0','Moonlight','#64748B','#94A3B8'],
+ iris:['#818CF8','#A5B4FC','#C7D2FE','Iris','#4F46E5','#6366F1'],
+ arctic:['#22D3EE','#67E8F9','#A5F3FC','Arctic','#0891B2','#06B6D4'],
+ sunset:['#FB923C','#FDBA9A','#FED7AA','Sunset','#C2410C','#EA580C'],
+ sakura:['#FB7185','#FDA4AF','#FECDD3','Sakura','#BE123C','#E11D48']
+};
+const WDEF=['moonlight','iris','arctic','sunset','sakura'];
 const waveOk=c=>Object.prototype.hasOwnProperty.call(WAVES,c);
-const waveOf=m=>{if(!m)return'purple';if(waveOk(m.wave_color))return m.wave_color;let l=null;try{l=localStorage.getItem('sr-wave-'+m.id)}catch(_){}if(waveOk(l))return l;const i=m.slot_number>0?m.slot_number-1:Math.max(0,members.indexOf(m));return WDEF[i%5]};
+// Personal cards obey the chosen color; NULL means the member's slot default.
+const waveOf=m=>{if(!m)return WDEF[0];if(waveOk(m.wave_color))return m.wave_color;
+ let l=null;try{l=localStorage.getItem('sr-wave-offline-'+m.id)}catch(_){}
+ if(waveOk(l))return l;
+ const i=Math.max(0,Math.min(4,(Number(m.slot_number)||1)-1));return WDEF[i];
+};
+// Compare Players and Calendar deliberately use slot-assigned colors,
+// regardless of user-selected waves. Hence 5 players always have 5 unique colors.
+const memberAccent=m=>WAVES[WDEF[Math.max(0,Math.min(4,(Number(m?.slot_number)||1)-1))]][1];
 function waveDefs(){if($('#waveDefs'))return;const d=document.createElement('div');d.id='waveDefs';d.setAttribute('aria-hidden','true');d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
  d.innerHTML='<svg width="0" height="0"><defs>'+Object.entries(WAVES).map(([k,[a,b,c,,la,lb]])=>`<linearGradient id="wg-${k}" x1="0" x2="1"><stop offset="0" stop-color="${a}" stop-opacity="0"/><stop offset=".35" stop-color="${b}"/><stop offset=".7" stop-color="${c}"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wf-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}" stop-opacity=".42"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wgl-${k}" x1="0" x2="1"><stop offset="0" stop-color="${la}" stop-opacity="0"/><stop offset=".35" stop-color="${lb}"/><stop offset=".7" stop-color="${la}"/><stop offset="1" stop-color="${la}" stop-opacity="0"/></linearGradient><linearGradient id="wfl-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lb}" stop-opacity=".32"/><stop offset="1" stop-color="${lb}" stop-opacity="0"/></linearGradient>`).join('')+'</defs></svg>';document.body.appendChild(d);
  const st=document.createElement('style');st.textContent=Object.entries(WAVES).map(([k,[,b,,,la,lb]])=>`svg[data-k=${k}] .w3{color:${b}}[data-theme=light] svg[data-k=${k}] .w3{color:${lb}}[data-theme=light] svg[data-k=${k}] .w3 path{stroke:url(#wgl-${k})}[data-theme=light] svg[data-k=${k}] .w1 path,[data-theme=light] svg[data-k=${k}] .w2 path{fill:url(#wfl-${k})}`).join('');document.head.appendChild(st)}
@@ -576,28 +614,78 @@ function setPanelWave(sel,cls,k){const P=$(sel);if(!P)return;const o=P.querySele
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let lastDay=today();
 
-/* Pomodoro: 25 min focus -> auto pause for a 5 min break (15 min after every 4th focus) -> auto resume. Kept on this device. */
-const PM='\u{1F345}';const isPomo=s=>!!s&&(s.subject||'').startsWith(PM);const subjOf=s=>((s&&s.subject)||'').replace(PM,'').trim();
+/* Pomodoro: server-owned 25-minute focus deadline and break deadline.
+   When a break finishes, the session remains PAUSED until Start Next Focus.
+   The SQL migration caps active intervals, even if the browser is suspended. */
+const PM='\u{1F345}';const isPomo=s=>!!s&&((s.subject||'').startsWith(PM)||!!s.pomodoro_focus_until);
+const subjOf=s=>((s&&s.subject)||'').replace(PM,'').trim();
 const POMO={focus:25*60,brk:5*60,long:15*60};let pomoBusy=false;
-const pomoKey=()=>'sr-pomo-'+meId;
-function pomoGet(){try{const o=JSON.parse(localStorage.getItem(pomoKey())||'null');return o&&o.end?o:null}catch(_){return null}}
-function pomoSet(o){try{o?localStorage.setItem(pomoKey(),JSON.stringify(o)):localStorage.removeItem(pomoKey())}catch(_){}}
-function pomoText(){const o=pomoGet();if(!o)return'';const left=Math.max(0,Math.round((o.end-Date.now())/1000));return`${o.phase==='focus'?'Focus':'Break'} ${o.cycle} · ${String(left/60|0).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`}
-function pomoNote(msg){const e=document.createElement('div');e.className='tn';e.innerHTML=`<div><b>${esc(msg)}</b></div>`;$('#toast').appendChild(e);setTimeout(()=>e.remove(),7000)}
-async function pomoStep(){const o=pomoGet();if(!o||pomoBusy)return;const mine=sess(meId);
- if(!mine){pomoSet(null);return}
+function pomoGet(s=sess(meId)){
+ if(!s||!s.pomodoro_focus_until||!['active','paused'].includes(s.status))return null;
+ const cyc=Math.max(1,Number(s.pomodoro_cycle)||1);
+ if(s.status==='active')return{phase:'focus',cycle:cyc,end:Date.parse(s.pomodoro_focus_until),sessionId:s.id};
+ const end=s.pomodoro_break_until?Date.parse(s.pomodoro_break_until):0;
+ return{phase:Date.now()>=end?'ready':'break',cycle:cyc,end,sessionId:s.id};
+}
+function pomoText(s=sess(meId)){
+ const o=pomoGet(s);if(!o)return'';
+ if(o.phase==='ready')return`Ready for Focus ${o.cycle+1}`;
+ const left=Math.max(0,Math.ceil((o.end-Date.now())/1000));
+ return`${o.phase==='focus'?'Focus':'Break'} ${o.cycle} · ${String(left/60|0).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;
+}
+function pomoNote(msg){const t=$('#toast');if(!t)return;
+ const e=document.createElement('div');e.className='tn';e.setAttribute('role','status');
+ e.innerHTML=`<div><b>${esc(msg)}</b></div>`;t.appendChild(e);setTimeout(()=>e.remove(),7000);
+}
+let pomoAudio=null;
+function pomoUnlockAudio(){try{
+ const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+ if(!pomoAudio)pomoAudio=new C();
+ if(pomoAudio.state==='suspended')pomoAudio.resume().catch(()=>{});
+ }catch(e){console.warn('Audio is unavailable:',e)}}
+function pomoBeep(){try{
+ if(!pomoAudio||pomoAudio.state!=='running')return;
+ const t=pomoAudio.currentTime;
+ [0,.23].forEach((at,i)=>{const osc=pomoAudio.createOscillator(),gain=pomoAudio.createGain();
+ osc.type='sine';osc.frequency.value=i?720:580;
+ gain.gain.setValueAtTime(.0001,t+at);gain.gain.exponentialRampToValueAtTime(.05,t+at+.015);
+ gain.gain.exponentialRampToValueAtTime(.0001,t+at+.18);
+ osc.connect(gain);gain.connect(pomoAudio.destination);osc.start(t+at);osc.stop(t+at+.19)});
+ }catch(e){console.warn('Could not play Pomodoro alert:',e)}}
+function pomoAnnounce(o,event,message,at=o.end){
+ const k=`sr-pomo-alert:${meId}:${o.sessionId}:${o.cycle}:${event}`;
+ try{if(localStorage.getItem(k))return;localStorage.setItem(k,'1')}catch(_){}
+ // Do not produce an unsolicited alarm long after the deadline (e.g. returning tomorrow).
+ if(Date.now()-at>5*60*1000)return;
+ pomoNote(message);pomoBeep();
+ if(typeof Notification!=='undefined'&&Notification.permission==='granted'&&document.hidden){
+  try{const n=new Notification('Study Room',{body:message,tag:k,silent:true});setTimeout(()=>n.close(),8000)}
+  catch(e){console.warn('System notifications unavailable:',e)}
+ }
+}
+async function pomoStep(){const o=pomoGet();if(!o||pomoBusy)return;
  const b=$('#pomoBadge');if(b)b.textContent='\u{1F345} '+pomoText();
- if(Date.now()<o.end)return;pomoBusy=true;
- try{
-  if(o.phase==='focus'&&mine.status==='active'){const long=o.cycle%4===0;
-   const{error}=await sb.rpc('pause_study_session');if(error)throw error;
-   pomoSet({phase:'break',cycle:o.cycle,end:Date.now()+(long?POMO.long:POMO.brk)*1000});pomoNote(long?'Long break: 15 minutes':'Break time: 5 minutes');await load()}
-  else if(o.phase==='break'&&mine.status==='paused'){
-   const{error}=await sb.rpc('resume_study_session');if(error)throw error;
-   pomoSet({phase:'focus',cycle:o.cycle+1,end:Date.now()+POMO.focus*1000});pomoNote('Back to focus: 25 minutes');await load()}
-  else pomoSet({phase:mine.status==='active'?'focus':'break',cycle:o.cycle,end:Date.now()+(mine.status==='active'?POMO.focus:POMO.brk)*1000});
- }catch(e){err(e?.message||'Pomodoro step failed.')}finally{pomoBusy=false}}
-function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)));donutRender();pomoStep()}
+ const bbreak=$('#pomoBreakBtn');if(bbreak)bbreak.textContent=pomoText();
+ if(o.phase==='focus'&&Date.now()>=o.end){
+  pomoBusy=true;
+  try{
+   await checkCurrentMember();
+   const{error}=await sb.rpc('sync_pomodoro_session');if(error)throw error;
+   const long=o.cycle%4===0;
+   pomoAnnounce(o,'focus-done',long?'Focus complete. Long break: 15 minutes.':'Focus complete. Break: 5 minutes.');
+   await load();
+  }catch(e){err('Pomodoro sync failed: '+(e?.message||e))}
+  finally{pomoBusy=false}
+ }else if(o.phase==='ready'){
+  if(!$('#nextFocusBtn')){pomoBusy=true;try{await load()}finally{pomoBusy=false}}
+  pomoAnnounce(o,'break-done','Break finished. Select Start Next Focus when you are ready.');
+ }
+}
+function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}
+ document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)));
+ donutRender();void pomoStep()}
+// Mobile browsers may suspend timers; immediately reconcile from authoritative server state.
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&meId)void load().then(()=>pomoStep()).catch(e=>err(e.message))});
 function lbRender(){
  const k=mode,rows=members.map(m=>({m,...totals(m.id)})).sort((x,y)=>y[k]-x[k]).slice(0,5);
  const when={today:'today',week:'this week',month:'this month',all:'of all time',n:'with the most awards'}[k];
@@ -635,7 +723,7 @@ async function saveGoal(){const secs=Math.max(0,Math.min(86400,(+$('#gH').value|
 function anRender(){
  if(!members.length||!$('#cmpBox'))return;
  cmpP=meId;cmpC.delete(cmpP);calRender();
- const others=members.filter(m=>m.id!==cmpP),col=m=>m.id===cmpP?'#818cf8':CMPC[others.indexOf(m)%4];
+ const others=members.filter(m=>m.id!==cmpP),col=memberAccent;
  
  const chip=m=>`<button type="button" class="cmp-chip${cmpC.has(m.id)?' on':''}" style="--c:${col(m)}" data-cc="${m.id}"><span class="cmp-dot"></span>${esc(m.display_name)}</button>`;
  $('#ccRow').innerHTML=others.slice(0,3).map(chip).join('')+'<button type="button" class="cmp-chip" data-cq="none">Clear</button>'+others.slice(3).map(chip).join('')+'<button type="button" class="cmp-chip" data-cq="all">All players</button>';
@@ -666,9 +754,9 @@ function anRender(){
    y:rk?{reverse:true,min:1,max:Math.max(2,members.length),grid:{color:gc,drawBorder:false},ticks:{color:tc,font:fnt,stepSize:1,precision:0,callback:v=>'#'+v}}
     :{beginAtZero:true,grid:{color:gc,drawBorder:false},ticks:{color:tc,font:fnt,callback:v=>v+' h'}}}}});
 }
-let cmpP=null,cmpC=new Set(),cmpChart,cmpMode='growth';const CMPC=['#34d399','#f59e0b','#f472b6','#38bdf8'];
+let cmpP=null,cmpC=new Set(),cmpChart,cmpMode='growth';
 let calMonth=null,calC=new Set();
-const calOthers=()=>members.filter(m=>m.id!==meId),calCol=m=>m.id===meId?'#818cf8':CMPC[calOthers().indexOf(m)%4];
+const calOthers=()=>members.filter(m=>m.id!==meId),calCol=memberAccent;
 function calRender(){
  if(!members.length||!$('#calGrid'))return;
  const t=today();if(!calMonth)calMonth=t.slice(0,7);
@@ -697,18 +785,30 @@ document.addEventListener('click',async e=>{
  if(b.dataset.a){
   b.disabled=true;
   try{
+   const action=b.dataset.a;
+   // Unlock audio synchronously during the click, before any awaited network call.
+   if(action==='start_pomodoro'||action==='start_next_pomodoro_focus')pomoUnlockAudio();
    await checkCurrentMember();
-   const act=b.dataset.a==='start_pomodoro'?'start_study_session':b.dataset.a;
-   const typed=($('#subj')?.value||'').trim(),args=act==='start_study_session'?{p_subject:b.dataset.a==='start_pomodoro'?PM+typed:(typed||null)}:{};
+   if(['finish_study_session','cancel_study_session'].includes(action)&&pomoGet()?.phase==='focus'&&Date.now()>=pomoGet().end){
+    const sync=await sb.rpc('sync_pomodoro_session');if(sync.error)throw sync.error;
+   }
+   const act=action==='start_pomodoro'?'start_pomodoro_session':action;
+   const typed=($('#subj')?.value||'').trim();
+   const args=action==='start_pomodoro'?{p_subject:typed||null}:action==='start_study_session'?{p_subject:typed||null}:{};
    const {error}=await sb.rpc(act,args);
-   if(error)throw error;
-   if(b.dataset.a==='start_pomodoro')pomoSet({phase:'focus',cycle:1,end:Date.now()+POMO.focus*1000});
-   else if(b.dataset.a==='start_study_session'||b.dataset.a==='finish_study_session'||b.dataset.a==='cancel_study_session')pomoSet(null);
-   else if(b.dataset.a==='resume_study_session'){const o=pomoGet();if(o&&o.phase==='break')pomoSet({phase:'focus',cycle:o.cycle+1,end:Date.now()+POMO.focus*1000})}
-   if(b.dataset.a==='finish_study_session'){await sb.rpc('ach_sync');loadAch()}
+   if(error){if(error.code==='PGRST202'&&act.includes('pomodoro'))throw new Error('Install study_room_aurora_pomodoro.sql in Supabase before using Pomodoro.');throw error}
+   if(action==='finish_study_session'){await sb.rpc('ach_sync');loadAch()}
    err('');
   }catch(e){err(e?.message||'Stopwatch action failed.');}
   finally{await load();b.disabled=false;}
+  return;
+ }
+ if(b.id==='pomoAlerts'){
+  pomoUnlockAudio();
+  if(typeof Notification==='undefined'){pomoNote('System notifications are unavailable in this browser. In-app alerts remain active.')}
+  else if(Notification.permission==='granted')pomoNote('Pomodoro alerts are enabled.');
+  else if(Notification.permission==='denied')pomoNote('System notifications are blocked. In-app alerts remain active.');
+  else{try{const p=await Notification.requestPermission();pomoNote(p==='granted'?'Pomodoro alerts enabled.':'In-app alerts will still appear.')}catch(_){pomoNote('In-app alerts remain active.')}}
   return;
  }
  if(b.dataset.v){document.querySelectorAll('section').forEach(s=>s.classList.toggle('hide',s.id!==b.dataset.v));
@@ -773,7 +873,13 @@ $('#profileSave').onclick=async()=>{
   if(pendingWave!==waveOf(me)){
    let saved=false;const{error:wErr}=await sb.rpc('update_study_wave',{p_color:pendingWave});
    if(!wErr)saved=true;else if(wErr.code!=='PGRST202'&&!/update_study_wave/.test(wErr.message||''))throw new Error(wErr.message);
-   try{localStorage.setItem('sr-wave-'+meId,pendingWave)}catch(_){}
+   try{
+    // Only use local fallback when the RPC is missing. Never let an old cached
+    // purple choice override the member's slot-based default after migration.
+    localStorage.removeItem('sr-wave-'+meId);
+    if(saved)localStorage.removeItem('sr-wave-offline-'+meId);
+    else localStorage.setItem('sr-wave-offline-'+meId,pendingWave);
+   }catch(_){}
    me.wave_color=pendingWave;if(!saved)console.warn('update_study_wave is missing: wave color is kept on this device only.')}
   avatarCache.delete(meId);
   const previousPath=owner.avatar_url;
