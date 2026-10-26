@@ -276,29 +276,33 @@ body.goal-lock{overflow:hidden}
 .mc-wave g{transform-box:fill-box;transform-origin:0 0}.mc-wave .w1{animation:wv 18s linear infinite}.mc-wave .w2{animation:wv 26s linear infinite reverse}.mc-wave .w3{animation:wv 12s linear infinite;filter:drop-shadow(0 0 5px currentColor)}
 @media(prefers-reduced-motion:reduce){.mc-wave g{animation:none!important}}
 /* wave colour picker */
-.wv-pick{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 4px}
-.wv-pick button{width:40px;height:40px;min-height:0;padding:0;border-radius:50%;border:2px solid transparent;background:var(--c);box-shadow:0 0 0 2px var(--bd);position:relative}
-.wv-pick button[aria-pressed=true]{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--c)}
-.wv-pick button[aria-pressed=true]::after{content:"";position:absolute;left:12px;top:8px;width:8px;height:15px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg);filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+/* Wave-color selector: ≈ glyphs, not circular swatches. */
+.wv-pick{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.wv-pick button{width:52px;height:48px;min-height:48px;padding:0;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--c);position:relative;transition:background .15s,border-color .15s,transform .15s}
+.wv-pick button .wv-symbol{display:block;font-family:Inter,system-ui,sans-serif;font-size:42px;font-weight:700;line-height:1;transform:translateY(-3px);user-select:none}
+.wv-pick button:hover{background:color-mix(in srgb,var(--c) 12%,transparent)}
+.wv-pick button[aria-pressed=true]{background:color-mix(in srgb,var(--c) 14%,transparent);border-color:color-mix(in srgb,var(--c) 65%,transparent)}
+.wv-pick button[aria-pressed=true]::after{content:"";position:absolute;left:12px;right:12px;bottom:4px;height:3px;border-radius:999px;background:var(--c)}
+.wv-pick button:focus-visible{outline:2px solid var(--c);outline-offset:2px}
 /* start row */
 .start-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1 1 100%}
 .start-row button{min-width:0;white-space:nowrap;padding-left:8px;padding-right:8px;font-size:15px}
-.pomo{background:color-mix(in srgb,var(--bad) 85%,#000);border-color:transparent;color:#fff}.pomo:hover{background:var(--bad)}
-.pomo-b{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--bad)}
+.pomo{background:#16a34a;border-color:transparent;color:#fff}.pomo:hover{background:#15803d}
+.pomo-b{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ok)}
 /* podium */
-.pod-win{display:flex;align-items:center;gap:10px;margin:2px 0 18px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--i-yellow) 12%,transparent);border:1px solid color-mix(in srgb,var(--i-yellow) 35%,transparent)}
+.pod-win{display:flex;align-items:center;gap:10px;margin:2px 0 18px;padding:0}
 .pod-win .ic{width:22px;height:22px;color:var(--i-yellow)}.pod-win b{font-size:15px}.pod-win span{font-size:13px;color:var(--tx2)}
 .podium{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;align-items:end}
 .pcol{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
-.pcol .av{width:44px;height:44px}.pcol.r1 .av{width:54px;height:54px;box-shadow:0 0 0 3px #facc15}
+.pcol .av{width:44px;height:44px}.pcol.r1 .av{width:54px;height:54px;box-shadow:0 0 0 3px #f1cf7a}
 .pn{max-width:100%;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pv{font-size:11px;color:var(--mu);font-variant-numeric:tabular-nums;margin-bottom:2px}
-.pblk{width:100%;display:grid;place-items:start center;padding-top:8px;border-radius:12px 12px 4px 4px;font-size:26px;font-weight:800;color:rgba(255,255,255,.92);position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
-.pblk::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 55%)}
-.r1 .pblk{height:150px;background:linear-gradient(180deg,#facc15,#b45309)}
-.r2 .pblk{height:114px;background:linear-gradient(180deg,#cbd5e1,#64748b)}
-.r3 .pblk{height:90px;background:linear-gradient(180deg,#fdba74,#9a3412)}
-.r4 .pblk{height:68px;background:linear-gradient(180deg,#818cf8,#3730a3)}
-.r5 .pblk{height:50px;background:linear-gradient(180deg,#94a3b8,#334155)}
+.pblk{width:100%;display:grid;place-items:start center;padding-top:8px;border-radius:12px 12px 4px 4px;font-size:26px;font-weight:800;color:rgba(51,65,85,.78);position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+.pblk::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 60%)}
+.r1 .pblk{height:150px;background:linear-gradient(180deg,#fdeeb3,#f1cf7a)}
+.r2 .pblk{height:114px;background:linear-gradient(180deg,#e6ebf2,#bcc7d6)}
+.r3 .pblk{height:90px;background:linear-gradient(180deg,#fcdcc0,#eab48c)}
+.r4 .pblk{height:68px;background:linear-gradient(180deg,#d5dcfd,#aab6f5)}
+.r5 .pblk{height:50px;background:linear-gradient(180deg,#d5dde8,#aebbcc)}
 .pcol.zero{opacity:.55}
 @media(max-width:420px){.podium{gap:5px}.pcol .av{width:36px;height:36px}.pcol.r1 .av{width:44px;height:44px}.pblk{font-size:20px}.pn{font-size:11px}}
 /* awards glass */
@@ -349,7 +353,7 @@ body.goal-lock{overflow:hidden}
 <section id="dash"><div class="row live-row ys-head"><h2 class="h2"><span class="t-desk">Your Session</span><span class="t-mob">Daily goal</span></h2><span class="sp"></span><div id="live" class="status"></div></div>
 <div class="panel ys" id="ys"><div class="ys-body"><div class="ys-sess" id="mine"></div><div class="ys-goal"><div class="lb ys-lb">Daily goal</div><div class="goal-row"><div class="donut" id="donutBtn" role="button" tabindex="0" aria-label="Set daily goal" title="Tap to set your daily goal"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div></div></div></div></div>
 <h2 class="h2 sec-title ttl"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study room</h2><div class="grid" id="cards"></div>
-<h2 class="h2 sec-title ttl"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Weekly Recap</h2><div class="panel ys cc" id="ccPanel"><svg class="ys-wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wg2" x1="0" x2="1"><stop offset="0" stop-color="#6366f1" stop-opacity="0"/><stop offset=".35" stop-color="#818cf8"/><stop offset=".7" stop-color="#a78bfa"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></linearGradient><linearGradient id="wf2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6366f1" stop-opacity=".42"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></linearGradient></defs><g class="w1"><path d="M0 36 Q150 -4 300 36 T600 36 T900 36 T1200 36 V120 H0Z" fill="url(#wf2)"/></g><g class="w2"><path d="M0 44 Q150 6 300 44 T600 44 T900 44 T1200 44 V120 H0Z" fill="url(#wf2)" opacity=".55"/></g><g class="w3"><path d="M0 34 Q150 -6 300 34 T600 34 T900 34 T1200 34" fill="none" stroke="url(#wg2)" stroke-width="2.5" stroke-linecap="round"/></g></svg><div id="ov"></div><div id="recap" class="recap hide"></div></div></section>
+<h2 class="h2 sec-title ttl"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Weekly Recap</h2><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div></section>
 
 <section id="an" class="hide"><div id="lb"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M8 21V11h8v10M2 21v-6h6M16 21v-4h6"/></svg><div><h2 class="h2">Podium</h2><div class="sub" id="sdSub">Study time by member</div></div></div>
 <div class="hd-tg"><div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div></div><div class="panel"><div class="tg-slot"></div>
@@ -470,7 +474,7 @@ function refreshProfilePreview(){
  $('#profileCurrentName').textContent=$('#profileNickname').value.trim()||me.display_name;
 }
 let pendingWave='purple';
-function paintWavePick(){const w=$('#wavePick');if(!w)return;waveDefs();w.innerHTML=Object.entries(WAVES).map(([k,v])=>`<button type="button" data-wv="${k}" style="--c:${v[1]}" aria-label="${v[3]}" title="${v[3]}" aria-pressed="${k===pendingWave}"></button>`).join('')}
+function paintWavePick(){const w=$('#wavePick');if(!w)return;waveDefs();w.innerHTML=Object.entries(WAVES).map(([k,v])=>`<button type="button" data-wv="${k}" style="--c:${v[1]}" aria-label="${v[3]}" title="${v[3]}" aria-pressed="${k===pendingWave}"><span class="wv-symbol" aria-hidden="true">≈</span></button>`).join('')}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-wv]');if(!b)return;e.stopPropagation();pendingWave=b.dataset.wv;paintWavePick()},true);
 function openProfileEditor(){
  const me=members.find(m=>m.id===meId);if(!me)return;pendingWave=waveOf(me);paintWavePick();
@@ -545,32 +549,35 @@ function render(){
     const rows=[[IC.trophy,`${esc(hi.m.display_name)} studied the most`,hmr(hi.s)],[IC.clock,`${esc(lo.m.display_name)} studied the least`,hmr(lo.s)],
      [IC.users,'The room studied together',hmr(tt)],[IC.cal,`Longest day: ${esc(bm?bm.display_name:'')} on ${wd}`,hmr(dt[bk])]];
     rc.innerHTML=`<h2 class="h2 rc-t">Last week, Monday to Sunday</h2>`+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
- const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=(!s&&tot(m.id,today())>0)?'paused':st;
+ const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=(!s&&tot(m.id,today())>0)?'paused':st,lbl=(vs==='active'&&isPomo(s))?'Pomodoro':SL[vs];
   const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start studying</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
    st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
   return`<article class="mc ${vs}${mine?' me':''}">${mine?'':waveSvg(waveOf(m),'mc-wave')}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
-  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${SL[vs]}</span>${mine&&s&&pomoGet()?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText()}</span>`:''}</div>
-  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${s?.subject?`<div class="subj">${IC.book}<span>${esc(s.subject)}</span></div>`:''}
+  <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&s&&pomoGet()?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText()}</span>`:''}</div>
+  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
- setPanelWave('#ys','ys-wave',waveOf(me));
+ setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#ccPanel','ys-wave',waveOf(me));
  donutRender();
  lbRender();anRender();
 }
 
-const WAVES={purple:['#6366f1','#818cf8','#a78bfa','Purple'],green:['#16a34a','#22c55e','#4ade80','Green'],sky:['#0284c7','#38bdf8','#7dd3fc','Light blue'],yellow:['#ca8a04','#eab308','#fde047','Yellow'],red:['#dc2626','#ef4444','#f87171','Red']};
+const WAVES={purple:['#6366f1','#818cf8','#a78bfa','Purple','#4f46e5','#7c3aed'],green:['#16a34a','#22c55e','#4ade80','Green','#15803d','#16a34a'],sky:['#0284c7','#38bdf8','#7dd3fc','Light blue','#0369a1','#0284c7'],yellow:['#ca8a04','#eab308','#fde047','Yellow','#a16207','#ca8a04'],red:['#dc2626','#ef4444','#f87171','Red','#b91c1c','#dc2626']};
+const WDEF=['purple','sky','green','yellow','red'];
 const waveOk=c=>Object.prototype.hasOwnProperty.call(WAVES,c);
-const waveOf=m=>{if(!m)return'purple';if(waveOk(m.wave_color))return m.wave_color;let l=null;try{l=localStorage.getItem('sr-wave-'+m.id)}catch(_){}return waveOk(l)?l:'purple'};
+const waveOf=m=>{if(!m)return'purple';if(waveOk(m.wave_color))return m.wave_color;let l=null;try{l=localStorage.getItem('sr-wave-'+m.id)}catch(_){}if(waveOk(l))return l;const i=m.slot_number>0?m.slot_number-1:Math.max(0,members.indexOf(m));return WDEF[i%5]};
 function waveDefs(){if($('#waveDefs'))return;const d=document.createElement('div');d.id='waveDefs';d.setAttribute('aria-hidden','true');d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
- d.innerHTML='<svg width="0" height="0"><defs>'+Object.entries(WAVES).map(([k,[a,b,c]])=>`<linearGradient id="wg-${k}" x1="0" x2="1"><stop offset="0" stop-color="${a}" stop-opacity="0"/><stop offset=".35" stop-color="${b}"/><stop offset=".7" stop-color="${c}"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wf-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}" stop-opacity=".42"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient>`).join('')+'</defs></svg>';document.body.appendChild(d)}
-const waveSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><g class="w1"><path d="M0 36 Q150 -4 300 36 T600 36 T900 36 T1200 36 V120 H0Z" fill="url(#wf-${k})"/></g><g class="w2"><path d="M0 44 Q150 6 300 44 T600 44 T900 44 T1200 44 V120 H0Z" fill="url(#wf-${k})" opacity=".55"/></g><g class="w3" style="color:${WAVES[k][1]}"><path d="M0 34 Q150 -6 300 34 T600 34 T900 34 T1200 34" fill="none" stroke="url(#wg-${k})" stroke-width="2.5" stroke-linecap="round"/></g></svg>`;
-function setPanelWave(sel,cls,k){const P=$(sel);if(!P)return;const o=P.querySelector('.'+cls);if(o&&o.dataset.k===k)return;const t=document.createElement('div');t.innerHTML=waveSvg(k,cls);const n=t.firstChild;n.dataset.k=k;if(o)o.replaceWith(n);else P.insertBefore(n,P.firstChild);dispatchEvent(new Event('resize'))}
+ d.innerHTML='<svg width="0" height="0"><defs>'+Object.entries(WAVES).map(([k,[a,b,c,,la,lb]])=>`<linearGradient id="wg-${k}" x1="0" x2="1"><stop offset="0" stop-color="${a}" stop-opacity="0"/><stop offset=".35" stop-color="${b}"/><stop offset=".7" stop-color="${c}"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wf-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}" stop-opacity=".42"/><stop offset="1" stop-color="${a}" stop-opacity="0"/></linearGradient><linearGradient id="wgl-${k}" x1="0" x2="1"><stop offset="0" stop-color="${la}" stop-opacity="0"/><stop offset=".35" stop-color="${lb}"/><stop offset=".7" stop-color="${la}"/><stop offset="1" stop-color="${la}" stop-opacity="0"/></linearGradient><linearGradient id="wfl-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lb}" stop-opacity=".32"/><stop offset="1" stop-color="${lb}" stop-opacity="0"/></linearGradient>`).join('')+'</defs></svg>';document.body.appendChild(d);
+ const st=document.createElement('style');st.textContent=Object.entries(WAVES).map(([k,[,b,,,la,lb]])=>`svg[data-k=${k}] .w3{color:${b}}[data-theme=light] svg[data-k=${k}] .w3{color:${lb}}[data-theme=light] svg[data-k=${k}] .w3 path{stroke:url(#wgl-${k})}[data-theme=light] svg[data-k=${k}] .w1 path,[data-theme=light] svg[data-k=${k}] .w2 path{fill:url(#wfl-${k})}`).join('');document.head.appendChild(st)}
+const waveSvg=(k,cls)=>`<svg class="${cls}" data-k="${k}" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><g class="w1"><path d="M0 36 Q150 -4 300 36 T600 36 T900 36 T1200 36 V120 H0Z" fill="url(#wf-${k})"/></g><g class="w2"><path d="M0 44 Q150 6 300 44 T600 44 T900 44 T1200 44 V120 H0Z" fill="url(#wf-${k})" opacity=".55"/></g><g class="w3"><path d="M0 34 Q150 -6 300 34 T600 34 T900 34 T1200 34" fill="none" stroke="url(#wg-${k})" stroke-width="2.5" stroke-linecap="round"/></g></svg>`;
+function setPanelWave(sel,cls,k){const P=$(sel);if(!P)return;const o=P.querySelector('.'+cls);if(o&&o.dataset.k===k)return;const t=document.createElement('div');t.innerHTML=waveSvg(k,cls);const n=t.firstChild;if(o)o.replaceWith(n);else P.insertBefore(n,P.firstChild);dispatchEvent(new Event('resize'))}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let lastDay=today();
 
 /* Pomodoro: 25 min focus -> auto pause for a 5 min break (15 min after every 4th focus) -> auto resume. Kept on this device. */
+const PM='\u{1F345}';const isPomo=s=>!!s&&(s.subject||'').startsWith(PM);const subjOf=s=>((s&&s.subject)||'').replace(PM,'').trim();
 const POMO={focus:25*60,brk:5*60,long:15*60};let pomoBusy=false;
 const pomoKey=()=>'sr-pomo-'+meId;
 function pomoGet(){try{const o=JSON.parse(localStorage.getItem(pomoKey())||'null');return o&&o.end?o:null}catch(_){return null}}
@@ -692,7 +699,7 @@ document.addEventListener('click',async e=>{
   try{
    await checkCurrentMember();
    const act=b.dataset.a==='start_pomodoro'?'start_study_session':b.dataset.a;
-   const args=act==='start_study_session'?{p_subject:$('#subj')?.value||null}:{};
+   const typed=($('#subj')?.value||'').trim(),args=act==='start_study_session'?{p_subject:b.dataset.a==='start_pomodoro'?PM+typed:(typed||null)}:{};
    const {error}=await sb.rpc(act,args);
    if(error)throw error;
    if(b.dataset.a==='start_pomodoro')pomoSet({phase:'focus',cycle:1,end:Date.now()+POMO.focus*1000});
