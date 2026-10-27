@@ -376,6 +376,22 @@ body.goal-lock{overflow:hidden}
 .ys .donut{grid-area:donut}
 #ys #mine .mc-main{grid-area:main}
 @media(max-width:420px){.ys-body{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}}
+/* Center the stopwatch identity and Daily Goal as one compact pair, while
+   keeping the subject field and action buttons full-width below. */
+.ys-body{
+  grid-template-columns:minmax(0,1fr) minmax(0,330px) minmax(0,210px) minmax(0,1fr);
+  grid-template-areas:". main donut ." "ctl ctl ctl ctl";
+  column-gap:clamp(12px,2vw,28px);
+  justify-content:center;
+}
+.ys .donut{justify-self:center}
+@media(max-width:650px){
+  .ys-body{
+    grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);
+    grid-template-areas:"main donut" "ctl ctl";
+    column-gap:12px;
+  }
+}
 /* Audio edition: centered desktop navigation and icon-only sound control. */
 #snd{width:42px;min-width:42px;padding:8px;flex:0 0 42px}
 #snd .ic{width:19px;height:19px}
@@ -1200,10 +1216,10 @@ const SND=(()=>{
   set(v){on=v;try{localStorage.setItem('sr-sound',v?'on':'off')}catch(_){}},
   unlock(){run()},
   blip(){const c=run();if(c&&on&&c.state==='running')tone(c,880,c.currentTime,.12,'sine',.15)},
-  start(){const c=ok();if(!c)return;const t=c.currentTime+.01; // short soft rising click
-   tone(c,510,t,.065,'sine',.055);tone(c,740,t+.055,.085,'sine',.045)},
-  finish(){const c=ok();if(!c)return;const t=c.currentTime+.01; // lower two-note finish
-   tone(c,740,t,.075,'triangle',.052);tone(c,470,t+.075,.13,'sine',.05)},
+  start(){const c=ok();if(!c)return;const t=c.currentTime+.008; // Mini Celestial Chime: rising glass-like three-note signature
+   [659.25,830.61,987.77].forEach((f,i)=>tone(c,f,t+i*.066,.14,'sine',.028-i*.003))},
+  finish(){const c=ok();if(!c)return;const t=c.currentTime+.008; // matching closing chime, descending to a soft resolution
+   [987.77,830.61,659.25].forEach((f,i)=>tone(c,f,t+i*.075,.16+i*.025,'sine',.029-i*.003))},
   friend(){const c=ok();if(!c)return;const t=c.currentTime+.02;
    tone(c,587.33,t,.16,'sine',.042);tone(c,783.99,t+.12,.27,'sine',.036)},
   goal(){const c=ok();if(!c)return;const t=c.currentTime+.03;N.slice(0,4).forEach((f,i)=>tone(c,f,t+i*.09,.35,'triangle',.18));tone(c,2093,t+.4,.5,'sine',.08)},
@@ -1211,12 +1227,10 @@ const SND=(()=>{
    for(let i=0;i<k+1&&i<5;i++)tone(c,N[i],t+i*.08,.28,'triangle',.15);
    if(k>=3)tone(c,N[4]*1.5,t+.5,.6,'sine',.07);
    if(k>=4)[N[0],N[2],N[3]].forEach(f=>tone(c,f,t+.45,.8,'triangle',.1))},
-  homeTap(){const c=ok();if(!c)return;const t=c.currentTime+.004;
-   tone(c,780,t,.082,'sine',.032)},
+  homeTap(){this.userNavTap()}, // Crystal Double Tap, matching User and Awards
   userNavTap(){const c=ok();if(!c)return;const t=c.currentTime+.004;
    tone(c,660,t,.075,'sine',.031);tone(c,880,t+.061,.094,'sine',.024)},
-  awardsNavTap(){const c=ok();if(!c)return;const t=c.currentTime+.004;
-   [659.25,830.61,987.77].forEach((f,i)=>tone(c,f,t+i*.066,.14,'sine',.025-i*.003))},
+  awardsNavTap(){this.userNavTap()}, // Crystal Double Tap
   bubbleTap(){const c=ok();if(!c)return;const t=c.currentTime+.004;
    tone(c,480,t,.075,'sine',.036);tone(c,720,t+.022,.092,'triangle',.014)},
   saveConfirm(){const c=ok();if(!c)return;const t=c.currentTime+.006;
