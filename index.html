@@ -229,7 +229,7 @@ html[data-theme=light] .score-dist-label{color:#475569}html[data-theme=light] .s
 .t-desk{display:none}.t-mob{display:inline-flex;align-items:center;gap:10px}
 .t-mob::before{content:"";width:26px;height:26px;background:var(--ac);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E") center/contain no-repeat}
 .ys{padding:18px 16px 20px;background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 9%,var(--panel)),var(--panel) 70%)}
-.ys-body{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-areas:"donut main" "ctl ctl";gap:18px 14px;align-items:center}
+.ys-body{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-areas:"main donut" "ctl ctl";gap:18px 14px;align-items:center}
 .ys-sess,.ys-goal,.goal-row,#ys #mine .mc{display:contents}
 .ys-goal{border:0;padding:0}.ys-lb{display:none}
 .ys .donut{grid-area:donut;width:100%;height:auto;aspect-ratio:1;max-width:190px;justify-self:center}
@@ -371,6 +371,11 @@ body.goal-lock{overflow:hidden}
 .profile-avatar-edit #th{flex:none;margin-left:auto;white-space:nowrap}
 @media(max-width:420px){.profile-avatar-edit #th{padding:7px 10px}.profile-avatar-edit #th span{display:none}}
 
+/* Daily Goal on the right, stopwatch on the left on every screen size. */
+.ys-body{grid-template-areas:"main donut" "ctl ctl"}
+.ys .donut{grid-area:donut}
+#ys #mine .mc-main{grid-area:main}
+@media(max-width:420px){.ys-body{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}}
 /* Audio edition: centered desktop navigation and icon-only sound control. */
 #snd{width:42px;min-width:42px;padding:8px;flex:0 0 42px}
 #snd .ic{width:19px;height:19px}
@@ -965,6 +970,7 @@ $('#profileSave').onclick=async()=>{
    }catch(_){}
    me.wave_color=pendingWave;if(!saved)console.warn('update_study_wave is missing: wave color is kept on this device only.')}
   avatarCache.delete(meId);
+  try{SND.saveConfirm()}catch(_){}
   const previousPath=owner.avatar_url;
   closeProfileEditor();
   await load();
@@ -1205,6 +1211,16 @@ const SND=(()=>{
    for(let i=0;i<k+1&&i<5;i++)tone(c,N[i],t+i*.08,.28,'triangle',.15);
    if(k>=3)tone(c,N[4]*1.5,t+.5,.6,'sine',.07);
    if(k>=4)[N[0],N[2],N[3]].forEach(f=>tone(c,f,t+.45,.8,'triangle',.1))},
+  homeTap(){const c=ok();if(!c)return;const t=c.currentTime+.004;
+   tone(c,780,t,.082,'sine',.032)},
+  userNavTap(){const c=ok();if(!c)return;const t=c.currentTime+.004;
+   tone(c,660,t,.075,'sine',.031);tone(c,880,t+.061,.094,'sine',.024)},
+  awardsNavTap(){const c=ok();if(!c)return;const t=c.currentTime+.004;
+   [659.25,830.61,987.77].forEach((f,i)=>tone(c,f,t+i*.066,.14,'sine',.025-i*.003))},
+  bubbleTap(){const c=ok();if(!c)return;const t=c.currentTime+.004;
+   tone(c,480,t,.075,'sine',.036);tone(c,720,t+.022,.092,'triangle',.014)},
+  saveConfirm(){const c=ok();if(!c)return;const t=c.currentTime+.006;
+   tone(c,659.25,t,.13,'sine',.032);tone(c,987.77,t+.095,.21,'sine',.035)},
   navTap(){const c=ok();if(!c)return;const t=c.currentTime+.005;tone(c,690,t,.070,'sine',.032);tone(c,940,t+.058,.085,'sine',.022)},
   profileTap(){const c=ok();if(!c)return;const t=c.currentTime+.005;tone(c,630,t,.090,'triangle',.027)},
   tierTap(v){const c=ok();if(!c)return;const n=Math.max(0,Math.min(4,Number(v)||0)),t=c.currentTime+.005;
@@ -1269,10 +1285,12 @@ document.addEventListener('click',e=>{
 /* Navigation, profile modal actions, and all five Awards tier filters: quiet tactile audio. */
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b||b.disabled)return;
- if(b.closest('#nav')){try{SND.navTap()}catch(_){};return}
+ if(b.closest('#nav')){
+  try{if(b.dataset.v==='dash')SND.homeTap();else if(b.dataset.v==='an')SND.userNavTap();else if(b.dataset.v==='ach')SND.awardsNavTap()}catch(_){}
+  return;
+ }
  if(b.closest('#profileBackdrop') || b.id==='profileButton'){
-  if(b.id==='th'){try{SND.navTap()}catch(_){}}
-  else {try{SND.profileTap()}catch(_){}}
+  try{if(b.id==='profileButton'||b.id==='profileRemovePhoto'||b.id==='profilePreview')SND.bubbleTap();else SND.profileTap()}catch(_){}
   return;
  }
  if(b.closest('#ach') && (b.dataset.af!==undefined || b.classList.contains('ach-clear'))){
