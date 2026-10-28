@@ -41,6 +41,7 @@ input,select{font:inherit;color:var(--tx);width:100%;min-height:44px;padding:8px
 /* member cards: you = featured, others = grid; status via top accent */
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
 .mc{display:grid;gap:16px;padding:24px;background:var(--panel);border:1px solid var(--bd);border-top:3px solid transparent;border-radius:16px}.mc.active{border-top-color:var(--ok)}.mc.paused{border-top-color:var(--warn)}.mc.me{border-color:var(--ac)}
+.sleep-banner{grid-column:1/-1;padding:12px 14px;border:1px solid var(--warn);border-radius:12px;background:color-mix(in srgb,var(--warn) 9%,var(--panel));color:var(--tx);font-size:13px;line-height:1.5}.sleep-banner .sleep-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.sleep-banner button{min-height:36px;padding:7px 12px;border-radius:9px}.sleep-banner .sleep-resume{background:var(--ok);color:#fff}.sleep-banner .sleep-finish{background:transparent;border:1px solid var(--bd);color:var(--tx)}
 .mc-main{display:grid;gap:12px}.clock{font-size:36px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}.mc.idle .clock{color:var(--mu)}
 .subj{display:flex;align-items:flex-start;gap:8px;color:var(--tx2);min-width:0}.subj .ic{margin-top:2px}.subj span{min-width:0;overflow:hidden;overflow-wrap:anywhere;white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3}
 .mini{display:flex;gap:24px}.mini div{display:grid}.mini b{font-weight:600}.ctl{display:flex;gap:8px;flex-wrap:wrap}.ctl input{flex:1 1 100%}.ctl button{flex:1}
@@ -518,6 +519,10 @@ sb.auth.onAuthStateChange((event,session)=>{
  }
 });
 let members=[],sessions={},goals={},stats=[],counts={},meId=null,mode='today',sortK=null,days=7,charts={},timer;
+let activitySinceHeartbeat=false,lastHeartbeatAt=0,heartbeatTimer=null;
+function markRealActivity(){if(!document.hidden&&meId&&sessions[meId]?.status==='active')activitySinceHeartbeat=true}
+for(const ev of ['pointerdown','keydown','scroll','touchstart'])document.addEventListener(ev,markRealActivity,{passive:true});
+function startActivityHeartbeat(){if(heartbeatTimer)clearInterval(heartbeatTimer);heartbeatTimer=setInterval(async()=>{if(document.hidden||!meId||sessions[meId]?.status!=='active'||!activitySinceHeartbeat)return;const now=Date.now();if(now-lastHeartbeatAt<60000)return;activitySinceHeartbeat=false;lastHeartbeatAt=now;try{const {error}=await sb.rpc('session_heartbeat');if(error)throw error;await load()}catch(e){console.warn('Activity heartbeat failed:',e?.message||e)}},60000)}
 // Revalidate identity against Supabase Auth before any personal mutation.
 async function checkCurrentMember(){
  const {data:{user},error:userError}=await sb.auth.getUser();
@@ -601,7 +606,7 @@ async function boot(){
  if(!meId){await sb.auth.signOut();$('#login').classList.remove('hide');$('#le').textContent='This account is not assigned to a member slot.';return}
  loadedAuthUserId=session.user.id;
  $('#login').classList.add('hide');$('#app').classList.remove('hide');
- await load();subscribe();achInit();clearInterval(timer);timer=setInterval(tick,1000);
+ await load();subscribe();achInit();clearInterval(timer);timer=setInterval(tick,1000);startActivityHeartbeat();
 }
 let friendSessionBaseline=null;
 const friendSfxTimes=new Map();
@@ -663,10 +668,11 @@ function render(){
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=expiredPomo(s)?'paused':(!s&&tot(m.id,today())>0)?'paused':st,po=mine?pomoGet(s):null;
   const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
   const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
-   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
-   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button>`:
+   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`:
+   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button class="ghost danger" data-a="cancel_study_session">Discard</button>`;
-  return`<article class="mc ${vs}${mine?' me':''}">${mine?'':waveSvg(waveOf(m),'mc-wave')}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
+  const sleepBanner=mine&&s?.auto_paused_at&&s?.auto_pause_reason?`<div class="sleep-banner"><div>Sesi dijeda otomatis jam ${new Intl.DateTimeFormat('id-ID',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(s.auto_paused_at))} karena tidak ada aktivitas. Waktu tidur tidak dihitung.</div><div class="sleep-actions"><button class="sleep-resume" data-a="resume_study_session">Lanjutkan</button><button class="sleep-finish" data-a="finish_study_session">Selesaikan</button></div></div>`:'';
+  return`<article class="mc ${vs}${mine?' me':''}">${mine?'':waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
   <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span>`:''}</div>
   <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}
   </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
@@ -889,6 +895,7 @@ let ch;function subscribe(){
 document.addEventListener('click',async e=>{
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.a){
+  if(b.dataset.a==='cancel_study_session'&&!window.confirm('Discard this study session? Its time will not be saved.'))return;
   b.disabled=true;
   try{
    const action=b.dataset.a;
