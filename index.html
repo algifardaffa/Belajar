@@ -544,7 +544,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <label class="lb" for="profileNickname">Nickname</label><input id="profileNickname" type="text" minlength="1" maxlength="8" placeholder="Your nickname" autocomplete="nickname">
 <label class="lb" for="profileImage">Profile photo</label><input id="profileImage" class="profile-file" type="file" accept="image/png,image/jpeg,image/webp">
 
-<div class="lb">Wave color</div><div class="wv-pick" id="wavePick" role="group" aria-label="Wave color"></div>
 <button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
 <section id="dash"><div class="head out q-head" id="quoteHead"><div class="hd-ic"><svg class="ic purple hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><div><h2 class="h2">Kata-kata Hari Ini</h2></div></div></div><div class="panel q-panel" id="quotePanel"><div class="q-track" id="qTrack"><div class="q-run" id="qRun"></div></div></div>
@@ -576,7 +575,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <img id="pfPrev" alt="Preview" hidden>
 <button type="button" data-pfpick="modal" id="pfChoose">&#128247; Choose photo</button>
 <input id="pfSubj" maxlength="40" placeholder="What are you studying? (optional)" aria-label="What are you studying">
-<input id="pfCap" maxlength="40" placeholder="Caption (optional)" aria-label="Caption">
 <p id="pfMsg" class="pf-msg" role="alert"></p>
 <div class="pf-actions"><button type="button" id="pfCancel" class="ghost">Cancel</button><button type="button" id="pfPost" class="p" disabled>Post</button></div>
 </div></div>
@@ -769,7 +767,10 @@ function pfBlock(m,mine,st){const p=proofFor(m),u=p&&proofUrls.get(p.photo_path)
  if(p){const cap=p.caption&&p.caption!==subjOf(sessions[m.id])?`<div class="pf-cap">${esc(p.caption)}</div>`:'';
   h+=`<div class="pf"><button type="button" class="pf-img" data-pfopen="${p.id}" aria-label="Open proof photo">${u?`<img src="${esc(u)}" alt="Proof of studying" loading="lazy">`:'<span class="pf-ph">\u{1F4F7}</span>'}</button>${rxBar(p)}${cap}</div>`}
  return h}
-const pfClearPending=()=>{pfDrop();pendSubj='';pendCap=''};
+const SJK=()=>'sr-subj-'+meId;
+function subjSave(){if(!meId)return;try{pendSubj?localStorage.setItem(SJK(),JSON.stringify({d:today(),s:pendSubj})):localStorage.removeItem(SJK())}catch(_){}}
+function subjSync(){if(!meId)return;try{const o=JSON.parse(localStorage.getItem(SJK())||'null');if(o&&o.d===today())pendSubj=o.s||'';else{pendSubj='';localStorage.removeItem(SJK())}}catch(_){}}
+const pfClearPending=()=>{pfDrop();pendSubj='';pendCap='';subjSave()};
 async function pfCompress(file){
  let img=await createImageBitmap(file).catch(()=>null);
  if(!img)img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Could not read that image.'));i.src=URL.createObjectURL(file)});
@@ -793,7 +794,7 @@ function pfModalPaint(){const idle=!sessions[meId],cur=pfTmp||(idle?pfDraft:null
  $('#pfSubj').classList.toggle('hide',!idle);const pb=$('#pfPost');pb.textContent=idle?'Save':'Post';pb.disabled=idle?false:!pfTmp;
  $('#pfChoose').textContent=cur?'\u{1F4F7} Change photo':'\u{1F4F7} Choose photo'}
 function pfTmpDrop(){if(pfTmp)URL.revokeObjectURL(pfTmp.url);pfTmp=null}
-function pfOpenModal(){const idle=!sessions[meId];pfTmpDrop();pfTarget='modal';$('#pfSubj').value=idle?pendSubj:'';$('#pfCap').value=idle?pendCap:'';$('#pfMsg').textContent='';pfModalPaint();$('#pfModal').classList.remove('hide')}
+function pfOpenModal(){const idle=!sessions[meId];pfTmpDrop();pfTarget='modal';$('#pfSubj').value=idle?pendSubj:'';$('#pfMsg').textContent='';pfModalPaint();$('#pfModal').classList.remove('hide')}
 function pfCloseModal(){pfTmpDrop();pfTarget='compose';$('#pfModal').classList.add('hide');render()}
 function pfViewPaint(){
  const p=allProofs().find(x=>x.id===pfViewId);
@@ -815,9 +816,9 @@ $('#pfPost').onclick=async()=>{
  const b=$('#pfPost');b.disabled=true;$('#pfMsg').textContent='';
  if(!sessions[meId]){ // before Start: keep photo + texts and send them together with Start
   if(pfTmp){if(pfDraft)URL.revokeObjectURL(pfDraft.url);pfDraft=pfTmp;pfTmp=null}
-  pendSubj=$('#pfSubj').value.trim();pendCap=$('#pfCap').value.trim();
+  pendSubj=$('#pfSubj').value.trim();pendCap='';subjSave();
   $('#pfModal').classList.add('hide');pfTarget='compose';render();return}
- try{const d=pfTmp;await pfSubmit($('#pfCap').value,sessions[meId]?.id,d);pfTmp=null;$('#pfModal').classList.add('hide');pfTarget='compose';await loadProofs();render()}
+ try{const d=pfTmp;await pfSubmit('',sessions[meId]?.id,d);pfTmp=null;$('#pfModal').classList.add('hide');pfTarget='compose';await loadProofs();render()}
  catch(x){$('#pfMsg').textContent=x?.message||'Upload failed.';b.disabled=!pfTmp}
 };
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
@@ -907,15 +908,15 @@ function render(){
     rc.innerHTML='<div class="rc-t">Last week, Monday to Sunday</div>'+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=expiredPomo(s)?'paused':(!s&&tot(m.id,today())>0)?'paused':st,po=mine?pomoGet(s):null;
   const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
-  const pend=!!(pfDraft||pendSubj||pendCap),ctl=!mine?'':st==='idle'?`<div class="start-row${pend?' has-pend':''}"><button class="p" data-a="start_study_session">Start</button><button type="button" class="pf-pict pomo${pend?' on':''}" data-pfadd>${pfDraft?`<img src="${pfDraft.url}" alt="">`:''}<span>${pend?(pfDraft?'Photo ready':'Info ready'):'+ Pict'}</span></button>${pend?'<button type="button" class="pf-x" data-pfclear aria-label="Clear photo and details">\u2715</button>':''}</div>`:
-   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`:
-   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`:
-   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`;
+  if(mine)subjSync();const pend=!!(pfDraft||pendSubj||pendCap),ctl=!mine?'':st==='idle'?`<div class="start-row${pend?' has-pend':''}"><button class="p" data-a="start_study_session">Start</button><button type="button" class="pf-pict pomo${pend?' on':''}" data-pfadd>${pfDraft?`<img src="${pfDraft.url}" alt="">`:''}<span>${pend?(pfDraft?'Photo ready':'Info ready'):'+ Pict'}</span></button>${pend?'<button type="button" class="pf-x" data-pfclear aria-label="Clear photo and details">\u2715</button>':''}</div>`:
+   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
+   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button>`:
+   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button>`;
   const sleepBanner=mine&&s?.auto_paused_at&&s?.auto_pause_reason?`<div class="sleep-banner"><div>Sesi dijeda otomatis jam ${new Intl.DateTimeFormat('id-ID',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(s.auto_paused_at))} karena tidak ada aktivitas. Waktu tidur tidak dihitung.</div><div class="sleep-actions"><button class="sleep-resume" data-a="resume_study_session">Lanjutkan</button><button class="sleep-finish" data-a="finish_study_session">Selesaikan</button></div></div>`:'';
   const picHtml=(h=>h?`<div class="mc-pic">${h}</div>`:'')(pfBlock(m,mine,st));
   return`<article class="mc ${vs}${picHtml?' has-pic':''}" style="--wcd:${WAVES[waveOf(m)][1]};--wcl:${WAVES[waveOf(m)][5]}">${waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
   <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span>`:''}</div>
-  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}
+  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${(subjOf(s)||(mine&&st==='idle'?pendSubj:''))?`<div class="subj">${IC.book}<span>${esc(subjOf(s)||pendSubj)}</span></div>`:''}
   </div>${picHtml}${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#cards').innerHTML=[me,...members.filter(m=>m.id!==meId)].map(m=>card(m,members.indexOf(m))).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
@@ -947,7 +948,7 @@ const waveOf=m=>{if(!m)return WDEF[0];if(waveOk(m.wave_color))return m.wave_colo
 // Compare Players and Calendar deliberately use slot-assigned colors,
 // regardless of user-selected waves. Hence 5 players always have 5 unique colors.
 const memberAccent=m=>{
- const palette=WAVES[WDEF[Math.max(0,Math.min(4,(Number(m?.slot_number)||1)-1))]];
+ const palette=WAVES[['sunset','moonlight','arctic','iris','sakura'][Math.max(0,Math.min(4,(Number(m?.slot_number)||1)-1))]];
  // Chart and calendar remain unique per slot. Use darker colors on white UI.
  return palette[document.documentElement.dataset.theme==='light'?4:1];
 };
@@ -1255,7 +1256,7 @@ document.addEventListener('click',async e=>{
    if(error){if(error.code==='PGRST202'&&act.includes('pomodoro'))throw new Error('Install study_room_aurora_pomodoro.sql in Supabase before using Pomodoro.');throw error}
    pfWarn='';if(['start_study_session','start_pomodoro'].includes(action)){if(pfDraft){try{let sid=rpcData?.id||rpcData?.session_id||(typeof rpcData==='string'?rpcData:null)||(Array.isArray(rpcData)?(rpcData[0]?.id||rpcData[0]?.session_id):null);
     if(!sid){try{const q=await sb.from('study_sessions').select('id').eq('member_id',meId).in('status',['active','paused']).limit(1);sid=q.data?.[0]?.id||null}catch(_){}}
-    await pfSubmit(pendCap,sid)}catch(x){pfWarn='Session started, but the photo failed to upload: '+(x?.message||x)}}pendSubj='';pendCap=''}
+    await pfSubmit(pendCap,sid)}catch(x){pfWarn='Session started, but the photo failed to upload: '+(x?.message||x)}}pendCap=''}
    if(action==='finish_study_session'){await sb.rpc('ach_sync');loadAch()}
    // Success-only stopwatch cues. Distinct from Pomodoro's existing completion alarm.
    try{
