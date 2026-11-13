@@ -548,9 +548,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
 <section id="dash"><div class="head out q-head" id="quoteHead"><div class="hd-ic"><svg class="ic purple hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><div><h2 class="h2">Kata-kata Hari Ini</h2></div></div></div><div class="panel q-panel" id="quotePanel"><div class="q-track" id="qTrack"><div class="q-run" id="qRun"></div></div></div>
-<div class="row live-row ys-head"><h2 class="h2"><span class="t-desk">Your Session</span><span class="t-mob">Daily goal</span></h2><span class="sp"></span><div id="live" class="status"></div></div>
-<div class="panel ys" id="ys"><div class="ys-body"><div class="ys-sess" id="mine"></div><div class="ys-goal"><div class="lb ys-lb">Daily goal</div><div class="goal-row"><div class="donut" id="donutBtn" role="button" tabindex="0" aria-label="Set daily goal" title="Tap to set your daily goal"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div></div></div></div></div>
-<h2 class="h2 sec-title ttl"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study room</h2><div class="grid" id="cards"></div>
+<div class="row live-row ys-head"><h2 class="h2 ttl"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study room</h2><span class="sp"></span><div id="live" class="status"></div></div>
+<div class="grid" id="cards"></div>
 
 <div id="lb" class="home-podium"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M8 21V11h8v10M2 21v-6h6M16 21v-4h6"/></svg><div><h2 class="h2">Podium</h2></div></div>
 <div class="hd-tg"><div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div></div><div class="panel podium-wave-panel" id="podiumPanel"><div class="tg-slot"></div>
@@ -571,6 +570,20 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </div></div>
 
+<input type="file" id="pfFile" accept="image/jpeg,image/png,image/webp" style="display:none">
+<div id="pfModal" class="pf-modal hide" role="dialog" aria-modal="true" aria-labelledby="pfTitle"><div class="pf-sheet">
+<h3 class="h2" id="pfTitle">Add proof photo</h3>
+<img id="pfPrev" alt="Preview" hidden>
+<button type="button" data-pfpick="modal" id="pfChoose">&#128247; Choose photo</button>
+<input id="pfSubj" maxlength="40" placeholder="What are you studying? (optional)" aria-label="What are you studying">
+<input id="pfCap" maxlength="40" placeholder="Caption (optional)" aria-label="Caption">
+<p id="pfMsg" class="pf-msg" role="alert"></p>
+<div class="pf-actions"><button type="button" id="pfCancel" class="ghost">Cancel</button><button type="button" id="pfPost" class="p" disabled>Post</button></div>
+</div></div>
+<div id="pfView" class="pf-modal hide" role="dialog" aria-modal="true" aria-label="Proof photo"><div class="pf-sheet">
+<button type="button" class="pf-close" data-pfclose aria-label="Close">&#10005;</button>
+<img id="pfBigImg" alt="Proof of studying"><div id="pfBigMeta" class="pf-meta"></div>
+</div></div>
 <div id="goalModal" class="gm" role="dialog" aria-modal="true" aria-labelledby="gmTitle"><div class="gm-card"><h3 id="gmTitle">Set daily goal</h3><p class="gm-sub">How long do you want to study each day?</p><div class="gm-in"><div class="goal-in"><input id="gH" type="number" min="0" max="23" inputmode="numeric" placeholder="0" aria-label="Goal hours"><span>h</span><input id="gM" type="number" min="0" max="59" inputmode="numeric" placeholder="0" aria-label="Goal minutes"><span>m</span></div></div><button type="button" class="p wide" id="gSave">Save goal</button><div class="sub" id="gNote"></div></div></div>
 <script>
 // ---- CONFIG: replace with your project values (publishable key only!) ----
@@ -722,6 +735,117 @@ async function boot(){
  $('#login').classList.add('hide');$('#app').classList.remove('hide');
  await load();subscribe();achInit();clearInterval(timer);timer=setInterval(tick,1000);startActivityHeartbeat();
 }
+
+/* ---- Proof photos + reactions ---- */
+let proofsBy={},rxBy={},proofUrls=new Map(),pfDraft=null,pfTmp=null,pendSubj='',pendCap='',pfTarget='compose',pfWarn='',pfViewId=null;
+const PF_BUCKET='study-proofs',RX=[['up','\u{1F44D}'],['down','\u{1F44E}'],['love','\u2764\uFE0F']];
+async function loadProofs(){
+ try{
+  const since=new Date(Date.now()-24*3600e3).toISOString();
+  const {data:ps,error}=await sb.from('study_proofs').select('*').gte('created_at',since).order('created_at',{ascending:false});
+  if(error)throw error;
+  const pb={};(ps||[]).forEach(p=>(pb[p.member_id]=pb[p.member_id]||[]).push(p));
+  const rb={};
+  if(ps?.length){const {data:rs,error:e2}=await sb.from('study_proof_reactions').select('*').in('proof_id',ps.map(p=>p.id));
+   if(e2)throw e2;(rs||[]).forEach(r=>(rb[r.proof_id]=rb[r.proof_id]||[]).push(r))}
+  proofsBy=pb;rxBy=rb;
+  const need=(ps||[]).map(p=>p.photo_path).filter(x=>{const c=proofUrls.get(x);return !c||c.exp<Date.now()});
+  if(need.length){const {data,error:e3}=await sb.storage.from(PF_BUCKET).createSignedUrls(need,3600);
+   if(!e3)(data||[]).forEach(d=>{if(d.signedUrl)proofUrls.set(d.path,{url:d.signedUrl,exp:Date.now()+50*60*1000})})}
+ }catch(e){console.warn('Proof photos unavailable:',e?.message||e)}
+ if(pfViewId)pfViewPaint();
+}
+const allProofs=()=>Object.values(proofsBy).flat();
+function proofFor(m){const list=proofsBy[m.id]||[],s=sessions[m.id];
+ /* prefer the photo of the running session; otherwise keep showing the latest photo (it must not vanish on Start) */
+ if(s&&(s.status==='active'||s.status==='paused'))return list.find(p=>p.session_id===s.id)||list[0]||null;
+ return list[0]||null}
+function rxBar(p){const list=rxBy[p.id]||[],mineR=list.find(r=>r.member_id===meId)?.reaction,own=p.member_id===meId;
+ const h=RX.map(([k,e])=>{const who=list.filter(r=>r.reaction===k),n=who.length;if(own&&!n)return'';
+  const names=who.map(r=>members.find(m=>m.id===r.member_id)?.display_name).filter(Boolean).join(', ');
+  return`<button type="button" class="rx-b${mineR===k?' on':''}" data-rx="${k}" data-pid="${p.id}"${own?' disabled':''} title="${esc(names)}" aria-label="${k} ${n}" aria-pressed="${mineR===k}">${e}${n?`<span>${n}</span>`:''}</button>`}).join('');
+ return h?`<div class="rx">${h}</div>`:''}
+function pfBlock(m,mine,st){const p=proofFor(m),u=p&&proofUrls.get(p.photo_path)?.url;let h='';
+ if(p){const cap=p.caption&&p.caption!==subjOf(sessions[m.id])?`<div class="pf-cap">${esc(p.caption)}</div>`:'';
+  h+=`<div class="pf"><button type="button" class="pf-img" data-pfopen="${p.id}" aria-label="Open proof photo">${u?`<img src="${esc(u)}" alt="Proof of studying" loading="lazy">`:'<span class="pf-ph">\u{1F4F7}</span>'}</button>${rxBar(p)}${cap}</div>`}
+ return h}
+const pfClearPending=()=>{pfDrop();pendSubj='';pendCap=''};
+async function pfCompress(file){
+ let img=await createImageBitmap(file).catch(()=>null);
+ if(!img)img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Could not read that image.'));i.src=URL.createObjectURL(file)});
+ const k=Math.min(1,1280/Math.max(img.width,img.height)),c=document.createElement('canvas');
+ c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+ return new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('Could not process the photo.')),'image/jpeg',.82));
+}
+async function pfSubmit(cap,sid,draft=pfDraft){
+ if(!draft)return;
+ const {user}=await checkCurrentMember();
+ const path=`${user.id}/${crypto.randomUUID()}.jpg`;
+ const {error:ue}=await sb.storage.from(PF_BUCKET).upload(path,draft.blob,{contentType:'image/jpeg',cacheControl:'3600',upsert:false});
+ if(ue)throw ue;
+ const {error}=await sb.rpc('add_study_proof',{p_photo_path:path,p_caption:(cap||'').trim()||null,p_session:sid||null});
+ if(error){sb.storage.from(PF_BUCKET).remove([path]).catch(()=>{});
+  throw error.code==='PGRST202'?new Error('Run Study_Room_Proofs.sql in Supabase first.'):error}
+ URL.revokeObjectURL(draft.url);if(draft===pfDraft)pfDraft=null;
+}
+const pfDrop=()=>{if(pfDraft)URL.revokeObjectURL(pfDraft.url);pfDraft=null};
+function pfModalPaint(){const idle=!sessions[meId],cur=pfTmp||(idle?pfDraft:null),im=$('#pfPrev');im.hidden=!cur;if(cur)im.src=cur.url;
+ $('#pfSubj').classList.toggle('hide',!idle);const pb=$('#pfPost');pb.textContent=idle?'Save':'Post';pb.disabled=idle?false:!pfTmp;
+ $('#pfChoose').textContent=cur?'\u{1F4F7} Change photo':'\u{1F4F7} Choose photo'}
+function pfTmpDrop(){if(pfTmp)URL.revokeObjectURL(pfTmp.url);pfTmp=null}
+function pfOpenModal(){const idle=!sessions[meId];pfTmpDrop();pfTarget='modal';$('#pfSubj').value=idle?pendSubj:'';$('#pfCap').value=idle?pendCap:'';$('#pfMsg').textContent='';pfModalPaint();$('#pfModal').classList.remove('hide')}
+function pfCloseModal(){pfTmpDrop();pfTarget='compose';$('#pfModal').classList.add('hide');render()}
+function pfViewPaint(){
+ const p=allProofs().find(x=>x.id===pfViewId);
+ if(!p){pfViewId=null;$('#pfView').classList.add('hide');return}
+ const owner=members.find(m=>m.id===p.member_id),u=proofUrls.get(p.photo_path)?.url,
+  t=new Intl.DateTimeFormat('id-ID',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(p.created_at));
+ $('#pfBigImg').src=u||'';
+ $('#pfBigMeta').innerHTML=`<div class="pf-who">${esc(owner?.display_name||'')} \u00B7 ${t}</div>${p.caption?`<div>${esc(p.caption)}</div>`:''}${rxBar(p)}${p.member_id===meId?`<button type="button" class="danger" data-pfdel="${p.id}">Delete photo</button>`:''}`;
+ $('#pfView').classList.remove('hide');
+}
+$('#pfFile').onchange=async e=>{
+ const f=e.target.files?.[0];e.target.value='';if(!f)return;
+ const say=t=>$('#pfMsg').textContent=t;
+ if(!f.type.startsWith('image/')){say('Choose an image file.');return}
+ try{const blob=await pfCompress(f);pfTmpDrop();pfTmp={blob,url:URL.createObjectURL(blob)};say('');pfModalPaint()}catch(x){say(x?.message||'Could not use that photo.')}
+};
+$('#pfCancel').onclick=pfCloseModal;
+$('#pfPost').onclick=async()=>{
+ const b=$('#pfPost');b.disabled=true;$('#pfMsg').textContent='';
+ if(!sessions[meId]){ // before Start: keep photo + texts and send them together with Start
+  if(pfTmp){if(pfDraft)URL.revokeObjectURL(pfDraft.url);pfDraft=pfTmp;pfTmp=null}
+  pendSubj=$('#pfSubj').value.trim();pendCap=$('#pfCap').value.trim();
+  $('#pfModal').classList.add('hide');pfTarget='compose';render();return}
+ try{const d=pfTmp;await pfSubmit($('#pfCap').value,sessions[meId]?.id,d);pfTmp=null;$('#pfModal').classList.add('hide');pfTarget='compose';await loadProofs();render()}
+ catch(x){$('#pfMsg').textContent=x?.message||'Upload failed.';b.disabled=!pfTmp}
+};
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
+ if(!$('#pfModal').classList.contains('hide'))pfCloseModal();
+ if(!$('#pfView').classList.contains('hide')){pfViewId=null;$('#pfView').classList.add('hide')}});
+$('#pfView').addEventListener('click',e=>{if(e.target.id==='pfView'){pfViewId=null;$('#pfView').classList.add('hide')}});
+document.addEventListener('click',async e=>{
+ const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ if(d.pfpick){pfTarget=d.pfpick;$('#pfFile').click();return}
+ if(d.pfclear!==undefined){pfClearPending();render();return}
+ if(d.pfadd!==undefined){pfOpenModal();return}
+ if(d.pfopen){pfViewId=d.pfopen;pfViewPaint();return}
+ if(d.pfclose!==undefined){pfViewId=null;$('#pfView').classList.add('hide');return}
+ if(d.pfdel){
+  if(!window.confirm('Delete this proof photo?'))return;b.disabled=true;
+  try{const {data:path,error}=await sb.rpc('delete_study_proof',{p_id:d.pfdel});if(error)throw error;
+   if(path)sb.storage.from(PF_BUCKET).remove([path]).catch(()=>{});
+   pfViewId=null;$('#pfView').classList.add('hide')}catch(x){err(x?.message||'Could not delete the photo.')}
+  await loadProofs();render();return}
+ if(d.rx){
+  const pid=d.pid,k=d.rx,list=(rxBy[pid]=rxBy[pid]||[]),cur=list.find(r=>r.member_id===meId);
+  if(cur&&cur.reaction===k)rxBy[pid]=list.filter(r=>r!==cur);else if(cur)cur.reaction=k;else list.push({proof_id:pid,member_id:meId,reaction:k});
+  render();if(pfViewId)pfViewPaint();
+  const {error}=await sb.rpc('react_study_proof',{p_proof:pid,p_reaction:k});
+  if(error)err('Could not save your reaction: '+error.message);
+  await loadProofs();render();if(pfViewId)pfViewPaint();
+ }
+});
 let friendSessionBaseline=null;
 const friendSfxTimes=new Map();
 async function load(){
@@ -755,6 +879,7 @@ async function load(){
  if(membersError)err('Could not refresh member profiles: '+membersError.message);
  if(ms)members=ms;
  await hydrateAvatars(members);
+ await loadProofs();
  render();
  sessionsLoad();
 }
@@ -782,16 +907,17 @@ function render(){
     rc.innerHTML='<div class="rc-t">Last week, Monday to Sunday</div>'+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=expiredPomo(s)?'paused':(!s&&tot(m.id,today())>0)?'paused':st,po=mine?pomoGet(s):null;
   const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
-  const ctl=!mine?'':st==='idle'?`<input id="subj" maxlength="20" placeholder="What are you studying? (optional)" aria-label="Subject"><div class="start-row"><button class="p" data-a="start_study_session">Start</button><button class="pomo" data-a="start_pomodoro" title="25 min focus, 5 min break">Pomodoro</button></div>`:
-   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
-   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button>`:
-   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button>`;
+  const pend=!!(pfDraft||pendSubj||pendCap),ctl=!mine?'':st==='idle'?`<div class="start-row${pend?' has-pend':''}"><button class="p" data-a="start_study_session">Start</button><button type="button" class="pf-pict pomo${pend?' on':''}" data-pfadd>${pfDraft?`<img src="${pfDraft.url}" alt="">`:''}<span>${pend?(pfDraft?'Photo ready':'Info ready'):'+ Pict'}</span></button>${pend?'<button type="button" class="pf-x" data-pfclear aria-label="Clear photo and details">\u2715</button>':''}</div>`:
+   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`:
+   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`:
+   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`;
   const sleepBanner=mine&&s?.auto_paused_at&&s?.auto_pause_reason?`<div class="sleep-banner"><div>Sesi dijeda otomatis jam ${new Intl.DateTimeFormat('id-ID',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(s.auto_paused_at))} karena tidak ada aktivitas. Waktu tidur tidak dihitung.</div><div class="sleep-actions"><button class="sleep-resume" data-a="resume_study_session">Lanjutkan</button><button class="sleep-finish" data-a="finish_study_session">Selesaikan</button></div></div>`:'';
-  return`<article class="mc ${vs}${mine?' me':''}" style="--wcd:${WAVES[waveOf(m)][1]};--wcl:${WAVES[waveOf(m)][5]}">${mine?'':waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
+  const picHtml=(h=>h?`<div class="mc-pic">${h}</div>`:'')(pfBlock(m,mine,st));
+  return`<article class="mc ${vs}${picHtml?' has-pic':''}" style="--wcd:${WAVES[waveOf(m)][1]};--wcl:${WAVES[waveOf(m)][5]}">${waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
   <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span>`:''}</div>
   <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}
-  </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
- $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
+  </div>${picHtml}${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
+ $('#cards').innerHTML=[me,...members.filter(m=>m.id!==meId)].map(m=>card(m,members.indexOf(m))).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
  setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#podiumPanel','ys-wave',waveOf(me));setPanelWave('#calPanel','ys-wave',waveOf(me));calWaveFit();{const _w=WAVES[waveOf(me)],cc=$('#ccPanel');if(cc){cc.querySelector(':scope>.ys-wave')?.remove();cc.style.setProperty('--wcd',_w[1]);cc.style.setProperty('--wcl',_w[5]);if(!cc.querySelector(':scope>.aur-m'))cc.insertAdjacentHTML('afterbegin','<span class="aur-m" aria-hidden="true"></span>')}}
 {const w=WAVES[waveOf(me)],R=document.documentElement.style,Y=$('#ys');R.setProperty('--mw',w[1]);R.setProperty('--mwl',w[5]);if(Y){Y.style.setProperty('--wcd',w[1]);Y.style.setProperty('--wcl',w[5]);Y.classList.toggle('live',sessions[meId]?.status==='active')}}
@@ -916,6 +1042,7 @@ async function pomoStep(){const o=pomoGet();if(!o||pomoBusy)return;
 }
 function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}
  document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)));
+ document.querySelectorAll('.streak[data-sk]').forEach(e=>{const i=streakInfo(e.dataset.sk);e.classList.toggle('off',!i.lit);const n=e.querySelector('.sk-n');if(n&&n.textContent!==String(i.n))n.textContent=i.n;const t=streakTitle(i);if(e.title!==t)e.title=t});
  donutRender();void pomoStep()}
 // Mobile browsers may suspend timers; immediately reconcile from authoritative server state.
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&meId)void load().then(()=>pomoStep()).catch(e=>err(e.message))});
@@ -1012,9 +1139,10 @@ function lbRender(){
  $('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
 }
 const FLAME='<svg class="ic orange" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
-/* streak = consecutive study days up to today (today counts once studied or while a session runs; it is not broken until the day ends) */
-function streakOf(id){const days=new Set();stats.forEach(r=>{if(r.member_id===id&&r.seconds>0)days.add(r.day)});const t=today(),ok=x=>days.has(x)||(x===t&&!!sessions[id]);let d=ok(t)?t:addD(t,-1),n=0;while(ok(d)){n++;d=addD(d,-1)}return n}
-function streakHtml(id){const n=streakOf(id);return`<span class="streak${n?'':' off'}" title="${n}-day streak">${FLAME}${n}</span>`}
+/* TikTok-style streak: flame is lit once you have studied today (count includes today); otherwise it is dimmed and shows the run up to yesterday, and resets to 0 only when a day ends with no study */
+function streakInfo(id){const days=new Set();stats.forEach(r=>{if(r.member_id===id&&r.seconds>0)days.add(r.day)});const t=today(),lit=days.has(t)||el(id)>0;let d=lit?t:addD(t,-1),n=0;while(days.has(d)||(lit&&d===t)){n++;d=addD(d,-1)}return{n,lit}}
+function streakTitle(i){return i.lit?`${i.n}-day streak`:i.n?`${i.n}-day streak \u00B7 study today to keep it`:'No streak yet \u00B7 study today to start one'}
+function streakHtml(id){const i=streakInfo(id);return`<span class="streak${i.lit?'':' off'}" data-sk="${id}" title="${streakTitle(i)}">${FLAME}<span class="sk-n">${i.n}</span></span>`}
 /* Daily goal: stored in study_goals; if the table refuses the write, it is kept on this device instead. */
 const goalSecs=()=>{let l=null;try{l=localStorage.getItem('sr-goal-'+meId)}catch(_){}const d=goals[meId]?.daily_goal_seconds;return l!==null?+l||0:(d!=null?d:7200)};
 function donutRender(){const arc=$('#dArc');if(!arc||!meId)return;
@@ -1103,7 +1231,7 @@ function calRender(){
 let ch;function subscribe(){
  if(ch)return;let t;const re=()=>{clearTimeout(t);t=setTimeout(load,250)};
  ch=sb.channel('room').on('postgres_changes',{event:'*',schema:'public',table:'study_sessions'},re)
-  .on('postgres_changes',{event:'*',schema:'public',table:'members'},re).on('postgres_changes',{event:'*',schema:'public',table:'study_goals'},re)
+  .on('postgres_changes',{event:'*',schema:'public',table:'members'},re).on('postgres_changes',{event:'*',schema:'public',table:'study_goals'},re).on('postgres_changes',{event:'*',schema:'public',table:'study_proofs'},re).on('postgres_changes',{event:'*',schema:'public',table:'study_proof_reactions'},re)
   .subscribe(s=>{if(s==='SUBSCRIBED')load()});
 }
 document.addEventListener('click',async e=>{
@@ -1121,17 +1249,20 @@ document.addEventListener('click',async e=>{
     const sync=await sb.rpc('sync_pomodoro_session');if(sync.error)throw sync.error;
    }
    const act=action==='start_pomodoro'?'start_pomodoro_session':action;
-   const typed=($('#subj')?.value||'').trim();
+   const typed=(pendSubj||'').trim();
    const args=action==='start_pomodoro'?{p_subject:typed||null}:action==='start_study_session'?{p_subject:typed||null}:{};
-   const {error}=await sb.rpc(act,args);
+   const {data:rpcData,error}=await sb.rpc(act,args);
    if(error){if(error.code==='PGRST202'&&act.includes('pomodoro'))throw new Error('Install study_room_aurora_pomodoro.sql in Supabase before using Pomodoro.');throw error}
+   pfWarn='';if(['start_study_session','start_pomodoro'].includes(action)){if(pfDraft){try{let sid=rpcData?.id||rpcData?.session_id||(typeof rpcData==='string'?rpcData:null)||(Array.isArray(rpcData)?(rpcData[0]?.id||rpcData[0]?.session_id):null);
+    if(!sid){try{const q=await sb.from('study_sessions').select('id').eq('member_id',meId).in('status',['active','paused']).limit(1);sid=q.data?.[0]?.id||null}catch(_){}}
+    await pfSubmit(pendCap,sid)}catch(x){pfWarn='Session started, but the photo failed to upload: '+(x?.message||x)}}pendSubj='';pendCap=''}
    if(action==='finish_study_session'){await sb.rpc('ach_sync');loadAch()}
    // Success-only stopwatch cues. Distinct from Pomodoro's existing completion alarm.
    try{
     if(['start_study_session','start_pomodoro','start_next_pomodoro_focus'].includes(action))SND.start();
     else if(action==='finish_study_session')SND.finish();
    }catch(_){}
-   err('');
+   err(pfWarn);
   }catch(e){err(e?.message||'Stopwatch action failed.');}
   finally{await load();b.disabled=false;}
   return;
@@ -1561,4 +1692,59 @@ fxScan();
 @media(max-width:420px){
  #uiBox .pb-val,#riBox .pb-val,#pbBox .pb-val{font-size:15px}
 }
+
+/* ---- Proof photos + reactions ---- */
+.pf{display:grid;gap:8px;min-width:0}#mine .pf{max-width:360px}
+.pf-img{display:block;width:100%;padding:0;min-height:0;border-radius:12px;overflow:hidden;border:1px solid var(--bd);background:var(--inset);aspect-ratio:4/3}
+.pf-img:hover{background:var(--inset)}.pf-img img{width:100%;height:100%;object-fit:cover;display:block}.pf-ph{font-size:28px;opacity:.5}
+.pf-cap{font-size:13px;color:var(--tx2);overflow-wrap:anywhere}
+.rx{display:flex;gap:6px;flex-wrap:wrap}
+.rx-b{min-height:32px;padding:2px 10px;border-radius:999px;font-size:15px;gap:4px}
+.rx-b span{font-size:12px;color:var(--tx2)}.rx-b.on{background:var(--acs);border-color:var(--ach)}.rx-b:disabled{opacity:1;cursor:default}
+.grid .rx-b{padding:2px 8px;font-size:14px}
+.pf-add{justify-self:start;min-height:34px;padding:4px 12px;font-size:13px;border-style:dashed;color:var(--tx2)}
+.pf-row{display:flex;gap:8px;flex:1 1 100%;min-width:0}
+#ys #mine .ctl .pf-pick,.ctl .pf-pick{flex:1;min-width:0;justify-content:flex-start;border-style:dashed;color:var(--tx2);font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden}
+.pf-pick img{width:32px;height:32px;border-radius:8px;object-fit:cover;flex:none}.pf-pick span{overflow:hidden;text-overflow:ellipsis}
+#ys #mine .ctl .pf-x,.ctl .pf-x{flex:none;width:52px;padding:0}
+.pf-modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(2,6,23,.72);backdrop-filter:blur(4px)}
+.pf-sheet{position:relative;display:grid;gap:12px;width:min(100%,440px);max-height:calc(100vh - 32px);overflow-y:auto;padding:20px;border-radius:16px;background:var(--bg);border:1px solid var(--bd);color:var(--tx)}
+.pf-sheet>img{width:100%;max-height:60vh;object-fit:contain;border-radius:12px;background:var(--inset)}
+.pf-actions{display:flex;gap:8px;justify-content:flex-end}.pf-meta{display:grid;gap:8px}.pf-who{font-size:13px;color:var(--mu)}
+.pf-close{position:absolute;top:8px;right:8px;z-index:1;min-height:32px;padding:4px 10px}
+.pf-msg{font-size:13px;color:var(--bad);margin:0}
+
+/* player cards: one wide card per row (4x1), proof photo on the right */
+#cards.grid{grid-template-columns:minmax(0,1fr)}
+#cards .mc.has-pic{grid-template-columns:minmax(0,1fr) clamp(120px,38%,320px);align-items:center;gap:20px}
+#cards .mc-pic{min-width:0}
+@media(min-width:720px){#cards .mc{padding:24px 28px}#cards .mc.has-pic{gap:32px}#cards .clock{font-size:44px}}
+/* streak flame: lit when studied today, dim otherwise */
+.streak .ic{transition:color .3s,fill-opacity .3s,filter .3s}
+.streak:not(.off) .ic{fill-opacity:.55;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--i-orange) 65%,transparent))}
+.streak.off .ic{fill-opacity:.08;filter:none}
+
+/* one proof-photo flow: "+ Pict" button, reactions in a vertical column left of the photo */
+.start-row.has-pend{grid-template-columns:1fr 1fr auto}
+#ys #mine .ctl .pf-pict,.ctl .pf-pict{flex:1;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-style:dashed;color:var(--tx2);font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden}
+.pf-pict.on{color:var(--tx);border-style:solid}
+.pf-pict img{width:28px;height:28px;border-radius:6px;object-fit:cover;flex:none}
+.pf-pict span{overflow:hidden;text-overflow:ellipsis}
+.pf{grid-template-columns:auto minmax(0,1fr);column-gap:0;align-items:start}
+.pf>.rx{grid-column:1;grid-row:1;flex-direction:column;flex-wrap:nowrap;margin-right:8px}
+.pf>.pf-img{grid-column:2;grid-row:1}
+.pf>.pf-cap{grid-column:1/-1;margin-top:8px}
+#cards .mc.has-pic{grid-template-columns:minmax(0,1fr) clamp(150px,44%,360px)}
+
+/* Study room: my card = same card as the others; only the buttons differ */
+.ys-head{margin:0 0 12px}.ys-head .ttl{margin:0}
+#cards .mc>.ctl{grid-column:1/-1}
+#cards .ctl button{min-height:46px;border-radius:12px;font-weight:600}
+.ctl .pf-pict.pomo,.ctl .pf-pict.pomo.on{border-style:solid;border-color:transparent;background:#16a34a;color:#fff}.ctl .pf-pict.pomo:hover{background:#15803d}
+.ctl .pf-pict.pomo span{color:inherit}
+.ctl .start-row,.ctl>button{min-width:0}
+/* reactions: right of the photo */
+.pf{grid-template-columns:minmax(0,1fr) auto}
+.pf>.pf-img{grid-column:1;grid-row:1}
+.pf>.rx{grid-column:2;grid-row:1;margin:0 0 0 8px}
 </style>
