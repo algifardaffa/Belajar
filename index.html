@@ -546,7 +546,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
-<section id="dash"><div class="head out q-head" id="quoteHead"><div class="hd-ic"><svg class="ic purple hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><div><h2 class="h2">Kata-kata Hari Ini</h2></div></div></div><div class="panel q-panel" id="quotePanel"><div class="q-track" id="qTrack"><div class="q-run" id="qRun"></div></div></div>
+<section id="dash"><div class="head out q-head" id="quoteHead"><div class="hd-ic"><svg class="ic purple hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><div><h2 class="h2">Kata-kata Hari Ini</h2></div></div></div><div class="panel q-panel wv-host" id="quotePanel"><div class="q-track" id="qTrack"><div class="q-run" id="qRun"></div></div></div>
 <div class="row live-row ys-head"><h2 class="h2 ttl"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study room</h2><span class="sp"></span><div id="live" class="status"></div></div>
 <div class="grid" id="cards"></div>
 
@@ -752,6 +752,7 @@ async function loadProofs(){
    if(!e3)(data||[]).forEach(d=>{if(d.signedUrl)proofUrls.set(d.path,{url:d.signedUrl,exp:Date.now()+50*60*1000})})}
  }catch(e){console.warn('Proof photos unavailable:',e?.message||e)}
  if(pfViewId)pfViewPaint();
+ if(!pfPruned&&meId){pfPruned=true;pfPrune()}
 }
 const allProofs=()=>Object.values(proofsBy).flat();
 function proofFor(m){const list=proofsBy[m.id]||[],s=sessions[m.id];
@@ -759,17 +760,29 @@ function proofFor(m){const list=proofsBy[m.id]||[],s=sessions[m.id];
  if(s&&(s.status==='active'||s.status==='paused'))return list.find(p=>p.session_id===s.id)||list[0]||null;
  return list[0]||null}
 function rxBar(p){const list=rxBy[p.id]||[],mineR=list.find(r=>r.member_id===meId)?.reaction,own=p.member_id===meId;
- const h=RX.map(([k,e])=>{const who=list.filter(r=>r.reaction===k),n=who.length;if(own&&!n)return'';
-  const names=who.map(r=>members.find(m=>m.id===r.member_id)?.display_name).filter(Boolean).join(', ');
+ const h=RX.map(([k,e])=>{const who=list.filter(r=>r.reaction===k),n=who.length;  const names=who.map(r=>members.find(m=>m.id===r.member_id)?.display_name).filter(Boolean).join(', ');
   return`<button type="button" class="rx-b${mineR===k?' on':''}" data-rx="${k}" data-pid="${p.id}"${own?' disabled':''} title="${esc(names)}" aria-label="${k} ${n}" aria-pressed="${mineR===k}">${e}${n?`<span>${n}</span>`:''}</button>`}).join('');
  return h?`<div class="rx">${h}</div>`:''}
+function rxWho(p){const list=rxBy[p.id]||[];const rows=RX.map(([k,e])=>{const n=list.filter(r=>r.reaction===k).map(r=>members.find(m=>m.id===r.member_id)?.display_name).filter(Boolean);return n.length?`<div>${e} ${esc(n.join(', '))}</div>`:''}).join('');return rows?`<div class="rx-who">${rows}</div>`:''}
 function pfBlock(m,mine,st){const p=proofFor(m),u=p&&proofUrls.get(p.photo_path)?.url;let h='';
  if(p){const cap=p.caption&&p.caption!==subjOf(sessions[m.id])?`<div class="pf-cap">${esc(p.caption)}</div>`:'';
   h+=`<div class="pf"><button type="button" class="pf-img" data-pfopen="${p.id}" aria-label="Open proof photo">${u?`<img src="${esc(u)}" alt="Proof of studying" loading="lazy">`:'<span class="pf-ph">\u{1F4F7}</span>'}</button>${cap}</div>`}
  return h}
+async function pfPrune(){if(!meId)return;try{
+ const {data,error}=await sb.from('study_proofs').select('id,photo_path,created_at').eq('member_id',meId).order('created_at',{ascending:false});
+ if(error||!data||data.length<2)return;
+ for(const o of data.slice(1)){const {data:path,error:e}=await sb.rpc('delete_study_proof',{p_id:o.id});
+  if(!e)sb.storage.from(PF_BUCKET).remove([path||o.photo_path]).catch(()=>{})}
+ }catch(x){console.warn('Photo cleanup skipped:',x?.message||x)}}
+let pfPruned=false;
 const SJK=()=>'sr-subj-'+meId;
-function subjSave(){if(!meId)return;try{pendSubj?localStorage.setItem(SJK(),JSON.stringify({d:today(),s:pendSubj})):localStorage.removeItem(SJK())}catch(_){}}
-function subjSync(){if(!meId)return;try{const o=JSON.parse(localStorage.getItem(SJK())||'null');if(o&&o.d===today())pendSubj=o.s||'';else{pendSubj='';localStorage.removeItem(SJK())}}catch(_){}}
+const dailySubj=m=>m&&m.daily_subject&&String(m.daily_subject_day||'').slice(0,10)===today()?m.daily_subject:'';
+async function subjPush(){const me=members.find(m=>m.id===meId);if(me){me.daily_subject=pendSubj||null;me.daily_subject_day=today()}
+ try{const{error}=await sb.rpc('set_daily_subject',{p_subject:pendSubj||null,p_day:today()});
+  if(error)console.warn(error.code==='PGRST202'?'Run Study_Room_Subject.sql in Supabase so other players can see your subject.':'Subject not shared: '+error.message)}catch(x){console.warn('Subject not shared:',x?.message||x)}}
+function subjSave(){if(!meId)return Promise.resolve();try{pendSubj?localStorage.setItem(SJK(),JSON.stringify({d:today(),s:pendSubj})):localStorage.removeItem(SJK())}catch(_){}return subjPush()}
+function subjSync(){if(!meId)return;try{const o=JSON.parse(localStorage.getItem(SJK())||'null');if(o&&o.d===today())pendSubj=o.s||'';else{pendSubj='';localStorage.removeItem(SJK())}}catch(_){}
+ if(!pendSubj){const d=dailySubj(members.find(m=>m.id===meId));if(d)pendSubj=d}}
 const pfClearPending=()=>{pfDrop();pendSubj='';pendCap='';subjSave()};
 async function pfCompress(file){
  let img=await createImageBitmap(file).catch(()=>null);
@@ -788,6 +801,7 @@ async function pfSubmit(cap,sid,draft=pfDraft){
  if(error){sb.storage.from(PF_BUCKET).remove([path]).catch(()=>{});
   throw error.code==='PGRST202'?new Error('Run Study_Room_Proofs.sql in Supabase first.'):error}
  URL.revokeObjectURL(draft.url);if(draft===pfDraft)pfDraft=null;
+ await pfPrune();
 }
 const pfDrop=()=>{if(pfDraft)URL.revokeObjectURL(pfDraft.url);pfDraft=null};
 function pfModalPaint(){const idle=!sessions[meId],cur=pfTmp,im=$('#pfPrev');im.hidden=!cur;if(cur)im.src=cur.url;
@@ -802,7 +816,7 @@ function pfViewPaint(){
  const owner=members.find(m=>m.id===p.member_id),u=proofUrls.get(p.photo_path)?.url,
   t=new Intl.DateTimeFormat('id-ID',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(p.created_at));
  $('#pfBigImg').src=u||'';
- $('#pfBigMeta').innerHTML=`<div class="pf-who">${esc(owner?.display_name||'')} \u00B7 ${t}</div>${p.caption?`<div>${esc(p.caption)}</div>`:''}${rxBar(p)}${p.member_id===meId?`<button type="button" class="danger" data-pfdel="${p.id}">Delete photo</button>`:''}`;
+ $('#pfBigMeta').innerHTML=`<div class="pf-who">${esc(owner?.display_name||'')} \u00B7 ${t}</div>${p.caption?`<div>${esc(p.caption)}</div>`:''}${rxBar(p)}${p.member_id===meId?rxWho(p):''}${p.member_id===meId?`<button type="button" class="danger" data-pfdel="${p.id}">Delete photo</button>`:''}`;
  $('#pfView').classList.remove('hide');
 }
 $('#pfFile').onchange=async e=>{
@@ -815,7 +829,7 @@ $('#pfCancel').onclick=pfCloseModal;
 $('#pfPost').onclick=async()=>{
  const b=$('#pfPost');b.disabled=true;$('#pfMsg').textContent='';
  if(!sessions[meId]){ // idle: photo + subject go to the player card right away
-  try{pendSubj=$('#pfSubj').value.trim();pendCap='';subjSave();const d=pfTmp;if(d)await pfSubmit('',null,d);pfTmp=null;$('#pfModal').classList.add('hide');pfTarget='compose';await loadProofs();render()}
+  try{pendSubj=$('#pfSubj').value.trim();pendCap='';await subjSave();const d=pfTmp;if(d)await pfSubmit('',null,d);pfTmp=null;$('#pfModal').classList.add('hide');pfTarget='compose';await loadProofs();render()}
   catch(x){$('#pfMsg').textContent=x?.message||'Upload failed.';b.disabled=false}
   return}
  try{const d=pfTmp;await pfSubmit('',sessions[meId]?.id,d);pfTmp=null;$('#pfModal').classList.add('hide');pfTarget='compose';await loadProofs();render()}
@@ -916,11 +930,11 @@ function render(){
   const picHtml=(h=>h?`<div class="mc-pic">${h}</div>`:'')(pfBlock(m,mine,st));
   return`<article class="mc ${vs}${picHtml?' has-pic':''}" style="--wcd:${WAVES[waveOf(m)][1]};--wcl:${WAVES[waveOf(m)][5]}">${waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
   <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span>`:''}</div>
-  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${(subjOf(s)||(mine&&st==='idle'?pendSubj:''))?`<div class="subj">${IC.book}<span>${esc(subjOf(s)||pendSubj)}</span></div>`:''}
+  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${(subjOf(s)||(mine?pendSubj:dailySubj(m)))?`<div class="subj">${IC.book}<span>${esc(subjOf(s)||(mine?pendSubj:dailySubj(m)))}</span></div>`:''}
   </div>${picHtml}${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#cards').innerHTML=[me,...members.filter(m=>m.id!==meId)].map(m=>card(m,members.indexOf(m))).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
- setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#podiumPanel','ys-wave',waveOf(me));setPanelWave('#calPanel','ys-wave',waveOf(me));calWaveFit();{const _w=WAVES[waveOf(me)],cc=$('#ccPanel');if(cc){cc.querySelector(':scope>.ys-wave')?.remove();cc.style.setProperty('--wcd',_w[1]);cc.style.setProperty('--wcl',_w[5]);if(!cc.querySelector(':scope>.aur-m'))cc.insertAdjacentHTML('afterbegin','<span class="aur-m" aria-hidden="true"></span>')}}
+ setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#podiumPanel','ys-wave',waveOf(me));setPanelWave('#calPanel','ys-wave',waveOf(me));setPanelWave('#quotePanel','ys-wave',waveOf(me));{const _q=$('#quotePanel'),_w=WAVES[waveOf(me)];if(_q){_q.style.setProperty('--wcd',_w[1]);_q.style.setProperty('--wcl',_w[5])}}calWaveFit();{const _w=WAVES[waveOf(me)],cc=$('#ccPanel');if(cc){cc.querySelector(':scope>.ys-wave')?.remove();cc.style.setProperty('--wcd',_w[1]);cc.style.setProperty('--wcl',_w[5]);if(!cc.querySelector(':scope>.aur-m'))cc.insertAdjacentHTML('afterbegin','<span class="aur-m" aria-hidden="true"></span>')}}
 {const w=WAVES[waveOf(me)],R=document.documentElement.style,Y=$('#ys');R.setProperty('--mw',w[1]);R.setProperty('--mwl',w[5]);if(Y){Y.style.setProperty('--wcd',w[1]);Y.style.setProperty('--wcl',w[5]);Y.classList.toggle('live',sessions[meId]?.status==='active')}}
  donutRender();
  lbRender();anRender();quoteRender();pbRender();insightRender();
@@ -1749,4 +1763,11 @@ fxScan();
 .pf>.pf-img{grid-column:1;grid-row:1}
 .pf>.rx{grid-column:2;grid-row:1;margin:0 0 0 8px}
 .pf,.pf{grid-template-columns:minmax(0,1fr)}.pf>.pf-img{grid-column:1;grid-row:1}.pf>.pf-cap{grid-column:1}
+
+/* quote panel wave, centered nav on phones, reaction names */
+#quotePanel{--wc:var(--wcd,var(--ac))}[data-theme=light] #quotePanel{--wc:var(--wcl,var(--ac))}
+.q-panel{background:linear-gradient(90deg,color-mix(in srgb,var(--wc,var(--ac)) 16%,var(--panel)),var(--panel))}
+#quotePanel>.ys-wave{z-index:0;pointer-events:none;height:100%}
+.rx-who{display:grid;gap:2px;font-size:13px;color:var(--tx2)}
+@media(max-width:799px){.top{flex-wrap:wrap}.top #nav{order:3;flex:0 0 100%;width:100%;justify-content:center;margin-top:8px}}
 </style>
