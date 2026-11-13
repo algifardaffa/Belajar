@@ -757,10 +757,8 @@ async function loadProofs(){
 }
 const allProofs=()=>Object.values(proofsBy).flat();
 function proofFor(m){const list=proofsBy[m.id]||[],s=sessions[m.id];
- if(s&&(s.status==='active'||s.status==='paused')){
-  /* a photo posted together with Start may have no session id if the RPC did not return one: still show it */
-  const t0=Date.parse(s.started_at||s.created_at||'');
-  return list.find(p=>p.session_id===s.id)||list.find(p=>!p.session_id&&(isNaN(t0)||Date.parse(p.created_at)>=t0-120000))||null}
+ /* prefer the photo of the running session; otherwise keep showing the latest photo (it must not vanish on Start) */
+ if(s&&(s.status==='active'||s.status==='paused'))return list.find(p=>p.session_id===s.id)||list[0]||null;
  return list[0]||null}
 function rxBar(p){const list=rxBy[p.id]||[],mineR=list.find(r=>r.member_id===meId)?.reaction,own=p.member_id===meId;
  const h=RX.map(([k,e])=>{const who=list.filter(r=>r.reaction===k),n=who.length;if(own&&!n)return'';
