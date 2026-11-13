@@ -906,10 +906,11 @@ function render(){
    po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button>`;
   const sleepBanner=mine&&s?.auto_paused_at&&s?.auto_pause_reason?`<div class="sleep-banner"><div>Sesi dijeda otomatis jam ${new Intl.DateTimeFormat('id-ID',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(s.auto_paused_at))} karena tidak ada aktivitas. Waktu tidur tidak dihitung.</div><div class="sleep-actions"><button class="sleep-resume" data-a="resume_study_session">Lanjutkan</button><button class="sleep-finish" data-a="finish_study_session">Selesaikan</button></div></div>`:'';
-  return`<article class="mc ${vs}${mine?' me':''}" style="--wcd:${WAVES[waveOf(m)][1]};--wcl:${WAVES[waveOf(m)][5]}">${mine?'':waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
+  const picHtml=mine?'':(h=>h?`<div class="mc-pic">${h}</div>`:'')(pfBlock(m,mine,st));
+  return`<article class="mc ${vs}${mine?' me':''}${picHtml?' has-pic':''}" style="--wcd:${WAVES[waveOf(m)][1]};--wcl:${WAVES[waveOf(m)][5]}">${mine?'':waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
   <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span>`:''}</div>
-  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}${pfBlock(m,mine,st)}
-  </div>${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
+  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}${mine?pfBlock(m,mine,st):''}
+  </div>${picHtml}${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
  $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
  setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#podiumPanel','ys-wave',waveOf(me));setPanelWave('#calPanel','ys-wave',waveOf(me));calWaveFit();{const _w=WAVES[waveOf(me)],cc=$('#ccPanel');if(cc){cc.querySelector(':scope>.ys-wave')?.remove();cc.style.setProperty('--wcd',_w[1]);cc.style.setProperty('--wcl',_w[5]);if(!cc.querySelector(':scope>.aur-m'))cc.insertAdjacentHTML('afterbegin','<span class="aur-m" aria-hidden="true"></span>')}}
@@ -1035,6 +1036,7 @@ async function pomoStep(){const o=pomoGet();if(!o||pomoBusy)return;
 }
 function tick(){const d=today();if(d!==lastDay){lastDay=d;load();return}
  document.querySelectorAll('[data-c]').forEach(e=>e.textContent=clock(el(e.dataset.c)));
+ document.querySelectorAll('.streak[data-sk]').forEach(e=>{const i=streakInfo(e.dataset.sk);e.classList.toggle('off',!i.lit);const n=e.querySelector('.sk-n');if(n&&n.textContent!==String(i.n))n.textContent=i.n;const t=streakTitle(i);if(e.title!==t)e.title=t});
  donutRender();void pomoStep()}
 // Mobile browsers may suspend timers; immediately reconcile from authoritative server state.
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&meId)void load().then(()=>pomoStep()).catch(e=>err(e.message))});
@@ -1131,9 +1133,10 @@ function lbRender(){
  $('#lbEmpty').classList.toggle('hide',rows.some(r=>r[k]>0));
 }
 const FLAME='<svg class="ic orange" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
-/* streak = consecutive study days up to today (today counts once studied or while a session runs; it is not broken until the day ends) */
-function streakOf(id){const days=new Set();stats.forEach(r=>{if(r.member_id===id&&r.seconds>0)days.add(r.day)});const t=today(),ok=x=>days.has(x)||(x===t&&!!sessions[id]);let d=ok(t)?t:addD(t,-1),n=0;while(ok(d)){n++;d=addD(d,-1)}return n}
-function streakHtml(id){const n=streakOf(id);return`<span class="streak${n?'':' off'}" title="${n}-day streak">${FLAME}${n}</span>`}
+/* TikTok-style streak: flame is lit once you have studied today (count includes today); otherwise it is dimmed and shows the run up to yesterday, and resets to 0 only when a day ends with no study */
+function streakInfo(id){const days=new Set();stats.forEach(r=>{if(r.member_id===id&&r.seconds>0)days.add(r.day)});const t=today(),lit=days.has(t)||el(id)>0;let d=lit?t:addD(t,-1),n=0;while(days.has(d)||(lit&&d===t)){n++;d=addD(d,-1)}return{n,lit}}
+function streakTitle(i){return i.lit?`${i.n}-day streak`:i.n?`${i.n}-day streak \u00B7 study today to keep it`:'No streak yet \u00B7 study today to start one'}
+function streakHtml(id){const i=streakInfo(id);return`<span class="streak${i.lit?'':' off'}" data-sk="${id}" title="${streakTitle(i)}">${FLAME}<span class="sk-n">${i.n}</span></span>`}
 /* Daily goal: stored in study_goals; if the table refuses the write, it is kept on this device instead. */
 const goalSecs=()=>{let l=null;try{l=localStorage.getItem('sr-goal-'+meId)}catch(_){}const d=goals[meId]?.daily_goal_seconds;return l!==null?+l||0:(d!=null?d:7200)};
 function donutRender(){const arc=$('#dArc');if(!arc||!meId)return;
@@ -1702,4 +1705,14 @@ fxScan();
 .pf-actions{display:flex;gap:8px;justify-content:flex-end}.pf-meta{display:grid;gap:8px}.pf-who{font-size:13px;color:var(--mu)}
 .pf-close{position:absolute;top:8px;right:8px;z-index:1;min-height:32px;padding:4px 10px}
 .pf-msg{font-size:13px;color:var(--bad);margin:0}
+
+/* player cards: one wide card per row (4x1), proof photo on the right */
+#cards.grid{grid-template-columns:minmax(0,1fr)}
+#cards .mc.has-pic{grid-template-columns:minmax(0,1fr) clamp(120px,38%,320px);align-items:center;gap:20px}
+#cards .mc-pic{min-width:0}
+@media(min-width:720px){#cards .mc{padding:24px 28px}#cards .mc.has-pic{gap:32px}#cards .clock{font-size:44px}}
+/* streak flame: lit when studied today, dim otherwise */
+.streak .ic{transition:color .3s,fill-opacity .3s,filter .3s}
+.streak:not(.off) .ic{fill-opacity:.55;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--i-orange) 65%,transparent))}
+.streak.off .ic{fill-opacity:.08;filter:none}
 </style>
