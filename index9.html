@@ -548,9 +548,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <button type="button" id="profileRemovePhoto" class="auth-link" hidden style="display:none">Remove current photo</button><div id="profileStatus" class="auth-msg" role="status" aria-live="polite"></div>
 <div class="profile-controls"><button id="out" type="button" class="ghost danger" style="margin-right:auto"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button><button type="button" id="profileCancel">Cancel</button><button type="button" id="profileSave" class="p">Save changes</button></div></div></div>
 <section id="dash"><div class="head out q-head" id="quoteHead"><div class="hd-ic"><svg class="ic purple hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><div><h2 class="h2">Kata-kata Hari Ini</h2></div></div></div><div class="panel q-panel" id="quotePanel"><div class="q-track" id="qTrack"><div class="q-run" id="qRun"></div></div></div>
-<div class="row live-row ys-head"><h2 class="h2"><span class="t-desk">Your Session</span><span class="t-mob">Daily goal</span></h2><span class="sp"></span><div id="live" class="status"></div></div>
-<div class="panel ys" id="ys"><div class="ys-body"><div class="ys-sess" id="mine"></div><div class="ys-goal"><div class="lb ys-lb">Daily goal</div><div class="goal-row"><div class="donut" id="donutBtn" role="button" tabindex="0" aria-label="Set daily goal" title="Tap to set your daily goal"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="d-bg" cx="50" cy="50" r="42"/><circle id="dArc" class="d-fg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><div class="d-c" id="dPct">–</div></div></div></div></div></div>
-<h2 class="h2 sec-title ttl"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study room</h2><div class="grid" id="cards"></div>
+<div class="row live-row ys-head"><h2 class="h2 ttl"><svg class="ic blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study room</h2><span class="sp"></span><div id="live" class="status"></div></div>
+<div class="grid" id="cards"></div>
 
 <div id="lb" class="home-podium"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M8 21V11h8v10M2 21v-6h6M16 21v-4h6"/></svg><div><h2 class="h2">Podium</h2></div></div>
 <div class="hd-tg"><div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div></div><div class="panel podium-wave-panel" id="podiumPanel"><div class="tg-slot"></div>
@@ -758,7 +757,10 @@ async function loadProofs(){
 }
 const allProofs=()=>Object.values(proofsBy).flat();
 function proofFor(m){const list=proofsBy[m.id]||[],s=sessions[m.id];
- if(s&&(s.status==='active'||s.status==='paused'))return list.find(p=>p.session_id===s.id)||null;
+ if(s&&(s.status==='active'||s.status==='paused')){
+  /* a photo posted together with Start may have no session id if the RPC did not return one: still show it */
+  const t0=Date.parse(s.started_at||s.created_at||'');
+  return list.find(p=>p.session_id===s.id)||list.find(p=>!p.session_id&&(isNaN(t0)||Date.parse(p.created_at)>=t0-120000))||null}
  return list[0]||null}
 function rxBar(p){const list=rxBy[p.id]||[],mineR=list.find(r=>r.member_id===meId)?.reaction,own=p.member_id===meId;
  const h=RX.map(([k,e])=>{const who=list.filter(r=>r.reaction===k),n=who.length;if(own&&!n)return'';
@@ -768,7 +770,6 @@ function rxBar(p){const list=rxBy[p.id]||[],mineR=list.find(r=>r.member_id===meI
 function pfBlock(m,mine,st){const p=proofFor(m),u=p&&proofUrls.get(p.photo_path)?.url;let h='';
  if(p){const cap=p.caption&&p.caption!==subjOf(sessions[m.id])?`<div class="pf-cap">${esc(p.caption)}</div>`:'';
   h+=`<div class="pf"><button type="button" class="pf-img" data-pfopen="${p.id}" aria-label="Open proof photo">${u?`<img src="${esc(u)}" alt="Proof of studying" loading="lazy">`:'<span class="pf-ph">\u{1F4F7}</span>'}</button>${rxBar(p)}${cap}</div>`}
- if(mine&&st!=='idle')h+=`<button type="button" class="pf-add" data-pfadd>+ Pict</button>`;
  return h}
 const pfClearPending=()=>{pfDrop();pendSubj='';pendCap=''};
 async function pfCompress(file){
@@ -908,17 +909,17 @@ function render(){
     rc.innerHTML='<div class="rc-t">Last week, Monday to Sunday</div>'+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=expiredPomo(s)?'paused':(!s&&tot(m.id,today())>0)?'paused':st,po=mine?pomoGet(s):null;
   const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
-  const pend=!!(pfDraft||pendSubj||pendCap),ctl=!mine?'':st==='idle'?`<div class="start-row${pend?' has-pend':''}"><button class="p" data-a="start_study_session">Start</button><button type="button" class="pf-pict${pend?' on':''}" data-pfadd>${pfDraft?`<img src="${pfDraft.url}" alt="">`:''}<span>${pend?(pfDraft?'Photo ready':'Info ready'):'+ Pict'}</span></button>${pend?'<button type="button" class="pf-x" data-pfclear aria-label="Clear photo and details">\u2715</button>':''}</div>`:
-   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
-   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button>`:
-   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button>`;
+  const pend=!!(pfDraft||pendSubj||pendCap),ctl=!mine?'':st==='idle'?`<div class="start-row${pend?' has-pend':''}"><button class="p" data-a="start_study_session">Start</button><button type="button" class="pf-pict pomo${pend?' on':''}" data-pfadd>${pfDraft?`<img src="${pfDraft.url}" alt="">`:''}<span>${pend?(pfDraft?'Photo ready':'Info ready'):'+ Pict'}</span></button>${pend?'<button type="button" class="pf-x" data-pfclear aria-label="Clear photo and details">\u2715</button>':''}</div>`:
+   st==='active'?`<button class="p" data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`:
+   po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`:
+   `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button>`;
   const sleepBanner=mine&&s?.auto_paused_at&&s?.auto_pause_reason?`<div class="sleep-banner"><div>Sesi dijeda otomatis jam ${new Intl.DateTimeFormat('id-ID',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(s.auto_paused_at))} karena tidak ada aktivitas. Waktu tidur tidak dihitung.</div><div class="sleep-actions"><button class="sleep-resume" data-a="resume_study_session">Lanjutkan</button><button class="sleep-finish" data-a="finish_study_session">Selesaikan</button></div></div>`:'';
-  const picHtml=mine?'':(h=>h?`<div class="mc-pic">${h}</div>`:'')(pfBlock(m,mine,st));
-  return`<article class="mc ${vs}${mine?' me':''}${picHtml?' has-pic':''}" style="--wcd:${WAVES[waveOf(m)][1]};--wcl:${WAVES[waveOf(m)][5]}">${mine?'':waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
+  const picHtml=(h=>h?`<div class="mc-pic">${h}</div>`:'')(pfBlock(m,mine,st));
+  return`<article class="mc ${vs}${picHtml?' has-pic':''}" style="--wcd:${WAVES[waveOf(m)][1]};--wcl:${WAVES[waveOf(m)][5]}">${waveSvg(waveOf(m),'mc-wave')}${sleepBanner}<div class="mc-main"><div class="member-identity">${avatarMarkup(m)}<b>${esc(m.display_name)}</b>${streakHtml(m.id)}</div>
   <div class="st-wrap"><span class="st ${vs}"><i class="dot ${vs}"></i>${lbl}</span>${mine&&po?`<span class="pomo-b" id="pomoBadge">\u{1F345} ${pomoText(s)}</span>`:''}</div>
-  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}${mine?pfBlock(m,mine,st):''}
+  <div class="clock" data-c="${m.id}">${clock(el(m.id))}</div>${subjOf(s)?`<div class="subj">${IC.book}<span>${esc(subjOf(s))}</span></div>`:''}
   </div>${picHtml}${ctl?`<div class="ctl">${ctl}</div>`:''}</article>`};
- $('#mine').innerHTML=card(me,members.indexOf(me));$('#cards').innerHTML=members.map((m,i)=>m.id===meId?'':card(m,i)).join('');
+ $('#cards').innerHTML=[me,...members.filter(m=>m.id!==meId)].map(m=>card(m,members.indexOf(m))).join('');
  if(keep&&$('#subj'))$('#subj').value=keep;
  setPanelWave('#ys','ys-wave',waveOf(me));setPanelWave('#podiumPanel','ys-wave',waveOf(me));setPanelWave('#calPanel','ys-wave',waveOf(me));calWaveFit();{const _w=WAVES[waveOf(me)],cc=$('#ccPanel');if(cc){cc.querySelector(':scope>.ys-wave')?.remove();cc.style.setProperty('--wcd',_w[1]);cc.style.setProperty('--wcl',_w[5]);if(!cc.querySelector(':scope>.aur-m'))cc.insertAdjacentHTML('afterbegin','<span class="aur-m" aria-hidden="true"></span>')}}
 {const w=WAVES[waveOf(me)],R=document.documentElement.style,Y=$('#ys');R.setProperty('--mw',w[1]);R.setProperty('--mwl',w[5]);if(Y){Y.style.setProperty('--wcd',w[1]);Y.style.setProperty('--wcl',w[5]);Y.classList.toggle('live',sessions[meId]?.status==='active')}}
@@ -1254,7 +1255,9 @@ document.addEventListener('click',async e=>{
    const args=action==='start_pomodoro'?{p_subject:typed||null}:action==='start_study_session'?{p_subject:typed||null}:{};
    const {data:rpcData,error}=await sb.rpc(act,args);
    if(error){if(error.code==='PGRST202'&&act.includes('pomodoro'))throw new Error('Install study_room_aurora_pomodoro.sql in Supabase before using Pomodoro.');throw error}
-   pfWarn='';if(['start_study_session','start_pomodoro'].includes(action)){if(pfDraft){try{await pfSubmit(pendCap,rpcData?.id)}catch(x){pfWarn='Session started, but the photo failed to upload: '+(x?.message||x)}}pendSubj='';pendCap=''}
+   pfWarn='';if(['start_study_session','start_pomodoro'].includes(action)){if(pfDraft){try{let sid=rpcData?.id||rpcData?.session_id||(typeof rpcData==='string'?rpcData:null)||(Array.isArray(rpcData)?(rpcData[0]?.id||rpcData[0]?.session_id):null);
+    if(!sid){try{const q=await sb.from('study_sessions').select('id').eq('member_id',meId).in('status',['active','paused']).limit(1);sid=q.data?.[0]?.id||null}catch(_){}}
+    await pfSubmit(pendCap,sid)}catch(x){pfWarn='Session started, but the photo failed to upload: '+(x?.message||x)}}pendSubj='';pendCap=''}
    if(action==='finish_study_session'){await sb.rpc('ach_sync');loadAch()}
    // Success-only stopwatch cues. Distinct from Pomodoro's existing completion alarm.
    try{
@@ -1734,4 +1737,16 @@ fxScan();
 .pf>.pf-img{grid-column:2;grid-row:1}
 .pf>.pf-cap{grid-column:1/-1;margin-top:8px}
 #cards .mc.has-pic{grid-template-columns:minmax(0,1fr) clamp(150px,44%,360px)}
+
+/* Study room: my card = same card as the others; only the buttons differ */
+.ys-head{margin:0 0 12px}.ys-head .ttl{margin:0}
+#cards .mc>.ctl{grid-column:1/-1}
+#cards .ctl button{min-height:46px;border-radius:12px;font-weight:600}
+.ctl .pf-pict.pomo,.ctl .pf-pict.pomo.on{border-style:solid;border-color:transparent;background:#16a34a;color:#fff}.ctl .pf-pict.pomo:hover{background:#15803d}
+.ctl .pf-pict.pomo span{color:inherit}
+.ctl .start-row,.ctl>button{min-width:0}
+/* reactions: right of the photo */
+.pf{grid-template-columns:minmax(0,1fr) auto}
+.pf>.pf-img{grid-column:1;grid-row:1}
+.pf>.rx{grid-column:2;grid-row:1;margin:0 0 0 8px}
 </style>
