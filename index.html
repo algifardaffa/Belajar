@@ -765,7 +765,7 @@ function rxBar(p){const list=rxBy[p.id]||[],mineR=list.find(r=>r.member_id===meI
  return h?`<div class="rx">${h}</div>`:''}
 function pfBlock(m,mine,st){const p=proofFor(m),u=p&&proofUrls.get(p.photo_path)?.url;let h='';
  if(p){const cap=p.caption&&p.caption!==subjOf(sessions[m.id])?`<div class="pf-cap">${esc(p.caption)}</div>`:'';
-  h+=`<div class="pf"><button type="button" class="pf-img" data-pfopen="${p.id}" aria-label="Open proof photo">${u?`<img src="${esc(u)}" alt="Proof of studying" loading="lazy">`:'<span class="pf-ph">\u{1F4F7}</span>'}</button>${rxBar(p)}${cap}</div>`}
+  h+=`<div class="pf"><button type="button" class="pf-img" data-pfopen="${p.id}" aria-label="Open proof photo">${u?`<img src="${esc(u)}" alt="Proof of studying" loading="lazy">`:'<span class="pf-ph">\u{1F4F7}</span>'}</button>${cap}</div>`}
  return h}
 const SJK=()=>'sr-subj-'+meId;
 function subjSave(){if(!meId)return;try{pendSubj?localStorage.setItem(SJK(),JSON.stringify({d:today(),s:pendSubj})):localStorage.removeItem(SJK())}catch(_){}}
@@ -790,8 +790,8 @@ async function pfSubmit(cap,sid,draft=pfDraft){
  URL.revokeObjectURL(draft.url);if(draft===pfDraft)pfDraft=null;
 }
 const pfDrop=()=>{if(pfDraft)URL.revokeObjectURL(pfDraft.url);pfDraft=null};
-function pfModalPaint(){const idle=!sessions[meId],cur=pfTmp||(idle?pfDraft:null),im=$('#pfPrev');im.hidden=!cur;if(cur)im.src=cur.url;
- $('#pfSubj').classList.toggle('hide',!idle);const pb=$('#pfPost');pb.textContent=idle?'Save':'Post';pb.disabled=idle?false:!pfTmp;
+function pfModalPaint(){const idle=!sessions[meId],cur=pfTmp,im=$('#pfPrev');im.hidden=!cur;if(cur)im.src=cur.url;
+ $('#pfSubj').classList.toggle('hide',!idle);const pb=$('#pfPost');pb.textContent='Post';pb.disabled=idle?false:!pfTmp;
  $('#pfChoose').textContent=cur?'\u{1F4F7} Change photo':'\u{1F4F7} Choose photo'}
 function pfTmpDrop(){if(pfTmp)URL.revokeObjectURL(pfTmp.url);pfTmp=null}
 function pfOpenModal(){const idle=!sessions[meId];pfTmpDrop();pfTarget='modal';$('#pfSubj').value=idle?pendSubj:'';$('#pfMsg').textContent='';pfModalPaint();$('#pfModal').classList.remove('hide')}
@@ -814,10 +814,10 @@ $('#pfFile').onchange=async e=>{
 $('#pfCancel').onclick=pfCloseModal;
 $('#pfPost').onclick=async()=>{
  const b=$('#pfPost');b.disabled=true;$('#pfMsg').textContent='';
- if(!sessions[meId]){ // before Start: keep photo + texts and send them together with Start
-  if(pfTmp){if(pfDraft)URL.revokeObjectURL(pfDraft.url);pfDraft=pfTmp;pfTmp=null}
-  pendSubj=$('#pfSubj').value.trim();pendCap='';subjSave();
-  $('#pfModal').classList.add('hide');pfTarget='compose';render();return}
+ if(!sessions[meId]){ // idle: photo + subject go to the player card right away
+  try{pendSubj=$('#pfSubj').value.trim();pendCap='';subjSave();const d=pfTmp;if(d)await pfSubmit('',null,d);pfTmp=null;$('#pfModal').classList.add('hide');pfTarget='compose';await loadProofs();render()}
+  catch(x){$('#pfMsg').textContent=x?.message||'Upload failed.';b.disabled=false}
+  return}
  try{const d=pfTmp;await pfSubmit('',sessions[meId]?.id,d);pfTmp=null;$('#pfModal').classList.add('hide');pfTarget='compose';await loadProofs();render()}
  catch(x){$('#pfMsg').textContent=x?.message||'Upload failed.';b.disabled=!pfTmp}
 };
@@ -908,7 +908,7 @@ function render(){
     rc.innerHTML='<div class="rc-t">Last week, Monday to Sunday</div>'+rows.map(([ic,tx,v])=>`<div class="rc">${ic}<span>${tx}</span><b>${v}</b></div>`).join('');rc.classList.remove('hide')}}}
  const card=(m,i)=>{const s=sessions[m.id],st=s?s.status:'idle',mine=m.id===meId,vs=expiredPomo(s)?'paused':(!s&&tot(m.id,today())>0)?'paused':st,po=mine?pomoGet(s):null;
   const lbl=expiredPomo(s)?expiredPomoLabel(s):po?(po.phase==='focus'?'Pomodoro':po.phase==='ready'?'Ready for focus':'On break'):SL[vs];
-  if(mine)subjSync();const pend=!!(pfDraft||pendSubj||pendCap),ctl=!mine?'':st==='idle'?`<div class="start-row${pend?' has-pend':''}"><button class="p" data-a="start_study_session">Start</button><button type="button" class="pf-pict pomo${pend?' on':''}" data-pfadd>${pfDraft?`<img src="${pfDraft.url}" alt="">`:''}<span>${pend?(pfDraft?'Photo ready':'Info ready'):'+ Pict'}</span></button>${pend?'<button type="button" class="pf-x" data-pfclear aria-label="Clear photo and details">\u2715</button>':''}</div>`:
+  if(mine)subjSync();const ctl=!mine?'':st==='idle'?`<div class="start-row"><button class="p" data-a="start_study_session">Start</button><button type="button" class="pf-pict pomo" data-pfadd><span>+ Pict</span></button></div>`:
    st==='active'?`<button class="p" data-a="finish_study_session">Finish</button>`:
    po?`${po.phase==='ready'?'<button class="p" data-a="start_next_pomodoro_focus" id="nextFocusBtn">Start Next Focus</button>':`<button type="button" id="pomoBreakBtn" disabled>${pomoText(s)}</button>`}<button data-a="finish_study_session">Finish</button>`:
    `<button class="p" data-a="resume_study_session">Resume</button><button data-a="finish_study_session">Finish</button>`;
@@ -1748,4 +1748,5 @@ fxScan();
 .pf{grid-template-columns:minmax(0,1fr) auto}
 .pf>.pf-img{grid-column:1;grid-row:1}
 .pf>.rx{grid-column:2;grid-row:1;margin:0 0 0 8px}
+.pf,.pf{grid-template-columns:minmax(0,1fr)}.pf>.pf-img{grid-column:1;grid-row:1}.pf>.pf-cap{grid-column:1}
 </style>
