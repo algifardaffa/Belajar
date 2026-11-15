@@ -535,7 +535,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <div id="app" class="hide">
 
 <header class="top"><button type="button" id="profileButton" class="profile-trigger" title="Edit your profile" aria-label="Edit your nickname and photo"><span class="av" id="me"></span><span class="profile-name" id="myName"></span></button>
-<nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button><button data-v="ach"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>User</button><button data-v="an"><svg class="ic red" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L5 13h6l-1 9 8-11h-6z"/></svg>Rival</button></nav>
+<nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button><button data-v="mw"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01M6 7h12a4 4 0 014 4v2a4 4 0 01-4 4 3 3 0 01-2.5-1.3L14 16h-4l-1.5 1.7A3 3 0 016 19a4 4 0 01-4-4v-2a4 4 0 014-4z"/></svg>Main Woy</button></nav>
 <button id="th" type="button" class="pill hdr-th" aria-label="Toggle dark and light mode" title="Switch theme"></button></header>
 <div id="err" class="alert" role="alert"></div>
 <div id="profileBackdrop" class="profile-backdrop hide" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><div class="panel profile-modal">
@@ -553,19 +553,19 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <div id="lb" class="home-podium"><div class="head out"><div class="hd-ic"><svg class="ic cyan hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M8 21V11h8v10M2 21v-6h6M16 21v-4h6"/></svg><div><h2 class="h2">Podium</h2></div></div>
 <div class="hd-tg"><div class="sd-tg" id="modes" role="group" aria-label="Distribution range"><button type="button" data-m="today" class="on">Today</button><button type="button" data-m="week">Week</button><button type="button" data-m="month">Month</button><button type="button" data-m="all">All time</button><button type="button" data-m="n">Awards</button></div></div></div><div class="panel podium-wave-panel" id="podiumPanel"><div class="tg-slot"></div>
 <div id="sdList" class="podium"></div>
-<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div><div id="calWrap" class="home-recap"><div class="head out"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><div><h2 class="h2">Calendar</h2></div></div><div class="cal-nav hd-tg"><button type="button" class="ghost" data-kn="-1" aria-label="Previous 7 days"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="calTitle"></b><button type="button" class="ghost" data-kn="1" aria-label="Next 7 days"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div><div class="panel wv-host" id="calPanel"><div class="tg-slot"></div><div class="cal-grid" id="calGrid"></div><div id="calDetail" class="cal-det" aria-live="polite"></div><div class="lb nc" style="margin-top:16px">Show players</div><div class="cmp-chips" id="calChips"></div></div></div></section>
-
-<section id="an" class="hide"><div id="riBox"></div><div id="recapWrap" class="home-recap"><div class="head out"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><h2 class="h2">Weekly Recap</h2></div></div></div><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div>
-</div><div class="head out" style="margin-top:28px"><div class="hd-ic"><svg class="ic red hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/></svg><div><h2 class="h2">Compare Users</h2></div></div>
+<div id="lbEmpty" class="empty hide"><svg class="ic yellow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><b>No study time recorded yet</b><span>Start a session on the Dashboard and you will appear here.</span></div></div></div><div id="calWrap" class="home-recap"><div class="head out"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><div><h2 class="h2">Calendar</h2></div></div><div class="cal-nav hd-tg"><button type="button" class="ghost" data-kn="-1" aria-label="Previous 7 days"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="calTitle"></b><button type="button" class="ghost" data-kn="1" aria-label="Next 7 days"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div><div class="panel wv-host" id="calPanel"><div class="tg-slot"></div><div class="cal-grid" id="calGrid"></div><div id="calDetail" class="cal-det" aria-live="polite"></div><div class="lb nc" style="margin-top:16px">Show players</div><div class="cmp-chips" id="calChips"></div></div></div><div id="cmpWrap" class="home-recap"><div class="head out"><div class="hd-ic"><svg class="ic red hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/></svg><div><h2 class="h2">Compare Users</h2></div></div>
 <div class="tgs hd-tg"><div class="sd-tg" id="cmpModes" role="group" aria-label="Chart mode"><button type="button" data-cm="score">Total</button><button type="button" data-cm="growth" class="on">Daily</button><button type="button" data-cm="rank">Rank</button></div>
 <div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div><div class="panel"><div class="tg-slot"></div>
 <div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
 <div class="lb nc" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div>
-</section>
-<section id="ach" class="hide"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg>
+</div><div id="ach" class="home-recap"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg>
 <div id="uiBox"></div>
 <div id="pbBox"></div>
-<div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></section>
+<div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></div><div id="riBox"></div><div id="recapWrap" class="home-recap"><div class="head out"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><h2 class="h2">Weekly Recap</h2></div></div></div><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div>
+</div></section><section id="mw" class="hide"><div class="head out"><div class="hd-ic"><div><h1 class="h2" style="font-size:26px">How to Meet</h1><div class="mw-mu">Find the perfect time to hang out together.</div></div></div></div><div id="mwBox"></div></section>
+
+
+
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </div></div>
 
@@ -1698,6 +1698,91 @@ function fxScan(){if(fxIO)document.querySelectorAll('.grid .mc,#ys,.podium-wave-
  pm=mode;fxScan();return x}}
 fxScan();
 </script>
+<script>
+//MW-ALGO
+const MW_H0=7,MW_N=14;
+const mwBit=h=>1<<(h-MW_H0);
+const mwBusy=(b,id,d,h)=>!!((b[id]?.[d]||0)&mwBit(h));
+const mwCount=(b,ids,d,h)=>ids.filter(id=>!mwBusy(b,id,d,h)).length;
+function mwWindows(b,ids,days,dur,mode,after){
+ const N=ids.length,need=mode==='all'?N:Math.min(3,N),out=[];
+ for(const d of days)for(let h=MW_H0;h+dur<=MW_H0+MW_N;h++){
+  if(after&&new Date(d+'T'+String(h).padStart(2,'0')+':00:00').getTime()<after)continue;
+  let min=N,sum=0;for(let k=0;k<dur;k++){const c=mwCount(b,ids,d,h+k);min=Math.min(min,c);sum+=c}
+  out.push({day:d,hour:h,dur,min,avg:N?sum/dur/N:0,ok:N>0&&min>=need})}
+ out.sort((x,y)=>y.min-x.min||y.avg-x.avg||(x.day<y.day?-1:x.day>y.day?1:x.hour-y.hour));
+ return out}
+function mwPick(list,n){const r=[];for(const w of list){if(r.some(p=>p.day===w.day&&w.hour<p.hour+p.dur&&p.hour<w.hour+w.dur))continue;r.push(w);if(r.length>=n)break}return r}
+//MW-END
+const MW={busy:{},lock:null,dur:2,mode:'all',sel:null,off:false,err:'',drag:null,dirty:new Set()};
+const MWC=['#7f1d1d','#ef4444','#f97316','#eab308','#86efac','#16a34a'];
+const mwDays=()=>{const[y,m,d]=today().split('-').map(Number),o=[];for(let i=0;i<7;i++){const t=new Date(y,m-1,d+i,12);o.push(t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'))}return o};
+const mwDL=d=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+const mwT=h=>String(h).padStart(2,'0')+'.00';
+const mwIds=()=>members.map(m=>m.id);
+const mwName=id=>members.find(m=>m.id===id)?.display_name||'?';
+const mwAdmin=()=>members.find(m=>m.id===meId)?.slot_number===1;
+async function mwLoad(){
+ try{const days=mwDays();
+  const[a,l]=await Promise.all([sb.from('meet_busy').select('member_id,day,mask').gte('day',days[0]),sb.from('meet_lock').select('*').eq('id',1).maybeSingle()]);
+  if(a.error)throw a.error;
+  const b={};(a.data||[]).forEach(r=>{(b[r.member_id]??={})[String(r.day).slice(0,10)]=r.mask});
+  MW.busy=b;MW.lock=l.error?null:l.data;MW.off=false;MW.err=''
+ }catch(x){MW.off=true;MW.err=x?.message||String(x);try{MW.busy={[meId]:JSON.parse(localStorage.getItem('sr-meet-'+meId)||'{}')}}catch(_){MW.busy={}}}}
+async function mwSave(){
+ const ds=[...MW.dirty];MW.dirty.clear();
+ if(!MW.off)for(const d of ds){const{error}=await sb.rpc('set_meet_busy',{p_day:d,p_mask:MW.busy[meId]?.[d]||0});if(error){MW.off=true;MW.err=error.message;break}}
+ if(MW.off)try{localStorage.setItem('sr-meet-'+meId,JSON.stringify(MW.busy[meId]||{}))}catch(_){}
+ mwPaint();const s=$('#mwSaved');if(s){s.textContent=MW.off?'Saved on this device only':'Saved';}}
+function mwMine(){const days=mwDays();let h='<div class="mw-g" id="mwMineG"><div></div>'+days.map(d=>'<div class="mw-dh">'+mwDL(d).replace(', ','<br>')+'</div>').join('');
+ for(let t=MW_H0;t<MW_H0+MW_N;t++){h+='<div class="mw-th">'+mwT(t)+'</div>'+days.map(d=>'<div class="mw-c'+(mwBusy(MW.busy,meId,d,t)?' busy':'')+'" data-md="'+d+'" data-mh="'+t+'"></div>').join('')}
+ return h+'</div>'}
+function mwHeat(){const days=mwDays(),ids=mwIds(),N=ids.length;let h='<div class="mw-g"><div></div>'+days.map(d=>'<div class="mw-dh">'+mwDL(d).replace(', ','<br>')+'</div>').join('');
+ for(let t=MW_H0;t<MW_H0+MW_N;t++){h+='<div class="mw-th">'+mwT(t)+'</div>'+days.map(d=>{const c=mwCount(MW.busy,ids,d,t),lv=N?Math.round(c/N*5):0,sel=MW.sel&&MW.sel.d===d&&MW.sel.h===t;
+  return '<div class="mw-c heat'+(sel?' sel':'')+'" style="background:'+MWC[lv]+'" data-gd="'+d+'" data-gh="'+t+'">'+c+'</div>'}).join('')}
+ return h+'</div>'}
+function mwDet(){if(!MW.sel)return'<span class="mw-mu">Tap a block to see who is available.</span>';const{d,h}=MW.sel,ids=mwIds(),f=ids.filter(i=>!mwBusy(MW.busy,i,d,h)),b=ids.filter(i=>mwBusy(MW.busy,i,d,h));
+ return'<b>'+mwDL(d)+' · '+mwT(h)+'</b> — '+f.length+'/'+ids.length+' available<div class="mw-l ok">Available: '+(f.map(mwName).map(esc).join(', ')||'nobody')+'</div><div class="mw-l bad">Busy: '+(b.map(mwName).map(esc).join(', ')||'nobody')+'</div>'}
+function mwRec(){const ids=mwIds(),N=ids.length,all=mwWindows(MW.busy,ids,mwDays(),MW.dur,MW.mode,Date.now()),good=mwPick(all.filter(w=>w.ok),5);
+ const card=(w,alt)=>{const att=ids.filter(i=>{for(let k=0;k<w.dur;k++)if(mwBusy(MW.busy,i,w.day,w.hour+k))return false;return true});
+  return'<div class="mw-rec"><div><b>'+mwDL(w.day)+' · '+mwT(w.hour)+'–'+mwT(w.hour+w.dur)+'</b><div class="mw-mu">'+w.dur+' h · '+att.length+'/'+N+' available ('+Math.round(att.length/N*100)+'%)'+(alt?' · closest option':'')+'</div></div>'+(mwAdmin()?'<button type="button" class="p" data-mwlock="'+w.day+'|'+w.hour+'|'+w.dur+'">Lock</button>':'')+'</div>'};
+ if(good.length)return good.map(w=>card(w)).join('');
+ const alt=mwPick(all.filter(w=>w.min>0),3);let tip=MW.mode==='all'?'No time works for everyone. Try Majority mode':'No time has enough people free';if(MW.dur>1)tip+=' or a shorter duration';
+ return'<div class="mw-mu" style="margin-bottom:8px">'+tip+'.</div>'+alt.map(w=>card(w,1)).join('')}
+function mwConf(){const L=MW.lock;if(!L)return'<div class="mw-mu">No confirmed schedule yet.'+(mwAdmin()?'':' The group admin can lock one from the recommendations.')+'</div>';
+ const d=String(L.day).slice(0,10),h=L.hour,dur=L.dur,ids=mwIds(),ok=ids.filter(i=>{for(let k=0;k<dur;k++)if(mwBusy(MW.busy,i,d,h+k))return false;return true}),no=ids.filter(i=>!ok.includes(i));
+ const ts=new Date(d+'T'+String(h).padStart(2,'0')+':00:00').getTime();
+ return'<div class="mw-conf"><span class="mw-badge">Confirmed</span><h3>'+mwDL(d)+' · '+mwT(h)+'–'+mwT(h+dur)+'</h3><div class="mw-mu">'+dur+' hour'+(dur>1?'s':'')+'</div><div class="mw-cd" id="mwCd" data-ts="'+ts+'" data-end="'+(ts+dur*3600000)+'"></div><div class="mw-l ok">Can join: '+(ok.map(mwName).map(esc).join(', ')||'nobody')+'</div>'+(no.length?'<div class="mw-l bad">Busy: '+no.map(mwName).map(esc).join(', ')+'</div>':'')+(mwAdmin()?'<button type="button" class="ghost" data-mwunlock="1" style="margin-top:10px">Unlock</button>':'')+'</div>'}
+function mwPaint(){if(!$('#mwGroup'))return;$('#mwGroup').innerHTML=mwHeat();$('#mwDet').innerHTML=mwDet();$('#mwRec').innerHTML=mwRec();$('#mwConf').innerHTML=mwConf();
+ document.querySelectorAll('[data-mwdur]').forEach(b=>b.classList.toggle('on',+b.dataset.mwdur===MW.dur));document.querySelectorAll('[data-mwmode]').forEach(b=>b.classList.toggle('on',b.dataset.mwmode===MW.mode));
+ const w=$('#mwWarn');if(w)w.innerHTML=MW.off?'Sync is unavailable ('+esc(MW.err)+'). Your schedule is kept on this device only; other members will not see it until Study_Room_Meet.sql is run in Supabase.':'';mwTick()}
+function mwRender(){const box=$('#mwBox');if(!box)return;
+ box.innerHTML='<div class="mw-warn" id="mwWarn"></div><div class="mw-chips">'+members.map(m=>'<span class="mw-chip">'+avatarMarkup(m)+esc(m.display_name)+'</span>').join('')+'</div>'+
+ '<div class="head out"><div class="hd-ic"><div><h2 class="h2">My Busy Schedule</h2></div></div><span class="mw-mu" id="mwSaved"></span></div><div class="panel"><div class="mw-mu" style="margin-bottom:8px">Tap or drag to mark the hours you are busy (red). Changes save automatically.</div><div class="mw-sc" id="mwMine">'+mwMine()+'</div></div>'+
+ '<div class="head out"><div class="hd-ic"><div><h2 class="h2">Group Availability</h2></div></div></div><div class="panel"><div class="mw-sc" id="mwGroup"></div><div class="mw-leg">'+MWC.map((c,i)=>'<span><i style="background:'+c+'"></i>'+i+'/'+Math.max(members.length,5)+'</span>').join('')+'</div><div class="mw-det" id="mwDet"></div></div>'+
+ '<div class="head out"><div class="hd-ic"><div><h2 class="h2">Best Time to Play</h2></div></div></div><div class="panel"><div class="mw-ctl"><div class="sd-tg">'+[1,2,3,4].map(n=>'<button type="button" data-mwdur="'+n+'">'+n+' h</button>').join('')+'</div><div class="sd-tg"><button type="button" data-mwmode="all">Everyone</button><button type="button" data-mwmode="maj">Majority</button></div></div><div id="mwRec"></div></div>'+
+ '<div class="head out"><div class="hd-ic"><div><h2 class="h2">Confirmed Schedule</h2></div></div></div><div class="panel" id="mwConf"></div>';
+ mwPaint()}
+function mwTick(){const e=$('#mwCd');if(!e)return;const ts=+e.dataset.ts,en=+e.dataset.end,n=Date.now();
+ if(n>=en)e.textContent='Finished';else if(n>=ts)e.textContent='Happening now';else{let s=Math.floor((ts-n)/1000);const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);e.textContent='Starts in '+(d?d+'d ':'')+h+'h '+m+'m '+(s%60)+'s'}}
+async function mwOpen(){mwRender();await mwLoad();if(!MW.drag)mwRender()}
+function mwApply(el){if(!el||!MW.drag)return;const d=el.dataset.md,h=+el.dataset.mh,m=(MW.busy[meId]??={});let v=m[d]||0;const bit=mwBit(h);v=MW.drag.val?v|bit:v&~bit;if(v!==(m[d]||0)){m[d]=v;MW.dirty.add(d)}el.classList.toggle('busy',MW.drag.val)}
+document.addEventListener('pointerdown',e=>{const c=e.target.closest('#mwMine .mw-c');if(!c)return;e.preventDefault();MW.drag={val:!c.classList.contains('busy')};mwApply(c)});
+document.addEventListener('pointermove',e=>{if(!MW.drag)return;mwApply(document.elementFromPoint(e.clientX,e.clientY)?.closest('#mwMine .mw-c'))});
+const mwEnd=()=>{if(!MW.drag)return;MW.drag=null;mwSave()};document.addEventListener('pointerup',mwEnd);document.addEventListener('pointercancel',mwEnd);
+document.addEventListener('click',async e=>{const t=e.target;
+ const g=t.closest('[data-gd]');if(g){MW.sel={d:g.dataset.gd,h:+g.dataset.gh};mwPaint();return}
+ const b=t.closest('button');if(!b)return;
+ if(b.dataset.v==='mw')mwOpen();
+ if(b.dataset.mwdur){MW.dur=+b.dataset.mwdur;mwPaint()}
+ if(b.dataset.mwmode){MW.mode=b.dataset.mwmode;mwPaint()}
+ if(b.dataset.mwlock){const[d,h,n]=b.dataset.mwlock.split('|');b.disabled=true;let ok=!MW.off;
+  if(ok){const{error}=await sb.rpc('set_meet_lock',{p_day:d,p_hour:+h,p_dur:+n});if(error){ok=false;MW.err=error.message}}
+  MW.lock={day:d,hour:+h,dur:+n};if(!ok)MW.off=true;mwPaint()}
+ if(b.dataset.mwunlock){if(!MW.off){const{error}=await sb.rpc('clear_meet_lock');if(error){MW.off=true;MW.err=error.message}}MW.lock=null;mwPaint()}});
+setInterval(mwTick,1000);
+setInterval(async()=>{const s=$('#mw');if(s&&!s.classList.contains('hide')&&!MW.drag){await mwLoad();if(!MW.drag)mwRender()}},15000);
+</script>
 </body></html>
 <style>
 /* Requested typography alignment for insight and personal-best bubbles */
@@ -1769,5 +1854,14 @@ fxScan();
 .q-panel{background:linear-gradient(90deg,color-mix(in srgb,var(--wc,var(--ac)) 16%,var(--panel)),var(--panel))}
 #quotePanel>.ys-wave{z-index:0;pointer-events:none;height:100%}
 .rx-who{display:grid;gap:2px;font-size:13px;color:var(--tx2)}
-@media(max-width:799px){.top{flex-wrap:wrap}.top #nav{order:3;flex:0 0 100%;width:100%;justify-content:center;margin-top:8px}}
+.mw-mu{color:var(--mu);font-size:13px}.mw-warn:not(:empty){background:rgba(245,158,11,.14);border:1px solid var(--warn);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}
+.mw-chips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 6px}.mw-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border:1px solid var(--bd);border-radius:999px;font-size:13px}.mw-chip .av{width:22px;height:22px}
+.mw-sc{overflow-x:auto}.mw-g{display:grid;grid-template-columns:44px repeat(7,minmax(42px,1fr));gap:3px;min-width:350px}
+.mw-dh{font-size:11px;text-align:center;color:var(--tx2);line-height:1.2;padding-bottom:4px}.mw-th{font-size:11px;color:var(--mu);display:flex;align-items:center}
+.mw-c{height:32px;border-radius:7px;background:rgba(148,163,184,.16);transition:background .15s,transform .1s;touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer}
+.mw-c.busy{background:#ef4444}.mw-c.heat{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0b1220;touch-action:auto}.mw-c.heat.sel{outline:2px solid var(--tx);outline-offset:1px}
+.mw-leg{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:12px;color:var(--tx2)}.mw-leg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:4px;vertical-align:-2px}
+.mw-det{margin-top:12px;font-size:14px}.mw-l{margin-top:6px;font-size:13px}.mw-l.ok{color:var(--ok)}.mw-l.bad{color:var(--bad)}
+.mw-ctl{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}.mw-rec{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}.mw-rec:first-child{border-top:0}
+.mw-badge{display:inline-block;background:var(--ok);color:#052e16;font-weight:700;font-size:12px;padding:2px 10px;border-radius:999px}.mw-conf h3{margin:8px 0 2px;font-size:20px}.mw-cd{margin-top:8px;font-weight:700}
 </style>
