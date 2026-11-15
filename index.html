@@ -535,7 +535,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <div id="app" class="hide">
 
 <header class="top"><button type="button" id="profileButton" class="profile-trigger" title="Edit your profile" aria-label="Edit your nickname and photo"><span class="av" id="me"></span><span class="profile-name" id="myName"></span></button>
-<nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button><button data-v="mw"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01M6 7h12a4 4 0 014 4v2a4 4 0 01-4 4 3 3 0 01-2.5-1.3L14 16h-4l-1.5 1.7A3 3 0 016 19a4 4 0 01-4-4v-2a4 4 0 014-4z"/></svg>Main Woy</button></nav>
+<nav id="nav" class="seg tabs"><button data-v="dash" class="on"><svg class="ic purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Belajar</button><button data-v="mw"><svg class="ic green" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01M6 7h12a4 4 0 014 4v2a4 4 0 01-4 4 3 3 0 01-2.5-1.3L14 16h-4l-1.5 1.7A3 3 0 016 19a4 4 0 01-4-4v-2a4 4 0 014-4z"/></svg>Main Woy</button></nav>
 <button id="th" type="button" class="pill hdr-th" aria-label="Toggle dark and light mode" title="Switch theme"></button></header>
 <div id="err" class="alert" role="alert"></div>
 <div id="profileBackdrop" class="profile-backdrop hide" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><div class="panel profile-modal">
@@ -558,11 +558,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <div class="rg"><button data-d="7" class="on">7 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div></div></div><div class="panel"><div class="tg-slot"></div>
 <div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
 <div class="lb nc" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div>
-</div><div id="ach" class="home-recap"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg>
-<div id="uiBox"></div>
-<div id="pbBox"></div>
-<div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></div><div id="riBox"></div><div id="recapWrap" class="home-recap"><div class="head out"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><h2 class="h2">Weekly Recap</h2></div></div></div><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div>
-</div></section><section id="mw" class="hide"><div class="head out"><div class="hd-ic"><div><h1 class="h2" style="font-size:26px">How to Meet</h1><div class="mw-mu">Find the perfect time to hang out together.</div></div></div></div><div id="mwBox"></div></section>
+</div><div id="recapWrap" class="home-recap"><div class="head out"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><h2 class="h2">Weekly Recap</h2></div></div></div><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div>
+</div><div id="ach" class="home-recap"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg><div id="pbBox"></div><div id="uiBox"></div><div id="riBox"></div><div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></div></section><section id="mw" class="hide"><div class="head out"><div class="hd-ic"><div><h1 class="h2" style="font-size:26px">How to Meet</h1><div class="mw-mu">Find the perfect time to hang out together.</div></div></div></div><div id="mwBox"></div></section>
 
 
 
@@ -1721,7 +1718,7 @@ const mwDL=d=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short
 const mwT=h=>String(h).padStart(2,'0')+'.00';
 const mwIds=()=>members.map(m=>m.id);
 const mwName=id=>members.find(m=>m.id===id)?.display_name||'?';
-const mwAdmin=()=>members.find(m=>m.id===meId)?.slot_number===1;
+const mwAdmin=()=>members.find(m=>m.id===meId)?.slot_number===4;
 async function mwLoad(){
  try{const days=mwDays();
   const[a,l]=await Promise.all([sb.from('meet_busy').select('member_id,day,mask').gte('day',days[0]),sb.from('meet_lock').select('*').eq('id',1).maybeSingle()]);
@@ -1757,8 +1754,8 @@ function mwPaint(){if(!$('#mwGroup'))return;$('#mwGroup').innerHTML=mwHeat();$('
  document.querySelectorAll('[data-mwdur]').forEach(b=>b.classList.toggle('on',+b.dataset.mwdur===MW.dur));document.querySelectorAll('[data-mwmode]').forEach(b=>b.classList.toggle('on',b.dataset.mwmode===MW.mode));
  const w=$('#mwWarn');if(w)w.innerHTML=MW.off?'Sync is unavailable ('+esc(MW.err)+'). Your schedule is kept on this device only; other members will not see it until Study_Room_Meet.sql is run in Supabase.':'';mwTick()}
 function mwRender(){const box=$('#mwBox');if(!box)return;
- box.innerHTML='<div class="mw-warn" id="mwWarn"></div><div class="mw-chips">'+members.map(m=>'<span class="mw-chip">'+avatarMarkup(m)+esc(m.display_name)+'</span>').join('')+'</div>'+
- '<div class="head out"><div class="hd-ic"><div><h2 class="h2">My Busy Schedule</h2></div></div><span class="mw-mu" id="mwSaved"></span></div><div class="panel"><div class="mw-mu" style="margin-bottom:8px">Tap or drag to mark the hours you are busy (red). Changes save automatically.</div><div class="mw-sc" id="mwMine">'+mwMine()+'</div></div>'+
+ box.innerHTML='<div class="mw-warn" id="mwWarn"></div>'+
+ '<div class="panel"><div class="mw-mu" style="margin-bottom:8px">Tap or drag to mark the hours you are busy (red).</div><div class="mw-sc" id="mwMine">'+mwMine()+'</div></div>'+
  '<div class="head out"><div class="hd-ic"><div><h2 class="h2">Group Availability</h2></div></div></div><div class="panel"><div class="mw-sc" id="mwGroup"></div><div class="mw-leg">'+MWC.map((c,i)=>'<span><i style="background:'+c+'"></i>'+i+'/'+Math.max(members.length,5)+'</span>').join('')+'</div><div class="mw-det" id="mwDet"></div></div>'+
  '<div class="head out"><div class="hd-ic"><div><h2 class="h2">Best Time to Play</h2></div></div></div><div class="panel"><div class="mw-ctl"><div class="sd-tg">'+[1,2,3,4].map(n=>'<button type="button" data-mwdur="'+n+'">'+n+' h</button>').join('')+'</div><div class="sd-tg"><button type="button" data-mwmode="all">Everyone</button><button type="button" data-mwmode="maj">Majority</button></div></div><div id="mwRec"></div></div>'+
  '<div class="head out"><div class="hd-ic"><div><h2 class="h2">Confirmed Schedule</h2></div></div></div><div class="panel" id="mwConf"></div>';
@@ -1864,4 +1861,8 @@ setInterval(async()=>{const s=$('#mw');if(s&&!s.classList.contains('hide')&&!MW.
 .mw-det{margin-top:12px;font-size:14px}.mw-l{margin-top:6px;font-size:13px}.mw-l.ok{color:var(--ok)}.mw-l.bad{color:var(--bad)}
 .mw-ctl{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}.mw-rec{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}.mw-rec:first-child{border-top:0}
 .mw-badge{display:inline-block;background:var(--ok);color:#052e16;font-weight:700;font-size:12px;padding:2px 10px;border-radius:999px}.mw-conf h3{margin:8px 0 2px;font-size:20px}.mw-cd{margin-top:8px;font-weight:700}
+.mw-sc{overflow:visible}.mw-g{grid-template-columns:34px repeat(7,minmax(0,1fr));gap:2px;min-width:0}
+.mw-dh{font-size:10px}.mw-th{font-size:10px}.mw-c{height:26px;border-radius:5px}.mw-c.heat{font-size:11px}
+.mw-chips{margin:14px 0 16px}.mw-chip{padding:3px 10px 3px 3px}.mw-mu+.mw-chips{margin-top:14px}.mw-leg{margin-top:14px}.mw-det{margin-top:14px}
+#mw .head.out{margin-top:20px}
 </style>
