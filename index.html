@@ -559,7 +559,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <div class="cmp-box" id="cmpBox"><canvas id="cmpChart"></canvas></div>
 <div class="lb nc" style="margin-top:16px">Compare with</div><div class="cmp-chips" id="ccRow"></div></div>
 </div><div id="recapWrap" class="home-recap"><div class="head out"><div class="hd-ic"><svg class="ic green hd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><h2 class="h2">Weekly Recap</h2></div></div></div><div class="panel ys cc" id="ccPanel"><div id="ov"></div><div id="recap" class="recap hide"></div></div>
-</div><div id="ach" class="home-recap"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg><div id="pbBox"></div><div id="uiBox"></div><div id="riBox"></div><div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></div></section><section id="mw" class="hide"><div class="head out"><div class="hd-ic"><div><h1 class="h2" style="font-size:26px">How to Meet</h1><div class="mw-mu">Find the perfect time to hang out together.</div></div></div></div><div id="mwBox"></div></section>
+</div><div id="ach" class="home-recap"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#c4b5fd"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs></svg><div id="pbBox"></div><div id="uiBox"></div><div id="riBox"></div><div id="achBox"><div class="empty"><b>Loading achievements…</b></div></div></div></section><section id="mw" class="hide"><div class="head out"><div class="hd-ic"><div><h1 class="h2" style="font-size:26px">How to Meet</h1></div></div></div><div id="mwBox"></div></section>
 
 
 
@@ -736,8 +736,7 @@ let proofsBy={},rxBy={},proofUrls=new Map(),pfDraft=null,pfTmp=null,pendSubj='',
 const PF_BUCKET='study-proofs',RX=[['up','\u{1F44D}'],['down','\u{1F44E}'],['love','\u2764\uFE0F']];
 async function loadProofs(){
  try{
-  const since=new Date(Date.now()-24*3600e3).toISOString();
-  const {data:ps,error}=await sb.from('study_proofs').select('*').gte('created_at',since).order('created_at',{ascending:false});
+  const {data:ps,error}=await sb.from('study_proofs').select('*').order('created_at',{ascending:false});
   if(error)throw error;
   const pb={};(ps||[]).forEach(p=>(pb[p.member_id]=pb[p.member_id]||[]).push(p));
   const rb={};
@@ -773,12 +772,12 @@ async function pfPrune(){if(!meId)return;try{
  }catch(x){console.warn('Photo cleanup skipped:',x?.message||x)}}
 let pfPruned=false;
 const SJK=()=>'sr-subj-'+meId;
-const dailySubj=m=>m&&m.daily_subject&&String(m.daily_subject_day||'').slice(0,10)===today()?m.daily_subject:'';
+const dailySubj=m=>m&&m.daily_subject?m.daily_subject:'';
 async function subjPush(){const me=members.find(m=>m.id===meId);if(me){me.daily_subject=pendSubj||null;me.daily_subject_day=today()}
  try{const{error}=await sb.rpc('set_daily_subject',{p_subject:pendSubj||null,p_day:today()});
   if(error)console.warn(error.code==='PGRST202'?'Run Study_Room_Subject.sql in Supabase so other players can see your subject.':'Subject not shared: '+error.message)}catch(x){console.warn('Subject not shared:',x?.message||x)}}
 function subjSave(){if(!meId)return Promise.resolve();try{pendSubj?localStorage.setItem(SJK(),JSON.stringify({d:today(),s:pendSubj})):localStorage.removeItem(SJK())}catch(_){}return subjPush()}
-function subjSync(){if(!meId)return;try{const o=JSON.parse(localStorage.getItem(SJK())||'null');if(o&&o.d===today())pendSubj=o.s||'';else{pendSubj='';localStorage.removeItem(SJK())}}catch(_){}
+function subjSync(){if(!meId)return;try{const o=JSON.parse(localStorage.getItem(SJK())||'null');if(o&&o.s)pendSubj=o.s;}catch(_){}
  if(!pendSubj){const d=dailySubj(members.find(m=>m.id===meId));if(d)pendSubj=d}}
 const pfClearPending=()=>{pfDrop();pendSubj='';pendCap='';subjSave()};
 async function pfCompress(file){
